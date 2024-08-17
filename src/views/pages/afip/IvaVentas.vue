@@ -38,10 +38,10 @@ const search = async () => {
             const response = await CustomerService.getIvaVentas(mes, anio);
             ventasData.value = response;
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error :', error);
         }
     } else {
-        console.warn('Please select both a month and a year.');
+        console.warn('Seleccione un mes y un año');
     }
 };
 
@@ -55,16 +55,27 @@ function facturaTemplate(rowData) {
     const numFac = rowData.NUM_FAC;
     const formattedNumFac = `${numFac.slice(0, 4)}-${numFac.slice(4)}`;
 
-    // Map of TIP_DOC codes to labels
     const tipDocMap = {
-        1: 'FAC',
-        2: 'CRE',
-        3: 'DEB',
-        4: 'NCR',
-        5: 'NDB'
+        1: 'FAC A', // Factura A
+        2: 'DEB A', // Nota de Débito A
+        3: 'NCR A', // Nota de Crédito A
+        4: 'REC A', // Recibo A
+        6: 'FAC B', // Factura B
+        7: 'DEB B', // Nota de Débito B
+        8: 'NCR B', // Nota de Crédito B
+        9: 'REC B', // Recibo B
+        11: 'FAC T', // Factura T
+        12: 'DEB T', // Nota de Débito T
+        13: 'NCR T', // Nota de Crédito T
+        201: 'FCE A', // Factura de Crédito Electrónica MiPyMEs (FCE) A
+        202: 'FCE A', // Nota de Débito Electrónica MiPyMEs (FCE) A
+        203: 'FCE A', // Nota de Crédito Electrónica MiPyMEs (FCE) A
+        206: 'FCE B', // Factura de Crédito Electrónica MiPyMEs (FCE) B
+        207: 'FCE B', // Nota de Débito Electrónica MiPyMEs (FCE) B
+        208: 'FCE B' // Nota de Crédito Electrónica MiPyMEs (FCE) B
     };
 
-    return `<b>${tipDocMap[tipDoc]} ${tipFac}</b>  ${formattedNumFac}`;
+    return `<b>${tipDocMap[tipDoc]} </b>  ${formattedNumFac}`;
 }
 const clients = ref([]);
 // onmounted select current month
@@ -92,8 +103,8 @@ const afipComp = ref({
     TIP_DOC: null,
     TIP_FAC: '',
     NUM_FAC: '',
-    FEC_FAC: null,
-    NUM_CLI: '',
+    FEC_FAC: new Date().toISOString().substr(0, 10),
+    NUM_CLI: null,
     NOM_CLI: '',
     CUIT_CLI: '',
     SUBT_FAC: 0,
@@ -113,56 +124,26 @@ const afipComp = ref({
     ]
 });
 
-const itemColumns = ref([
-    { field: 'NUM_LIN', header: '#' },
-    { field: 'COD_IT', header: 'Código' },
-    { field: 'DES_IT', header: 'Descripción' },
-    { field: 'CAN_IT', header: 'Cantidad' },
-    { field: 'PRE_IT', header: 'Precio' },
-    { field: 'IVA1_IT', header: 'IVA' },
-    { field: 'TOT_IT', header: 'Total' }
-]);
-/*['NUM_LIN', 'COD_IT', 'DES_IT', 'PRE_IT'];*/
-
 const visibleDialogAdd = ref(false);
 const types = [
     { name: 'Factura A', value: 1 },
-    { name: 'Factura B', value: 2 },
-    { name: 'Factura C', value: 3 },
-    { name: 'Nota de Crédito A', value: 4 },
-    { name: 'Nota de Crédito B', value: 5 },
-    { name: 'Nota de Crédito C', value: 6 },
-    { name: 'Nota de Débito A', value: 7 },
-    { name: 'Nota de Débito B', value: 8 },
-    { name: 'Nota de Débito C', value: 9 }
+    { name: 'Nota de Débito A', value: 2 },
+    { name: 'Nota de Crédito A', value: 3 },
+    { name: 'Recibo A', value: 4 },
+    { name: 'Factura B', value: 6 },
+    { name: 'Nota de Débito B', value: 7 },
+    { name: 'Nota de Crédito B', value: 8 },
+    { name: 'Recibo B', value: 9 },
+    { name: 'Factura T', value: 11 },
+    { name: 'Nota de Débito T', value: 12 },
+    { name: 'Nota de Crédito T', value: 13 },
+    { name: 'Factura de Crédito Electrónica MiPyMEs (FCE) A', value: 201 },
+    { name: 'Nota de Débito Electrónica MiPyMEs (FCE) A', value: 202 },
+    { name: 'Nota de Crédito Electrónica MiPyMEs (FCE) A', value: 203 },
+    { name: 'Factura de Crédito Electrónica MiPyMEs (FCE) B', value: 206 },
+    { name: 'Nota de Débito Electrónica MiPyMEs (FCE) B', value: 207 },
+    { name: 'Nota de Crédito Electrónica MiPyMEs (FCE) B', value: 208 }
 ];
-
-const onCellEditComplete = (event) => {
-    let { data, newValue, field } = event;
-
-    switch (field) {
-        case 'COD_IT':
-            data.COD_IT = newValue;
-            data.DES_IT = '* Traer descripción art :  ' + newValue;
-            break;
-        case 'PRE_IT':
-            data.PRE_IT = newValue;
-            data.IVA1_IT = newValue * 0.21;
-            break;
-        case 'CAN_IT':
-            data.CAN_IT = newValue;
-            break;
-        case 'DES_IT':
-            data.DES_IT = newValue;
-            break;
-        default:
-            break;
-    }
-};
-
-const formatCurrency = (value) => {
-    return value.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-};
 
 const searchArticulo = (codigo, index) => {
     //console.log('searchArticulo', codigo, index);
@@ -175,11 +156,17 @@ const searchArticulo = (codigo, index) => {
 };
 
 const newNext = () => {
-    console.log('newNext', afipComp.value);
-    // save afipComp axios
-
     VentasService.save(afipComp.value).then((response) => {
         console.log('save', response);
+    });
+};
+
+const showComp = (comp) => {
+    //   async show(TIP_DOC, TIP_FAC, NUM_FAC) {
+    VentasService.show(comp.TIP_DOC, comp.TIP_FAC, comp.NUM_FAC).then((response) => {
+        //console.log('show', response);
+        afipComp.value = response;
+        visibleDialogAdd.value = true;
     });
 };
 </script>
@@ -297,6 +284,7 @@ const newNext = () => {
                 <!-- NUM_FAC -->
                 <Column field="NUM_FAC" header="Nº Comp.">
                     <template #body="slotProps">
+                        <Button icon="pi pi-eye" size="small" text @click="showComp(slotProps.data)" />
                         <span v-html="facturaTemplate(slotProps.data)"></span>
                     </template>
                 </Column>

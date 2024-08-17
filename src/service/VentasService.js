@@ -12,5 +12,11 @@ export const VentasService = {
         });
 
         return await response.json();
+    },
+
+    async show(TIP_DOC, TIP_FAC, NUM_FAC) {
+        // get
+        const response = await fetch(`${API_BASE_URL}/ventas/${TIP_DOC}/${TIP_FAC}/${NUM_FAC}`);
+        return await response.json();
     }
 };
