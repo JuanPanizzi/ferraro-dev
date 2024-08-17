@@ -26,6 +26,11 @@ export const CustomerService = {
         return await response.json();
     },
 
+    async getCustomersMinimal() {
+        const response = await fetch(`${API_BASE_URL}/clientes?minimal=true`);
+        return await response.json();
+    },
+
     async getCustomerById(num_cli) {
         const response = await fetch(`${API_BASE_URL}/clientes/${num_cli}`);
         return await response.json();
@@ -61,8 +66,6 @@ export const CustomerService = {
     },
 
     async getIvaVentas(mes, anio) {
-        console.log('mes', mes);
-        console.log('anio', anio);
         const response = await fetch(`${API_BASE_URL}/iva-ventas?mes=${mes}&anio=${anio}`);
         return await response.json();
     }

@@ -1,9 +1,9 @@
 <script setup>
-import { useRouter } from 'vue-router';
 import { CustomerService } from '@/service/CustomerService';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 // Usa el router
 const router = useRouter();
@@ -145,12 +145,12 @@ function verCuentaCorriente(cliente) {
 <template>
     <div>
         <div class="card">
-            <Toolbar class="mb-6">
+            <!-- <Toolbar class="mb-6">
                 <template #start>
                     <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="abrirNuevo" />
-                    <!-- <Button label="Eliminar" icon="pi pi-trash" severity="secondary" @click="confirmarEliminarSeleccionados" :disabled="!clientesSeleccionados || !clientesSeleccionados.length" /> -->
+                   <Button label="Eliminar" icon="pi pi-trash" severity="secondary" @click="confirmarEliminarSeleccionados" :disabled="!clientesSeleccionados || !clientesSeleccionados.length" />
                 </template>
-            </Toolbar>
+            </Toolbar> -->
             <!--
                 v-model:selection="clientesSeleccionados" -->
             <DataTable
@@ -166,28 +166,43 @@ function verCuentaCorriente(cliente) {
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
             >
                 <template #header>
-                    <div class="flex flex-wrap gap-2 items-center justify-between">
-                        <h4 class="m-0">Clientes</h4>
+                    <div class="font-semibold text-xl mb-4">CLIENTES</div>
+                    <div class="flex justify-between items-center">
+                        <div class="">
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
+                                <InputText v-model="filtros['global'].value" placeholder="Buscador" />
+                            </IconField>
+                        </div>
+                        <div>
+                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary" @click="abrirNuevo" />
+                        </div>
+                    </div>
+                    <!-- <div class="flex flex-wrap gap-2 items-center justify-between">
                         <IconField>
                             <InputIcon>
                                 <i class="pi pi-search" />
                             </InputIcon>
                             <InputText v-model="filtros['global'].value" placeholder="Buscar..." />
                         </IconField>
-                    </div>
+                    </div> -->
                 </template>
 
                 <!-- <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column> -->
                 <Column field="NUM_CLI" header="Código" sortable style="min-width: 12rem"></Column>
                 <Column field="NOM_CLI" header="Nombre" sortable style="min-width: 16rem"></Column>
-                <Column field="DIR_CLI" header="Dirección" sortable style="min-width: 16rem"></Column>
-                <Column field="LOC_CLI" header="Localidad" sortable style="min-width: 12rem"></Column>
+                <Column field="CUIT_CLI" header="Nombre" sortable style="min-width: 16rem"></Column>
+
+                <!-- <Column field="DIR_CLI" header="Dirección" sortable style="min-width: 16rem"></Column> -->
+                <!-- <Column field="LOC_CLI" header="Localidad" sortable style="min-width: 12rem"></Column> -->
                 <Column field="PRO_CLI" header="Provincia" sortable style="min-width: 12rem"></Column>
                 <Column field="TEL_CLI" header="Teléfono" sortable style="min-width: 12rem"></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button icon="pi pi-eye" outlined rounded severity="info" @click="verCuentaCorriente(slotProps.data)" />
-                        <Button icon="pi pi-pencil" outlined rounded class="mx-2" @click="editarCliente(slotProps.data)" />
+                        <Button icon="pi pi-list" severity="info" @click="verCuentaCorriente(slotProps.data)" />
+                        <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
@@ -196,6 +211,17 @@ function verCuentaCorriente(cliente) {
 
         <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del Cliente" :modal="true">
             <div class="flex flex-col gap-6">
+                <div class="flex justify-between gap-6">
+                    <div>
+                        <label for="codigo" class="block font-bold mb-3">Código</label>
+                        <InputText id="codigo" v-model="cliente.NUM_CLI" readonly />
+                    </div>
+                    <div>
+                        <label for="cuit" class="block font-bold mb-3">CUIT</label>
+                        <InputText id="cuit" v-model="cliente.CUIT_CLI" fluid />
+                    </div>
+                </div>
+
                 <div>
                     <label for="nombre" class="block font-bold mb-3">Nombre</label>
                     <InputText id="nombre" v-model.trim="cliente.NOM_CLI" required="true" autofocus :invalid="enviado && !cliente.NOM_CLI" fluid />

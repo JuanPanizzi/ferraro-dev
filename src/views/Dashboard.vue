@@ -101,7 +101,20 @@ watch([getPrimary, getSurface, isDarkTheme], () => {
 </script>
 
 <template>
-    <div class="grid">
+    <div class="grid my-5">
+        <div>* Botones de acción mas utilizados según tipo de usuario.</div>
+
+        <div>
+            <!-- button agregar compra, venta, cotizar -->
+            <Button :label="'Nueva venta'" icon="pi pi-dollar" class="p-button-success m-1" />
+            <Button :label="'Nueva compra'" icon="pi pi-shopping-cart" class="p-button-warn m-1" />
+            <Button :label="'Nueva cotización'" icon="pi pi-file" class="p-button-info m-1" />
+        </div>
+    </div>
+
+    <div class="grid my-5">
         <div>* Pantalla inicial, con un resumen de la información más importante.</div>
+
+        <Skeleton width="100%" height="100px" />
     </div>
 </template>

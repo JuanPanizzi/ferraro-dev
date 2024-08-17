@@ -11,20 +11,31 @@ const model = ref([
             // clientes, proveedores, articulos, categorias, ventas, compras, usuarios
             { label: 'Clientes', icon: '', to: '/clientes' },
             { label: 'Proveedores', icon: '', to: '/empty' },
-            { label: 'Artículos', icon: '', to: '/empty' },
+            { label: 'Artículos', icon: '', to: '/empty' }
             // cotizaciones
-            { label: 'Cotizaciones', icon: '', to: '/empty' },
-            { label: 'Ventas', icon: '', to: '/empty' },
-            { label: 'Compras', icon: '', to: '/empty' }
+            //          { label: 'Cotizaciones', icon: '', to: '/empty' },
+            //            { label: 'Ventas', icon: '', to: '/empty' },
+            //  { label: 'Compras', icon: '', to: '/empty' }
         ]
     },
     {
-        label: 'Contabilidad',
+        label: 'AFIP',
         items: [
             // movimientos
-            { label: 'Movimientos', icon: '', to: '/empty' },
-            { label: 'IVA Compras', icon: '', to: '/iva-compras' },
-            { label: 'IVA Ventas', icon: '', to: '/iva-ventas' }
+            // {
+            //     label: 'Comprobantes',
+            //     icon: '',
+            //     to: '/comprobantes',
+            //     items: [
+            //         { label: 'Compras', icon: '', to: '/afip-compras' },
+            //         { label: 'Ventas', icon: '', to: '/afip-ventas' }
+            //     ]
+            // },
+            { label: 'Ventas', icon: '', to: '/iva-ventas' }
+
+            //{ label: 'Compras', icon: '', to: '/afip-compras', items: [] }
+            //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
+            //            { label: 'IVA Ventas', icon: '', to: '/iva-ventas' }
         ]
     }
 ]);

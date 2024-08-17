@@ -3,3 +3,6 @@
 @import 'primeicons/primeicons.css';
 @import '@/assets/demo/demo.scss';
 
+.th-text-right > .p-datatable-column-header-content {
+    display: block;
+}
