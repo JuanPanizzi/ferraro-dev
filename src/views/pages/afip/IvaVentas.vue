@@ -1,6 +1,7 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
 import { CustomerService } from '@/service/CustomerService';
+import { VentasService } from '@/service/VentasService';
 import { onMounted, ref } from 'vue';
 
 const selectedMonth = ref(null);
@@ -164,12 +165,21 @@ const formatCurrency = (value) => {
 };
 
 const searchArticulo = (codigo, index) => {
-    console.log('searchArticulo', codigo, index);
+    //console.log('searchArticulo', codigo, index);
 
     // search articulo
     ArticleService.searchArticle(codigo).then((response) => {
-        console.log('searchArticulo', response);
+        //console.log('searchArticulo', response);
         afipComp.value.items[index].DES_IT = response.NOM_ART;
+    });
+};
+
+const newNext = () => {
+    console.log('newNext', afipComp.value);
+    // save afipComp axios
+
+    VentasService.save(afipComp.value).then((response) => {
+        console.log('save', response);
     });
 };
 </script>
@@ -224,13 +234,13 @@ const searchArticulo = (codigo, index) => {
                                     <Button icon="pi pi-search" outlined severity="info" v-if="item.COD_IT" size="small" @click="searchArticulo(item.COD_IT, index)" />
                                 </td>
                                 <td style="border: 1px solid #ccc; padding: 1px">
-                                    <input type="text" v-model="item.DES_IT" style="width: 100%; padding: 4px" />
+                                    <input type="text" v-model="item.DES_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                                 </td>
                                 <td style="border: 1px solid #ccc; padding: 1px">
-                                    <input type="number" v-model="item.CAN_IT" style="width: 100%; padding: 4px" />
+                                    <input type="number" v-model="item.CAN_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                                 </td>
                                 <td style="border: 1px solid #ccc; padding: 1px">
-                                    <input type="number" v-model="item.PRE_IT" style="width: 100%; padding: 4px" />
+                                    <input type="number" v-model="item.PRE_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                                 </td>
                                 <!-- delete -->
                                 <td style="border: 1px solid #ccc; padding: 4px; text-align: center; cursor: pointer" @click="afipComp.items.splice(afipComp.items.indexOf(item), 1)">
@@ -249,7 +259,7 @@ const searchArticulo = (codigo, index) => {
                 <div class="flex justify-end gap-2 mt-4">
                     <Button type="button" label="Cancelar" severity="secondary" @click="visibleDialogAdd = false"></Button>
                     <!-- next -->
-                    <Button label="Siguiente" class="p-button-primary"></Button>
+                    <Button label="Siguiente" class="p-button-primary" @click="newNext" />
                     <!-- <Button type="submit" label="Guardar" class="p-button-primary"></Button> -->
                 </div>
             </Dialog>
