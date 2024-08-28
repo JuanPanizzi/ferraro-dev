@@ -1,10 +1,9 @@
-// src/service/api.js
 import axios from 'axios';
-import { API_BASE_URL } from './config'; // Importar la URL base desde config.js
+import { API_BASE_URL } from './config'; // Importa la URL base desde config.js
 
 const apiClient = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true // Esto es necesario si usas cookies o Laravel Sanctum
+    baseURL: API_BASE_URL, // Usa la URL base configurada en config.js
+    withCredentials: true // Esto es necesario para Laravel Sanctum si estás usando cookies
 });
 
 apiClient.interceptors.request.use((config) => {
