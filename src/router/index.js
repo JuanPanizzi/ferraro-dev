@@ -99,6 +99,19 @@ const router = createRouter({
                     name: 'clientes',
                     component: () => import('@/views/pages/clientes/Clientes.vue')
                 },
+                // remitos
+                {
+                    path: '/remitos',
+                    name: 'remitos',
+                    component: () => import('@/views/pages/remitos/Remitos.vue')
+                },
+                // new remito
+                {
+                    path: '/remitos/new',
+                    name: 'NewRemito',
+                    component: () => import('@/views/pages/remitos/New.vue')
+                },
+
                 {
                     path: '/clientes/cuenta-corriente/:id',
                     name: 'ClienteCuentaCorriente',
@@ -150,6 +163,15 @@ const router = createRouter({
             component: () => import('@/views/pages/auth/Error.vue')
         }
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('auth_token');
+    if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+        next({ name: 'login' });
+    } else {
+        next();
+    }
 });
 
 export default router;

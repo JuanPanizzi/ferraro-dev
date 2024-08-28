@@ -9,9 +9,14 @@ const model = ref([
         items: [
             { label: 'Inicio', icon: '', to: '/' },
             // clientes, proveedores, articulos, categorias, ventas, compras, usuarios
-            { label: 'Clientes', icon: '', to: '/clientes' },
-            { label: 'Proveedores', icon: '', to: '/empty' },
-            { label: 'Artículos', icon: '', to: '/empty' }
+            {
+                label: 'Clientes',
+                icon: '',
+                to: '/clientes'
+            },
+            { label: 'Remitos', icon: '', to: '/remitos' }
+            //  { label: 'Proveedores', icon: '', to: '/empty' },
+            //  { label: 'Artículos', icon: '', to: '/empty' }
             // cotizaciones
             //          { label: 'Cotizaciones', icon: '', to: '/empty' },
             //            { label: 'Ventas', icon: '', to: '/empty' },
