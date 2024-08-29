@@ -1,29 +1,30 @@
-import apiClient from '@/service/api'; // Importa apiClient que ya usa la configuración de config.js
+// authStore.js
+import apiClient, { initializeCsrfProtection } from '@/service/api';
 import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
-        token: localStorage.getItem('auth_token') || ''
+        token: null
     }),
     actions: {
         async login(credentials) {
-            const response = await apiClient.post('/login', credentials);
-            this.token = response.data.token;
-            this.user = response.data.user;
-            localStorage.setItem('auth_token', this.token);
+            try {
+                await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
+                const response = await apiClient.post('/api/login', credentials);
+                this.token = response.data.token;
+                this.user = response.data.user;
+                localStorage.setItem('auth_token', this.token);
+            } catch (error) {
+                throw new Error('Error al iniciar sesión');
+            }
         },
         async logout() {
             await apiClient.post('/logout');
-            this.token = '';
             this.user = null;
+            this.token = null;
             localStorage.removeItem('auth_token');
-        },
-        async fetchUser() {
-            if (this.token) {
-                const response = await apiClient.get('/user');
-                this.user = response.data;
-            }
         }
+        // Otros métodos como register, getUser, etc.
     }
 });

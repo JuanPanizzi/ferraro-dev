@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 
-export class RemitoService {
+export const RemitoService = {
     // Obtener todos los remitos
     async getRemitos() {
         try {
@@ -10,7 +10,7 @@ export class RemitoService {
         } catch (error) {
             console.error('Hubo un problema al traer los datos de los remitos:', error);
         }
-    }
+    },
 
     // Crear un nuevo remito
     async crearRemito(remito) {
@@ -20,7 +20,18 @@ export class RemitoService {
         } catch (error) {
             console.error('Hubo un problema al crear el remito:', error);
         }
-    }
+    },
+
+    // dameItems
+    async dameItems(nro_remito) {
+        console.log('dameItems', nro_remito);
+        try {
+            const response = await axios.get(`${API_BASE_URL}/rem_dame_items?nro=${nro_remito}`);
+            return response.data;
+        } catch (error) {
+            console.error('Hubo un problema al traer los datos de los items:', error);
+        }
+    },
 
     // Actualizar un remito existente
     async actualizarRemito(remito) {
@@ -30,7 +41,7 @@ export class RemitoService {
         } catch (error) {
             console.error('Hubo un problema al actualizar el remito:', error);
         }
-    }
+    },
 
     // Eliminar un remito
     async eliminarRemito(id) {
@@ -41,4 +52,4 @@ export class RemitoService {
             console.error('Hubo un problema al eliminar el remito:', error);
         }
     }
-}
+};

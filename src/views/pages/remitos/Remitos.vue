@@ -25,10 +25,8 @@ const filtros = ref({
 });
 const enviado = ref(false);
 
-const remitoService = new RemitoService();
-
 onMounted(() => {
-    remitoService.getRemitos().then((data) => (remitos.value = data));
+    RemitoService.getRemitos().then((data) => (remitos.value = data));
 });
 
 function abrirNuevo() {

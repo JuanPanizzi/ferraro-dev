@@ -1,17 +1,15 @@
+// src/service/api.js
 import axios from 'axios';
-import { API_BASE_URL } from './config'; // Importa la URL base desde config.js
+import { API_BASE_URL } from './config';
 
 const apiClient = axios.create({
-    baseURL: API_BASE_URL, // Usa la URL base configurada en config.js
-    withCredentials: true // Esto es necesario para Laravel Sanctum si estás usando cookies
+    baseURL: API_BASE_URL,
+    withCredentials: true // Esto es crucial para que las cookies se envíen con la solicitud
 });
 
-apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-});
+// Función para inicializar la protección CSRF
+export function initializeCsrfProtection() {
+    return apiClient.get('/sanctum/csrf-cookie');
+}
 
 export default apiClient;

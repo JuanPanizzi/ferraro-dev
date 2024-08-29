@@ -11,8 +11,8 @@ const router = createRouter({
                 {
                     path: '/',
                     name: 'dashboard',
-                    component: () => import('@/views/Dashboard.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/Dashboard.vue')
+                    //meta: { requiresAuth: true }
                 },
                 {
                     path: '/empty',
@@ -22,49 +22,49 @@ const router = createRouter({
                 {
                     path: '/clientes',
                     name: 'clientes',
-                    component: () => import('@/views/pages/clientes/Clientes.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/clientes/Clientes.vue')
+                    //meta: { requiresAuth: true }
                 },
                 // remitos
                 {
                     path: '/remitos',
                     name: 'remitos',
-                    component: () => import('@/views/pages/remitos/Remitos.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/remitos/Remitos.vue')
+                    //meta: { requiresAuth: true }
                 },
                 // new remito
                 {
                     path: '/remitos/new',
                     name: 'NewRemito',
-                    component: () => import('@/views/pages/remitos/New.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/remitos/New.vue')
+                    //meta: { requiresAuth: true }
                 },
 
                 {
                     path: '/clientes/cuenta-corriente/:id',
                     name: 'ClienteCuentaCorriente',
-                    component: () => import('@/views/pages/clientes/CC.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/clientes/CC.vue')
+                    //meta: { requiresAuth: true }
                 },
                 // ivacompras
                 {
                     path: '/iva-compras',
                     name: 'ivacompras',
-                    component: () => import('@/views/pages/afip/IvaCompras.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/afip/IvaCompras.vue')
+                    //meta: { requiresAuth: true }
                 },
                 // ivaventas
                 {
                     path: '/iva-ventas',
                     name: 'ivaventas',
-                    component: () => import('@/views/pages/afip/IvaVentas.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/afip/IvaVentas.vue')
+                    //meta: { requiresAuth: true }
                 },
                 {
                     path: '/documentation',
                     name: 'documentation',
-                    component: () => import('@/views/pages/Documentation.vue'),
-                    meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/Documentation.vue')
+                    //meta: { requiresAuth: true }
                 }
             ]
         },

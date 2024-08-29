@@ -1,17 +1,21 @@
 // src/service/authService.js
-import apiClient from './api';
+import apiClient, { initializeCsrfProtection } from './api';
 
 export const authService = {
-    login(credentials) {
+    async login(credentials) {
+        await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
         return apiClient.post('/login', credentials);
     },
-    register(userData) {
+    async register(userData) {
+        await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
         return apiClient.post('/register', userData);
     },
-    logout() {
+    async logout() {
+        await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
         return apiClient.post('/logout');
     },
-    getUser() {
+    async getUser() {
+        await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
         return apiClient.get('/user');
     }
 };
