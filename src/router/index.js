@@ -25,6 +25,12 @@ const router = createRouter({
                     component: () => import('@/views/pages/clientes/Clientes.vue')
                     //meta: { requiresAuth: true }
                 },
+                {
+                    path: '/articulos',
+                    name: 'articulos',
+                    component: () => import('@/views/pages/articulos/Articulos.vue')
+                    //meta: { requiresAuth: true }
+                },
                 // remitos
                 {
                     path: '/remitos',

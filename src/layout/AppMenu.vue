@@ -8,6 +8,7 @@ const model = ref([
         label: 'Principal',
         items: [
             { label: 'Inicio', icon: '', to: '/' },
+            { label: 'Artículos', icon: '', to: '/articulos' },
             // clientes, proveedores, articulos, categorias, ventas, compras, usuarios
             {
                 label: 'Clientes',
@@ -16,7 +17,7 @@ const model = ref([
             },
             { label: 'Remitos', icon: '', to: '/remitos' }
             //  { label: 'Proveedores', icon: '', to: '/empty' },
-            //  { label: 'Artículos', icon: '', to: '/empty' }
+
             // cotizaciones
             //          { label: 'Cotizaciones', icon: '', to: '/empty' },
             //            { label: 'Ventas', icon: '', to: '/empty' },

@@ -9,7 +9,17 @@ export const ArticleService = {
                 'Content-Type': 'application/json'
             }
         });
-        
+
+        return await response.json();
+    },
+    async getArticlesXLarge() {
+        const response = await fetch(`${API_BASE_URL}/articulos`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
         return await response.json();
     }
 };
