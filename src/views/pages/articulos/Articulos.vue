@@ -18,28 +18,33 @@ const dt = ref();
 const clientes = ref([]);
 const articulos = ref([]);
 
-const clienteDialogo = ref(false);
-const eliminarClienteDialogo = ref(false);
+const articuloDialogo = ref(false);
+const eliminararticuloDialogo = ref(false);
 const eliminarClientesDialogo = ref(false);
-const cliente = ref({
+
+const priceHistoryDialog = ref(false);
+
+const selectedArticle = ref([]);
+
+const articulo = ref({
+    COD_ART: '',
+    NOM_ART: '',
+    MAT_ART: '',
+    NROPLANO_ART: '',
+    REV_PLANO: '',
     NUM_CLI: '',
-    NOM_CLI: '',
-    DIR_CLI: '',
-    LOC_CLI: '',
-    CP_CLI: '',
-    PRO_CLI: '',
-    TEL_CLI: '',
-    FAX_CLI: '',
-    EMAIL_CLI: '',
-    DTO_CLI: 0,
-    CUIT_CLI: '',
-    IVA_CLI: 0,
-    OBS_CLI: '',
-    CON_VTA: '',
-    DIA_FF: 0,
-    HOR_CLI: '',
-    PERIB_CLI: 0
+    PLANO_ART: '',
+    COSMP_ART: 0,
+    PV_ART: 0,
+    IVA1_ART: 21,
+    UTI_ART: 7
 });
+
+function priceHistory(data) {
+    selectedArticle.value = data;
+    priceHistoryDialog.value = true;
+}
+
 const clientesSeleccionados = ref([]);
 const filtros = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -47,31 +52,25 @@ const filtros = ref({
 const enviado = ref(false);
 
 function abrirNuevo() {
-    cliente.value = {
+    articulo.value = {
+        COD_ART: '',
+        NOM_ART: '',
+        MAT_ART: '',
+        NROPLANO_ART: '',
+        REV_PLANO: '',
         NUM_CLI: '',
-        NOM_CLI: '',
-        DIR_CLI: '',
-        LOC_CLI: '',
-        CP_CLI: '',
-        PRO_CLI: '',
-        TEL_CLI: '',
-        FAX_CLI: '',
-        EMAIL_CLI: '',
-        DTO_CLI: 0,
-        CUIT_CLI: '',
-        IVA_CLI: 0,
-        OBS_CLI: '',
-        CON_VTA: '',
-        DIA_FF: 0,
-        HOR_CLI: '',
-        PERIB_CLI: 0
+        PLANO_ART: '',
+        COSMP_ART: 0,
+        PV_ART: 0,
+        IVA1_ART: 21,
+        UTI_ART: 7
     };
     enviado.value = false;
-    clienteDialogo.value = true;
+    articuloDialogo.value = true;
 }
 
 function ocultarDialogo() {
-    clienteDialogo.value = false;
+    articuloDialogo.value = false;
     enviado.value = false;
 }
 
@@ -95,24 +94,24 @@ function guardarCliente() {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
         }
 
-        clienteDialogo.value = false;
+        articuloDialogo.value = false;
         cliente.value = {};
     }
 }
 
 function editarCliente(cli) {
     cliente.value = { ...cli };
-    clienteDialogo.value = true;
+    articuloDialogo.value = true;
 }
 
 function confirmarEliminarCliente(cli) {
     cliente.value = cli;
-    eliminarClienteDialogo.value = true;
+    eliminararticuloDialogo.value = true;
 }
 
 function eliminarCliente() {
     clientes.value = clientes.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
-    eliminarClienteDialogo.value = false;
+    eliminararticuloDialogo.value = false;
     cliente.value = {};
     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
 }
@@ -189,12 +188,16 @@ function verCuentaCorriente(cliente) {
                 <Column field="COD_ART" header="Código" sortable style="min-width: 12rem"></Column>
                 <Column field="NOM_ART" header="Nombre" sortable style="min-width: 16rem"></Column>
                 <Column field="MAT_ART" header="Material" sortable style="min-width: 16rem"></Column>
-                <Column field="NROPLANO_ART" header="Plano" sortable style="min-width: 16rem"></Column>
-                <Column field="REV_PLANO" header="Rev." sortable style="min-width: 6rem"></Column>
-                <Column field="PV_ART" header="Ultimo precio" sortable>
-                    <template #body="slotProps"> {{ slotProps.data.PV_ART.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }} <Button icon="pi pi-history" severity="info" @click="priceHistory(slotProps.data)" /> </template>
+                <Column field="NROPLANO_ART" header="Plano" sortable style="min-width: 16rem">
+                    <template #body="slotProps"> {{ slotProps.data.NROPLANO_ART }} </template>
                 </Column>
-                <Column field="NUM_CLI" header="Cliente" sortable=""> </Column>
+                <!-- <Column field="REV_PLANO" header="Rev." sortable style="min-width: 6rem"></Column> -->
+                <Column field="CLIENT_LABEL" header="Cliente" sortable="">
+                    <template #body="slotProps"> {{ slotProps.data.CLIENT_LABEL }} </template>
+                </Column>
+                <Column field="PV_ART" header="Ultimo precio" sortable style="text-align: right">
+                    <template #body="slotProps"> {{ slotProps.data.PV_ART.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }} <Button icon="pi pi-history" severity="info" small text @click="priceHistory(slotProps.data)" /> </template>
+                </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
                         <!--  <Button icon="pi pi-list" severity="info" @click="priceHistory(slotProps.data)" />
@@ -205,39 +208,68 @@ function verCuentaCorriente(cliente) {
             </DataTable>
         </div>
 
-        <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del ARTICULO" :modal="true">
-            <div class="flex flex-col gap-6">
-                <div class="flex justify-between gap-6">
+        <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO" :modal="true">
+            <div class="flex flex-col gap-4">
+                <!-- Código y Descripción -->
+                <div class="flex justify-start gap-4">
+                    <label for="codigo" class="block font-bold mb-2">Código</label>
+                    <InputText id="codigo" v-model="articulo.COD_ART" readonly />
+
+                    <label for="material" class="block font-bold mb-2">Material</label>
+                    <InputText id="material" v-model="articulo.MAT_ART" />
+                </div>
+
+                <div class="flex gap-4">
+                    <label for="descripcion" class="block font-bold mb-2">Descripción</label>
+                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full" />
+                </div>
+
+                <div class="flex gap-4">
+                    <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
+                    <InputText id="nroplano" v-model="articulo.NROPLANO_ART" />
+                    <label for="revision" class="block font-bold mb-2">Rev</label>
+                    <InputText id="revision" v-model="articulo.REV_PLANO" />
+                </div>
+                <div class="flex gap-4">
+                    <label for="cliente" class="block font-bold mb-2">Cliente</label>
+                    <InputText id="cliente" v-model="articulo.NUM_CLI" />
+                </div>
+
+                <hr />
+                <!-- Ubicación del Plano
+                <div>
+                    <label for="ubicacion_plano" class="block font-bold mb-2">Ubicación del Plano</label>
+                    <InputText id="ubicacion_plano" v-model="articulo.PLANO_ART" />
+                </div>-->
+
+                <!-- Costo y Precio de Venta -->
+                <div class="flex justify-between gap-4">
                     <div>
-                        <label for="codigo" class="block font-bold mb-3">Código</label>
-                        <InputText id="codigo" v-model="cliente.NUM_CLI" readonly />
+                        <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
+                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US" />
                     </div>
                     <div>
-                        <label for="cuit" class="block font-bold mb-3">CUIT</label>
-                        <InputText id="cuit" v-model="cliente.CUIT_CLI" fluid />
+                        <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
+                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US" />
+                    </div>
+
+                    <div>
+                        <label for="costo_total" class="block font-bold mb-2">Costo Total</label>
+                        <!-- <InputNumber id="costo_total" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" /> --->
                     </div>
                 </div>
 
-                <div>
-                    <label for="nombre" class="block font-bold mb-3">Nombre</label>
-                    <InputText id="nombre" v-model.trim="cliente.NOM_CLI" required="true" autofocus :invalid="enviado && !cliente.NOM_CLI" fluid />
-                    <small v-if="enviado && !cliente.NOM_CLI" class="text-red-500">El nombre es obligatorio.</small>
-                </div>
-                <div>
-                    <label for="direccion" class="block font-bold mb-3">Dirección</label>
-                    <InputText id="direccion" v-model="cliente.DIR_CLI" fluid />
-                </div>
-                <div>
-                    <label for="localidad" class="block font-bold mb-3">Localidad</label>
-                    <InputText id="localidad" v-model="cliente.LOC_CLI" fluid />
-                </div>
-                <div>
-                    <label for="provincia" class="block font-bold mb-3">Provincia</label>
-                    <InputText id="provincia" v-model="cliente.PRO_CLI" fluid />
-                </div>
-                <div>
-                    <label for="telefono" class="block font-bold mb-3">Teléfono</label>
-                    <InputText id="telefono" v-model="cliente.TEL_CLI" fluid />
+                <!-- IVA y Utilidad -->
+                <div class="flex justify-between gap-4">
+                    <div>
+                        <label for="utilidad" class="block font-bold mb-2">Utilidad</label>
+                        <InputNumber id="utilidad" v-model="articulo.UTI_ART" suffix="%" />
+                    </div>
+
+                    <div>
+                        <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
+                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" />
+                    </div>
                 </div>
             </div>
 
@@ -247,7 +279,33 @@ function verCuentaCorriente(cliente) {
             </template>
         </Dialog>
 
-        <Dialog v-model:visible="eliminarClienteDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
+        <!-- dialog for priceHistory -->
+        <Dialog v-model:visible="priceHistoryDialog" :style="{ width: '450px' }" header="Historial de precios" :modal="true">
+            <table class="w-full">
+                <thead>
+                    <th style="text-align: left">Fecha</th>
+                    <th style="text-align: left">Comp.</th>
+                    <th style="text-align: left">Cant.</th>
+                    <th style="text-align: right">Precio</th>
+                </thead>
+                <tbody>
+                    <tr v-for="price in selectedArticle.precios">
+                        <td>{{ price.FEC_FAC }}</td>
+                        <td>{{ price.NUM_FAC }}</td>
+                        <td>{{ price.CAN_IT }}</td>
+                        <td style="text-align: right">{{ price.PRE_IT.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <pre>
+                {{ selectedArticle.precios }}
+            </pre>
+            <template #footer>
+                <Button label="Cerrar" icon="pi pi-times" text @click="priceHistoryDialog = false" />
+            </template>
+        </Dialog>
+
+        <Dialog v-model:visible="eliminararticuloDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
             <div class="flex items-center gap-4">
                 <i class="pi pi-exclamation-triangle !text-3xl" />
                 <span v-if="cliente"
@@ -256,7 +314,7 @@ function verCuentaCorriente(cliente) {
                 >
             </div>
             <template #footer>
-                <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />
+                <Button label="No" icon="pi pi-times" text @click="eliminararticuloDialogo = false" />
                 <Button label="Sí" icon="pi pi-check" @click="eliminarCliente" />
             </template>
         </Dialog>
