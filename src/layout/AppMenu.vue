@@ -15,6 +15,8 @@ const model = ref([
                 icon: '',
                 to: '/clientes'
             },
+            // pedidos
+            { label: 'Pedidos', icon: '', to: '/pedidos' },
             { label: 'Remitos', icon: '', to: '/remitos' }
             //  { label: 'Proveedores', icon: '', to: '/empty' },
 

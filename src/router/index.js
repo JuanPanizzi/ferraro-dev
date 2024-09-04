@@ -31,6 +31,19 @@ const router = createRouter({
                     component: () => import('@/views/pages/articulos/Articulos.vue')
                     //meta: { requiresAuth: true }
                 },
+                // pedidos
+                {
+                    path: '/pedidos',
+                    name: 'pedidos',
+                    component: () => import('@/views/pages/clientes/Pedidos.vue')
+                    //meta: { requiresAuth: true }
+                },
+                // new pedido
+                {
+                    path: '/pedidos/new',
+                    name: 'NewPedido',
+                    component: () => import('@/views/pages/clientes/NewPedido.vue')
+                },
                 // remitos
                 {
                     path: '/remitos',
