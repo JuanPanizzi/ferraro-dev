@@ -34,24 +34,22 @@ onMounted(fetchCotizaciones);
 <template>
   <div class="dolar-cotizaciones">
     <span class="cotizacion">
-      <strong>Dólar Billete:</strong> $ {{ billeteFormatted }}
-    </span>
-    <span class="cotizacion">
-      <strong>Dólar Divisa:</strong> $ {{ divisaFormatted }}
+      <strong>U$D Bill. </strong> $ {{ billeteFormatted }} <br />
+      <strong>U$D Div. </strong> $ {{ divisaFormatted }}
     </span>
   </div>
 </template>
 
 <style scoped>
 .dolar-cotizaciones {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: var(--surface-card);
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
+
+  align-items: center;
+  font-size: 0.85rem;
+  border-radius: var(--content-border-radius);
+  color: var(--text-color);
+  font-weight: 500;
+  gap: 0.5rem;
 }
-.cotizacion {
-  margin-bottom: 0.25rem;
-}
+
+.cotizacion {}
 </style>
