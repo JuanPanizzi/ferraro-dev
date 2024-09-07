@@ -30,8 +30,10 @@ const searchArticulo = (cod_it, index) => {
 const addItem = () => {
     pedido.value.items.push({
         NUM_LIN: pedido.value.items.length + 1,
-        OC: '',
-        OC_ITEM: '',
+        MAT_ART: '',
+        NROPLANO_ART: '',
+        REV_PLANO: '',
+        PLANO_ART: '',
         COD_IT: '',
         DES_IT: '',
         CAN_IT: 1,
@@ -117,6 +119,39 @@ const generate = () => {
 
 };
 
+const clientArticles = ref([]);
+
+const changeCliente = async (e) => {
+    try {
+        const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
+        clientArticles.value = Array.isArray(articles) ? articles : [];
+    } catch (error) {
+        console.error('Error fetching client articles:', error);
+        clientArticles.value = [];
+    }
+};
+
+const setArticulo = (cod_it, index) => {
+    console.log(cod_it, index);
+    pedido.value.items[index].DES_IT = cod_it.NOM_ART;
+    pedido.value.items[index].MAT_ART = cod_it.MAT_ART;
+    // NROPLANO_ART, REV_PLANO, PLANO_ART
+    pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
+    pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
+    pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
+};
+
+
+const onFileSelect = (e) => {
+    console.log(e);
+};
+
+const openPlane = (url) => {
+    window.open(url, '_blank');
+};
+
+
+
 </script>
 
 <template>
@@ -135,7 +170,7 @@ const generate = () => {
                 <Select v-model="pedido.NUM_CLI" :options="clients" filter optionLabel="LABEL_CLI"
                     placeholder="Seleccione un cliente" class="w-full md:w-full"
                     emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
-                    emptySelectionMessage="Seleccione un cliente">
+                    @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
                 </Select>
                 <label for="NUM_CLI" class="font-semibold w-24">Cliente</label>
             </FloatLabel>
@@ -144,6 +179,13 @@ const generate = () => {
                 <InputText v-model="pedido.FEC_FAC" id="FEC_FAC" type="date" class="w-full md:w-full" />
                 <label for="FEC_FAC" class="font-semibold w-24">Fecha: </label>
             </FloatLabel>
+
+            <!-- Orden de compra -->
+            <FloatLabel class="w-full md:w-56">
+                <InputText v-model="pedido.NUM_OC" id="NUM_OC" type="text" class="w-full md:w-full" />
+                <label for="NUM_OC" class="font-semibold w-56">Orden de Compra</label>
+            </FloatLabel>
+
 
             <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.TIP_MON" optionLabel="label" @change="changeMoneda"
@@ -167,63 +209,82 @@ const generate = () => {
 
         </div>
 
+        <DataTable stripedRows :value="pedido.items" size="small" showGridLines>
 
+            <template #empty>
+                <div class="p-text-center">
+                    <span v-if="!pedido.NUM_CLI">Seleccione un cliente para agregar artículos</span>
+                </div>
+            </template>
+            <Column field="NUM_LIN" header="#"></Column>
+            <Column field="COD_IT" header="Artículo">
+
+                <template #body="slotProps">
+
+                    <div style="display: flex;">
+
+                        <Select v-model="slotProps.data.COD_IT" :options="clientArticles" filter optionLabel="ART_LABEL"
+                            placeholder="Seleccione un artículo" class="w-full"
+                            @change="setArticulo(slotProps.data.COD_IT, slotProps.index)"
+                            emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
+                            emptySelectionMessage="Seleccione un artículo"></Select>
+                        <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
+                            v-if="slotProps.data.COD_IT" />
+                    </div>
+
+                </template>
+            </Column>
+            <Column field="MAT_ART" header="Material">
+            </Column>
+            <Column field="NROPLANO_ART" header="Plano">
+                <template #body="slotProps">
+                    <Button v-if="slotProps.data.PLANO_ART" icon="pi pi-file" size="small" severity="info" link
+                        @click="openPlane(slotProps.data.PLANO_ART)" :label="slotProps.data.NROPLANO_ART" />
+
+                </template>
+            </Column>
+            <Column field="REV_PLANO" header="Rev">
+            </Column>
+            <Column field="FEC_ENT" header="Entrega">
+                <template #body="slotProps">
+                    <DatePicker v-model="slotProps.data.FEC_ENT" showButtonBar dateFormat="dd/mm/yy" />
+                </template>
+            </Column>
+            <Column field="CAN_IT" header="Cant.">
+                <template #body="slotProps">
+                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid />
+                </template>
+            </Column>
+            <Column field="PRE_IT" header="Precio">
+                <template #body="slotProps">
+                    <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid />
+                </template>
+            </Column>
+
+            <Column field="SUBTOTAL" header="Subtotal">
+                <template #body="slotProps">
+                    {{ (slotProps.data.CAN_IT * slotProps.data.PRE_IT).toLocaleString('es-AR', {
+                        style: 'currency',
+                        currency: 'ARS'
+                    }) }}
+
+                </template>
+            </Column>
+            <Column>
+                <template #body="slotProps">
+                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)" />
+                </template>
+            </Column>
+            <template #footer>
+                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text" @click=""
+                    label="Crear nuevo articulo" />
+                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
+                    label="Agregar otra linea" />
+
+            </template>
+        </DataTable>
         <div class="my-2">
-            <table style="min-width: 50rem; border-collapse: collapse; width: 100%">
-                <thead>
-                    <tr>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 5%">#</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 10%">OC</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 5%">Item OC</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 25%">Código</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 40%">Descripción</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 5%">Cant.</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 15%">Precio</th>
-                        <th style="border: 1px solid #ccc; padding: 1px; width: 5%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in pedido.items" :key="index">
-                        <td style="border: 1px solid #ccc; padding: 1px; text-align: center">{{ item.NUM_LIN }}</td>
-                        <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.OC"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.OC_ITEM"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px; display: flex; align-items: center; gap: 4px">
-                            <input type="text" v-model="item.COD_IT"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                            <Button icon="pi pi-search" outlined severity="info" v-if="item.COD_IT" size="small"
-                                @click="searchArticulo(item.COD_IT, index)" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.DES_IT"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="number" v-model="item.CAN_IT"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="number" v-model="item.PRE_IT"
-                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                        </td>
-                        <td style="border: 1px solid #ccc; padding: 1px; text-align: center; cursor: pointer"
-                            @click="removeItem(index)">
-                            <Button icon="pi pi-trash" outlined severity="danger" size="small" />
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr style="text-align: center; padding: 2px; font-weight: bold; cursor: pointer"
-                        class="bg-primary hover:bg-primary-300">
-                        <td colspan="8" @click="addItem"><i class="pi pi-plus"></i> Añadir</td>
-                    </tr>
-                </tfoot>
-            </table>
+
         </div>
 
         <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full" />
