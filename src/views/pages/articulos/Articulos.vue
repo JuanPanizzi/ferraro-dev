@@ -7,6 +7,12 @@ import { useRouter } from 'vue-router';
 
 // Usa el router
 const router = useRouter();
+// getClientes from CustomerService
+
+const clients = ref([]);
+// onMounted(async () => {
+//     clients.value = await CustomerService.getCustomersMinimal();
+// });
 
 onMounted(() => {
     // CustomerService.getCustomersXLarge().then((data) => (clientes.value = data));
@@ -232,7 +238,14 @@ function verCuentaCorriente(cliente) {
                 </div>
                 <div class="flex gap-4">
                     <label for="cliente" class="block font-bold mb-2">Cliente</label>
-                    <InputText id="cliente" v-model="articulo.NUM_CLI" />
+                    <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
+                    <Select  :options="clients" filter optionLabel="LABEL_CLI"
+                        placeholder="Seleccione un cliente" class="w-full md:w-full"
+                        emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                        @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
+                    </Select>
+                
+               
                 </div>
 
                 <hr />
