@@ -7,7 +7,7 @@ const model = ref([
     {
         label: 'Principal',
         items: [
-            { label: 'Inicio', icon: 'pi pi-home', to: '/' },
+            { label: 'Inicio', icon: '', to: '/' },
             { label: 'Artículos', icon: 'pi pi-list', to: '/articulos' },
             // clientes, proveedores, articulos, categorias, ventas, compras, usuarios
             {
