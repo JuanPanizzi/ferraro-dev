@@ -3,8 +3,8 @@ import { ArticleService } from '@/service/ArticleService';
 import { CustomerService } from '@/service/CustomerService';
 import { VentasService } from '@/service/VentasService';
 import { onMounted, ref } from 'vue';
-
-import ComprobanteDialog from './AfipCompVenta.vue';
+ 
+import { useRouter } from 'vue-router';
 
 const selectedMonth = ref(null);
 const selectedYear = ref({ label: new Date().getFullYear(), value: new Date().getFullYear() });
@@ -91,9 +91,11 @@ onMounted(() => {
         clients.value = response;
     });
 });
-
+const router = useRouter();
 const add = () => {
-    visibleDialogAdd.value = true;
+    //visibleDialogAdd.value = true;
+    // router push to newPedido
+    router.push('/pedidos/new');
 };
 
 const dialogIvaVentas = () => {
@@ -187,103 +189,33 @@ const exportExcel = () => {
 <template>
     <div>
         <div class="mt-4">
-            <Dialog v-model:visible="visibleDialogIvaVentas" modal header="IVA Ventas" :style="{ width: '75rem' }">
-                <!-- 4 buttons, download excel, download txt, send mail -->
-                <div class="flex justify-center gap-4">
-                    <div>
-                        <Button icon="pi pi-file-excel" label="Excel" class="p-button-success" @click="exportExcel" />
-                    </div>
-                    <div>
-                        <Button icon="pi pi-file" label="TXT" class="p-button-info" disabled />
-                    </div>
-                    <div>
-                        <Button icon="pi pi-envelope" label="Enviar por mail" class="p-button-warning" disabled />
-                    </div>
-                    <!-- <Button icon="pi pi-times" label="Cerrar" class="p-button-secondary" @click="visibleDialogIvaVentas = false" /> -->
-                </div>
-
-                <template #footer>
-                    <div class="flex justify-end gap-2 mt-4">
-                        <Button icon="pi pi-times" label="Cerrar" class="p-button-secondary" @click="visibleDialogIvaVentas = false" />
-                    </div>
-                </template>
-            </Dialog>
-
-            <ComprobanteDialog v-model:visibleDialog="visibleDialogAdd" :afipComp="afipComp" :clients="clients" :types="types" header="Nuevo comprobante" @next="newNext" @search-articulo="searchArticulo" />
-
+ 
+ 
             <DataTable :value="ventasData" ref="dt">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">VENTAS</div>
+                    <div class="font-semibold text-xl mb-4">PEDIDOS DE CLIENTES</div>
                     <div class="flex justify-between items-center">
-                        <div class="">
-                            MES :
-
-                            <!-- Month Selector -->
-                            <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2" placeholder="Mes" />
-
-                            AÑO :
-                            <!-- Year Selector -->
-                            <Select v-model="selectedYear" :options="years" :optionLabel="'label'" class="mx-2" placeholder="Año" />
-                            <!-- Search Button -->
-                            <Button @click="search" class="mx-2" :disabled="!selectedMonth || !selectedYear" icon="pi pi-search" />
-                            <Button icon="pi pi-file-export" label="IVA Ventas" @click="dialogIvaVentas" :disabled="ventasData.length === 0" class="mx-2 p-button-info" />
-                            <!--- download PDF
-                            <Button icon="pi pi-file-pdf" label="PDF" @click="exportPDF" :disabled="ventasData.length === 0" class="mx-2 p-button-danger" />-->
-                        </div>
+                        <div class=""> 
+                 </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo comprobante" class="mx-2 p-button-primary" @click="add" />
+                            <Button icon="pi pi-plus" label="Nuevo pedido" class="mx-2 p-button-primary" @click="add" />
                         </div>
                     </div>
                 </template>
                 <template #empty>
                     <div class="p-4 text-center">No hay datos para mostrar, seleccione un mes y un año.</div>
                 </template>
-                <Column field="FEC_FAC" header="Fecha Fac.">
+                <Column field="FEC_FAC" header="Fecha">
                     <template #body="slotProps">{{ new Date(slotProps.data.FEC_FAC).toLocaleDateString('es-AR') }}</template>
                 </Column>
                 <!-- NUM_FAC -->
-                <Column field="NUM_FAC" header="Nº Comp.">
+                <Column field="NUM_FAC" header="Nº">
                     <template #body="slotProps">
                         <Button icon="pi pi-eye" size="small" text @click="showComp(slotProps.data)" />
                         <span v-html="facturaTemplate(slotProps.data)"></span>
                     </template>
                 </Column>
-                <Column field="NOM_CLI" header="Razon Social" />
-                <!-- cuit -->
-                <Column field="CUIT_CLI" header="CUIT" />
-                <Column field="SUBT_FAC" header="Neto Gravado" style="text-align: right" headerClass="th-text-right">
-                    <template #body="slotProps">
-                        {{ slotProps.data.SUBT_FAC.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
-                    </template>
-                    <template #footer>
-                        <!-- Total -->
-                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
-                    </template>
-                </Column>
-                <Column field="TOT_IVA1" header="Iva Inscripto" style="text-align: right" headerClass="th-text-right">
-                    <template #body="slotProps">
-                        {{ (slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
-                    </template>
-                    <template #footer>
-                        <!-- Total -->
-                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC * 0.21, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
-                    </template>
-                </Column>
-                <!-- <Column field="TOT_IVA2" header="Iva No Insc." style="text-align: right">
-                    <template #body="slotProps">
-                        {{ slotProps.data.TOT_IVA2.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
-                    </template>
-                </Column>
-                <Column field="RET_IB" header="Percep.IB" style="text-align: right">
-                    <template #body="slotProps">
-                        {{ slotProps.data.RET_IB.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
-                    </template>
-                </Column>
-                <Column field="PJERET_IB" header="Exento" style="text-align: right">
-                    <template #body="slotProps">
-                        {{ slotProps.data.PJERET_IB.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
-                    </template>
-                </Column> -->
+                <Column field="NOM_CLI" header="Razon Social" />    
                 <Column header="Total" style="text-align: right" headerClass="th-text-right">
                     <template #body="slotProps">
                         {{ (slotProps.data.SUBT_FAC + slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
