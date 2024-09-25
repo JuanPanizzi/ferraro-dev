@@ -7,17 +7,17 @@ const model = ref([
     {
         label: 'Principal',
         items: [
-            { label: 'Inicio', icon: '', to: '/' },
-            { label: 'Artículos', icon: '', to: '/articulos' },
+            { label: 'Inicio', icon: 'pi pi-home', to: '/' },
+            { label: 'Artículos', icon: 'pi pi-list', to: '/articulos' },
             // clientes, proveedores, articulos, categorias, ventas, compras, usuarios
             {
                 label: 'Clientes',
-                icon: '',
+                icon: 'pi pi-users',
                 to: '/clientes'
             },
             // pedidos
-            { label: 'Pedidos', icon: '', to: '/pedidos' },
-            { label: 'Remitos', icon: '', to: '/remitos' }
+            { label: 'Pedidos', icon: 'pi pi-shopping-cart', to: '/pedidos' },
+            { label: 'Remitos', icon: 'pi pi-file', to: '/remitos' }
             //  { label: 'Proveedores', icon: '', to: '/empty' },
 
             // cotizaciones
@@ -39,7 +39,7 @@ const model = ref([
             //         { label: 'Ventas', icon: '', to: '/afip-ventas' }
             //     ]
             // },
-            { label: 'Ventas', icon: '', to: '/iva-ventas' }
+            { label: 'Ventas', icon: 'pi pi-dollar', to: '/iva-ventas' }
 
             //{ label: 'Compras', icon: '', to: '/afip-compras', items: [] }
             //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
