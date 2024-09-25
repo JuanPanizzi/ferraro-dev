@@ -2,6 +2,7 @@
 import { useLayout } from '@/layout/composables/layout';
 import { ProductService } from '@/service/ProductService';
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const { getPrimary, getSurface, isDarkTheme } = useLayout();
 
@@ -19,6 +20,11 @@ onMounted(() => {
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
 });
+const router = useRouter();
+
+const add = () => {
+    router.push('/pedidos/new');
+};
 
 function setChartData() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -98,6 +104,7 @@ watch([getPrimary, getSurface, isDarkTheme], () => {
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
 });
+
 </script>
 
 <template>
@@ -107,8 +114,10 @@ watch([getPrimary, getSurface, isDarkTheme], () => {
         <div>
             <!-- button agregar compra, venta, cotizar -->
             <Button :label="'Nueva venta'" icon="pi pi-dollar" class="p-button-success m-1" />
-            <Button :label="'Nueva compra'" icon="pi pi-shopping-cart" class="p-button-warn m-1" />
+            <Button :label="'Nueva compra'" icon="pi pi-shopping-cart" class="p-button-warn m-1"  />
             <Button :label="'Nueva cotización'" icon="pi pi-file" class="p-button-info m-1" />
+            <Button :label="'Nuevo Pedido'" icon="pi pi-cart-plus" class="p-button-help m-1" @click="add" />
+
         </div>
     </div>
 
