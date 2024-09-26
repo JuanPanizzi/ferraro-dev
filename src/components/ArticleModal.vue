@@ -1,6 +1,7 @@
 <template>
-    <Dialog v-model:visible="visible" :style="{ width: '650px' }" header="Detalles del ARTICULO" :modal="true">
+    <Dialog v-bind:visible="visible" :style="{ width: '650px' }" header="Detalles del ARTICULO" :modal="true">
         <div class="flex flex-col gap-4">
+            <!-- Código y Descripción -->
             <div class="flex justify-start gap-4">
                 <label for="codigo" class="block font-bold mb-2">Código</label>
                 <InputText id="codigo" v-model="articulo.COD_ART" readonly />
@@ -32,6 +33,7 @@
 
             <hr />
 
+            <!-- Costo y Precio de Venta -->
             <div class="flex justify-between gap-4">
                 <div>
                     <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
@@ -46,12 +48,12 @@
                 </div>
             </div>
 
+            <!-- IVA y Utilidad -->
             <div class="flex justify-between gap-4">
                 <div>
                     <label for="utilidad" class="block font-bold mb-2">Utilidad</label>
                     <InputNumber id="utilidad" v-model="articulo.UTI_ART" suffix="%" />
                 </div>
-
                 <div>
                     <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
                     <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" />
@@ -59,10 +61,10 @@
             </div>
         </div>
 
-        <template #footer>
-            <Button label="Cancelar" icon="pi pi-times" text @click="cancel" />
-            <Button label="Guardar" icon="pi pi-check" @click="save" />
-        </template>
+        <!-- <template #footer>
+            <Button label="Cancelar" icon="pi pi-times" text @click="cancelar" />
+            <Button label="Guardar" icon="pi pi-check" @click="guardar" />
+        </template> -->
     </Dialog>
 </template>
 
@@ -80,22 +82,23 @@ export default {
         clients: {
             type: Array,
             required: true,
-        },
-    },
-    methods: {
-        cancel() {
-            this.$emit('update:visible', false);
-        },
-        save() {
-            this.$emit('save', this.articulo);
-        },
-        changeCliente(selectedClient) {
-            // Handle client change logic here if necessary
-        },
-    },
-};
+        }
+    }
+    // methods: {
+    //     changeCliente(selectedClient) {
+    //         // Manejar el cambio de cliente si es necesario
+    //     },
+    //     cancelar() {
+    //         this.$emit('update:visible', false); // Cerrar el diálogo
+    //     },
+    //     guardar() {
+    //         this.$emit('guardar', this.articulo); // Emitir el artículo guardado
+    //         this.$emit('update:visible', false); // Cerrar el diálogo
+    //     }
+    // }
+}
 </script>
 
 <style scoped>
-/* Puedes agregar estilos específicos para el componente aquí */
+/* Puedes agregar estilos específicos para tu componente aquí */
 </style>

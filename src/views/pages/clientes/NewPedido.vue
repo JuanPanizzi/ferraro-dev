@@ -3,9 +3,10 @@ import { ArticleService } from '@/service/ArticleService';
 import { CustomerService } from '@/service/CustomerService';
 import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
-import Dialog from 'primevue/dialog';
-
+// import Dialog from 'primevue/dialog';
+import ArticuloDialog from '../../../components/ArticleModal.vue'
 import { computed, onMounted, ref } from 'vue';
+
 
 const pedido = ref({
     NUM_CLI: '',
@@ -17,11 +18,23 @@ const pedido = ref({
     TIP_MON: { label: 'Pesos', value: 'P' },
     COT_DOLAR: 1
 });
-
+const articulo = ref({
+    COD_ART: '',
+    NOM_ART: '',
+    MAT_ART: '',
+    NROPLANO_ART: '',
+    REV_PLANO: '',
+    NUM_CLI: '',
+    PLANO_ART: '',
+    COSMP_ART: 0,
+    PV_ART: 0,
+    IVA1_ART: 21,
+    UTI_ART: 7
+});
 const showArticleModal = ref(false);
 
-const handleArticleModal = (boolean) => {
-    showArticleModal.value = boolean;
+const handleArticleModal = (booleanp) => {
+    showArticleModal.value = booleanp;
 };
 
 const searchArticulo = (cod_it, index) => {
@@ -66,6 +79,7 @@ const clients = ref([]);
 onMounted(async () => {
     clients.value = await CustomerService.getCustomersMinimal();
 });
+
 
 const changeMoneda = (e) => {
 
@@ -283,16 +297,38 @@ const openPlane = (url) => {
                 </template>
             </Column>
             <template #footer>
-                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text" @click="handleArticleModal(true)"
-                    label="Crear nuevo articulo" />
+                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text"
+                    label="Crear nuevo articulo" @click="handleArticleModal(true)" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
             </template>
-            <Dialog v-model:visible="showArticleModal" :style="{ width: '650px' }" header="Crear nuevo artículo" :modal="true">
-      <!-- Contenido del diálogo aquí -->
-      <p>Formulario para crear el nuevo artículo...</p>
-    </Dialog>
+
+
+            <!-- <Dialog v-model:visible="showArticleModal" :style="{ width: '650px' }" header="Crear nuevo artículo"
+                :modal="true">
+                <p>Formulario para crear el nuevo artículo...</p>
+            </Dialog> -->
+            <!-- <ArticleModal v-model:visible="showArticleModal" :style="{ width: '650px' }" /> -->
+            <!-- <ReusableDialog 
+            :articulo="articulo"
+            :isVisible="showArticleModal" 
+            @update:isVisible="showArticleModal = $event" 
+            header="Crear nuevo artículo"
+        >
+            <p>Formulario para crear el nuevo artículo...</p>
+            Aquí puedes incluir el formulario o cualquier contenido que necesites -->
+            <!-- <form @submit.prevent="createArticle"> -->
+                <!-- Tu formulario aquí -->
+                <!-- <input type="text" v-model="articleTitle" placeholder="Título del artículo" required /> -->
+                <!-- <button type="submit">Guardar</button> -->
+            <!-- </form> -->
+        <!-- </ReusableDialog> -->
+        <ArticuloDialog
+            :visible="showArticleModal"
+            :articulo="articulo"
+            :clients="clients"
+        />
         </DataTable>
         <div class="my-2">
 
