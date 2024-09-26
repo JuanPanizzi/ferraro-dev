@@ -61,10 +61,10 @@
             </div>
         </div>
 
-        <!-- <template #footer>
+        <template #footer>
             <Button label="Cancelar" icon="pi pi-times" text @click="cancelar" />
             <Button label="Guardar" icon="pi pi-check" @click="guardar" />
-        </template> -->
+        </template>
     </Dialog>
 </template>
 
@@ -82,20 +82,26 @@ export default {
         clients: {
             type: Array,
             required: true,
+        },
+        onCancelar: { 
+            type: Function,
+            required: true,
+        },
+        
+    },
+    methods: {
+        changeCliente(selectedClient) {
+            // Manejar el cambio de cliente si es necesario
+        },
+        cancelar() {
+            this.onCancelar(); // Llama a la función que se pasó como prop
+            // this.$emit('update:visible', false); // Cerrar el diálogo
+        },
+        guardar() {
+            this.$emit('guardar', this.articulo); // Emitir el artículo guardado
+            this.$emit('update:visible', false); // Cerrar el diálogo
         }
     }
-    // methods: {
-    //     changeCliente(selectedClient) {
-    //         // Manejar el cambio de cliente si es necesario
-    //     },
-    //     cancelar() {
-    //         this.$emit('update:visible', false); // Cerrar el diálogo
-    //     },
-    //     guardar() {
-    //         this.$emit('guardar', this.articulo); // Emitir el artículo guardado
-    //         this.$emit('update:visible', false); // Cerrar el diálogo
-    //     }
-    // }
 }
 </script>
 

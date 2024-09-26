@@ -73,7 +73,7 @@ function abrirNuevo() {
     };
     enviado.value = false;
     articuloDialogo.value = true;
-}
+} 
 
 function ocultarDialogo() {
     articuloDialogo.value = false;

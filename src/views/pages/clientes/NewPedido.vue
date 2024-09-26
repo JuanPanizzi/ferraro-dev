@@ -33,9 +33,10 @@ const articulo = ref({
 });
 const showArticleModal = ref(false);
 
-const handleArticleModal = (booleanp) => {
-    showArticleModal.value = booleanp;
+const handleArticleModal = (boolean) => {
+    showArticleModal.value = boolean;
 };
+const handleCloseModal = () => showArticleModal.value = false
 
 const searchArticulo = (cod_it, index) => {
 
@@ -304,30 +305,11 @@ const openPlane = (url) => {
 
             </template>
 
-
-            <!-- <Dialog v-model:visible="showArticleModal" :style="{ width: '650px' }" header="Crear nuevo artículo"
-                :modal="true">
-                <p>Formulario para crear el nuevo artículo...</p>
-            </Dialog> -->
-            <!-- <ArticleModal v-model:visible="showArticleModal" :style="{ width: '650px' }" /> -->
-            <!-- <ReusableDialog 
-            :articulo="articulo"
-            :isVisible="showArticleModal" 
-            @update:isVisible="showArticleModal = $event" 
-            header="Crear nuevo artículo"
-        >
-            <p>Formulario para crear el nuevo artículo...</p>
-            Aquí puedes incluir el formulario o cualquier contenido que necesites -->
-            <!-- <form @submit.prevent="createArticle"> -->
-                <!-- Tu formulario aquí -->
-                <!-- <input type="text" v-model="articleTitle" placeholder="Título del artículo" required /> -->
-                <!-- <button type="submit">Guardar</button> -->
-            <!-- </form> -->
-        <!-- </ReusableDialog> -->
         <ArticuloDialog
             :visible="showArticleModal"
             :articulo="articulo"
             :clients="clients"
+            :onCancelar="handleCloseModal" 
         />
         </DataTable>
         <div class="my-2">
