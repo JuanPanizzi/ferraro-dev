@@ -3,6 +3,7 @@ import { ArticleService } from '@/service/ArticleService';
 import { CustomerService } from '@/service/CustomerService';
 import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
+import Dialog from 'primevue/dialog';
 
 import { computed, onMounted, ref } from 'vue';
 
@@ -16,6 +17,12 @@ const pedido = ref({
     TIP_MON: { label: 'Pesos', value: 'P' },
     COT_DOLAR: 1
 });
+
+const showArticleModal = ref(false);
+
+const handleArticleModal = (boolean) => {
+    showArticleModal.value = boolean;
+};
 
 const searchArticulo = (cod_it, index) => {
 
@@ -276,12 +283,16 @@ const openPlane = (url) => {
                 </template>
             </Column>
             <template #footer>
-                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text" @click=""
+                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text" @click="handleArticleModal(true)"
                     label="Crear nuevo articulo" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
             </template>
+            <Dialog v-model:visible="showArticleModal" :style="{ width: '650px' }" header="Crear nuevo artículo" :modal="true">
+      <!-- Contenido del diálogo aquí -->
+      <p>Formulario para crear el nuevo artículo...</p>
+    </Dialog>
         </DataTable>
         <div class="my-2">
 
