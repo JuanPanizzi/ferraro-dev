@@ -16,13 +16,11 @@ const pinia = createPinia();
 const app = createApp(App);
 
 const primaryColor = localStorage.getItem('primaryColor') || 'emerald';
-// const storedSurfaceColor = localStorage.getItem('surfaceColor') || 'gray';
+const storedSurfaceColor = localStorage.getItem('surfaceColor');
 
 app.use(pinia);
 app.use(router);
 
-// Obtén el color de "surface" almacenado en localStorage o usa 'gray' por defecto
-const storedSurfaceColor = localStorage.getItem('surfaceColor');
 
 const MyPreset = definePreset(Aura, {
     semantic: {
@@ -63,10 +61,9 @@ app.use(PrimeVue, {
 //     }
 // });
 
-// Aplica el color de "surface" almacenado en localStorage (si existe)
 if (storedSurfaceColor) {
     const color = JSON.parse(storedSurfaceColor);
-    updateSurfacePalette(color.palette);  // Aplica el color guardado
+    updateSurfacePalette(color.palette);  
 }
 
 app.use(ToastService);
