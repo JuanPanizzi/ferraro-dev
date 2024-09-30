@@ -1,38 +1,44 @@
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 
-export class ClienteService {
+
+export const ClienteService = {
     // Obtener todos los clientes
-    getClientes() {
+    async getClientes() {
         return axios
-            .get('/api/clientes')
+            .get(`${API_BASE_URL}/clientes`)
             .then((res) => res.data)
             .catch((error) => {
                 console.error('Hubo un problema al traer los datos de los clientes:', error);
             });
-    }
+    },
 
     // Crear un nuevo cliente
-    crearCliente(cliente) {
+    async crearCliente(cliente) {
         return axios
-            .post('/api/clientes', cliente)
-            .then((res) => res.data)
+            .post(`${API_BASE_URL}/clientes`, cliente)
+            .then((res) =>{
+                console.log('abajo res.data')
+                console.log(res.data)
+                return res.data
+            } )
             .catch((error) => {
                 console.error('Hubo un problema al crear el cliente:', error);
             });
-    }
+    },
 
     // Actualizar un cliente existente
-    actualizarCliente(cliente) {
+    async actualizarCliente(cliente) {
         return axios
-            .put(`/api/clientes/${cliente.NUM_CLI}`, cliente)
+            .put(`${API_BASE_URL}/clientes/${cliente.NUM_CLI}`, cliente)
             .then((res) => res.data)
             .catch((error) => {
                 console.error('Hubo un problema al actualizar el cliente:', error);
             });
-    }
+    },
 
     // Eliminar un cliente
-    eliminarCliente(id) {
+    async eliminarCliente(id) {
         return axios
             .delete(`/api/clientes/${id}`)
             .then((res) => res.data)

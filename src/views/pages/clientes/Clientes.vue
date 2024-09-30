@@ -1,4 +1,5 @@
 <script setup>
+import { ClienteService } from '@/service/ClienteService';
 import { CustomerService } from '@/service/CustomerService';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
@@ -71,6 +72,28 @@ function ocultarDialogo() {
     clienteDialogo.value = false;
     enviado.value = false;
 }
+
+// async function crearCliente (){
+//  const clienteCreado = await ClienteService.crearCliente(cliente.value)
+//  if(clienteCreado){
+//     console.log('Este es cliente credo', clienteCreado)
+//  }else{
+//     console.log('error')
+//  }
+// }
+async function crearCliente (){
+ const clienteCreado = await CustomerService.createCustomer(cliente.value)
+ console.log("clienteCreado")
+ console.log(clienteCreado  )
+ if(clienteCreado){
+    console.log('Este es cliente credo', clienteCreado)
+ }else{
+    console.log('error')
+ }
+
+}
+
+
 
 function guardarCliente() {
     enviado.value = true;
@@ -247,7 +270,7 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="guardarCliente" />
+                <Button label="Guardar" icon="pi pi-check" @click="crearCliente" />
             </template>
         </Dialog>
 
