@@ -73,25 +73,24 @@ function ocultarDialogo() {
     enviado.value = false;
 }
 
-// async function crearCliente (){
-//  const clienteCreado = await ClienteService.crearCliente(cliente.value)
-//  if(clienteCreado){
-//     console.log('Este es cliente credo', clienteCreado)
-//  }else{
-//     console.log('error')
-//  }
-// }
 async function crearCliente (){
- const clienteCreado = await CustomerService.createCustomer(cliente.value)
- console.log("clienteCreado")
- console.log(clienteCreado  )
+ const clienteCreado = await ClienteService.crearCliente(cliente.value)
  if(clienteCreado){
     console.log('Este es cliente credo', clienteCreado)
  }else{
     console.log('error')
  }
-
 }
+async function actualizarCliente (){
+ const clienteCreado = await ClienteService.actualizarCliente(cliente.value)
+ if(clienteCreado){
+    console.log('Este es cliente credo', clienteCreado)
+ }else{
+    console.log('error')
+ }
+}
+
+
 
 
 
