@@ -77,6 +77,7 @@ const surfaces = ref([
 
 function getPresetExt() {
     const color = primaryColors.value.find((c) => c.name === layoutConfig.primary);
+    
     if (color.name === 'noir') {
         return {
             semantic: {
