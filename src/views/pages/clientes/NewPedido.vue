@@ -346,7 +346,7 @@ const openPlane = (url) => {
         <div class="my-4 ">
             <h4 class="text-center">Archivos Seleccionados:</h4>
             <ul class="flex flex-wrap justify-evenly">
-                <li v-for="(file, index) in files" :key="index">
+                <li v-for="(file, index) in files" :key="index" class="p-4 border border-gray-400 rounded-lg m-2">
                     <h2 class=""><strong> Archivo:{{ index + 1 }} </strong></h2>
                     <span>Nombre:</span> {{ file.name }} <br />
                     <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
