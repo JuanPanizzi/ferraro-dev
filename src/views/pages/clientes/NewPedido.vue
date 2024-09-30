@@ -164,10 +164,24 @@ const setArticulo = (cod_it, index) => {
 };
 
 
-const onFileSelect = (e) => {
-    console.log(e);
-};
+// const onFileSelect = (e) => {
+//     console.log(e);
+// };
+// Estado para almacenar los archivos
+const files = ref([]);
 
+// Método para manejar la selección de archivos
+const onFileSelect = (event) => {
+    const selectedFiles = Array.from(event.files); // Convierte FileList a un array
+    selectedFiles.forEach((file) => {
+        // Guardamos las propiedades necesarias
+        files.value.push({
+            name: file.name,
+            size: file.size,
+            type: file.type
+        });
+    });
+};
 const openPlane = (url) => {
     window.open(url, '_blank');
 };
@@ -187,7 +201,7 @@ const openPlane = (url) => {
 
 
         <div class="flex items-center gap-4 mb-4 mt-8">
-          <div class="flex flex-col" :class="{ 'mt-5': !pedido.NUM_CLI }">
+            <div class="flex flex-col" :class="{ 'mt-5': !pedido.NUM_CLI }">
                 <FloatLabel class="w-full md:w-56 ">
                     <Select v-model="pedido.NUM_CLI" :options="clients" filter optionLabel="LABEL_CLI"
                         placeholder="Seleccione un cliente" class="w-full md:w-full border-red-500"
@@ -300,7 +314,8 @@ const openPlane = (url) => {
             </Column>
             <Column>
                 <template #body="slotProps">
-                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)" :disabled="!pedido.NUM_CLI" />
+                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)"
+                        :disabled="!pedido.NUM_CLI" />
                 </template>
             </Column>
             <template #footer>
@@ -325,12 +340,25 @@ const openPlane = (url) => {
         <div class="my-2">
             <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
                 class="p-button-outlined" chooseLabel="Adjuntar Archivos" uploadLabel="Subir Archivos"
-                cancelLabel="Cancelar" :disabled="!pedido.NUM_CLI"/>
+                cancelLabel="Cancelar" multiple :disabled="!pedido.NUM_CLI" />
+        </div>
+<!-- Archivos seleccionados -->
+        <div class="my-4 ">
+            <h4 class="text-center">Archivos Seleccionados:</h4>
+            <ul class="flex flex-wrap justify-evenly">
+                <li v-for="(file, index) in files" :key="index">
+                    <h2 class=""><strong> Archivo:{{ index + 1 }} </strong></h2>
+                    <span>Nombre:</span> {{ file.name }} <br />
+                    <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
+                    <span>Tipo:</span> {{ file.type }}
+                </li>
+            </ul>
         </div>
 
         <div class="flex justify-end gap-2 mt-4">
-            <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog" ></Button>
-            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate" :disabled="!pedido.NUM_CLI"/>
+            <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
+            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate"
+                :disabled="!pedido.NUM_CLI" />
         </div>
 
     </div>
