@@ -77,7 +77,7 @@ const surfaces = ref([
 
 function getPresetExt() {
     const color = primaryColors.value.find((c) => c.name === layoutConfig.primary);
-    
+
     if (color.name === 'noir') {
         return {
             semantic: {
@@ -171,6 +171,8 @@ function updateColors(type, color) {
         localStorage.setItem('primaryColor', color.name)
     } else if (type === 'surface') {
         setSurface(color.name);
+        localStorage.setItem('surfaceColor', color.name)
+
     }
 
     applyTheme(type, color);
@@ -181,6 +183,7 @@ function applyTheme(type, color) {
         updatePreset(getPresetExt());
     } else if (type === 'surface') {
         updateSurfacePalette(color.palette);
+        localStorage.setItem('surfaceColor', JSON.stringify(color));
     }
 }
 

@@ -6,8 +6,8 @@ import router from './router';
 import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
+import { definePreset, updatePreset, updateSurfacePalette } from '@primevue/themes'
 import ToastService from 'primevue/toastservice';
-import { definePreset, updatePreset } from '@primevue/themes';
 
 import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
@@ -21,6 +21,8 @@ const primaryColor = localStorage.getItem('primaryColor') || 'emerald';
 app.use(pinia);
 app.use(router);
 
+// Obtén el color de "surface" almacenado en localStorage o usa 'gray' por defecto
+const storedSurfaceColor = localStorage.getItem('surfaceColor');
 
 const MyPreset = definePreset(Aura, {
     semantic: {
@@ -37,45 +39,18 @@ const MyPreset = definePreset(Aura, {
             900: `{${primaryColor}.900}`,
             950: `{${primaryColor}.950}`
         },
-        colorScheme: {
-            light: {
-                primary: {
-                    color: '{primary.500}',
-                    contrastColor: '#ffffff',
-                    hoverColor: '{primary.600}',
-                    activeColor: '{primary.700}'
-                },
-                highlight: {
-                    background: '{primary.50}',
-                    focusBackground: '{primary.100}',
-                    color: '{primary.700}',
-                    focusColor: '{primary.800}'
-                }
-            },
-            dark: {
-                primary: {
-                    color: '{primary.400}',
-                    contrastColor: '{surface.900}',
-                    hoverColor: '{primary.300}',
-                    activeColor: '{primary.200}'
-                },
-                highlight: {
-                    background: 'color-mix(in srgb, {primary.400}, transparent 84%)',
-                    focusBackground: 'color-mix(in srgb, {primary.400}, transparent 76%)',
-                    color: 'rgba(255,255,255,.87)',
-                    focusColor: 'rgba(255,255,255,.87)'
-                }
-            }
-        }
-       
+      
     },
-    
+
 });
 app.use(PrimeVue, {
     theme: {
-        preset: MyPreset
+        preset: MyPreset,
+        options: {
+            darkModeSelector: '.app-dark',
+        }
     }
- });
+});
 // app.use(PrimeVue, {
 //     theme: {
 //         preset: Aura,
@@ -87,6 +62,13 @@ app.use(PrimeVue, {
 //         }
 //     }
 // });
+
+// Aplica el color de "surface" almacenado en localStorage (si existe)
+if (storedSurfaceColor) {
+    const color = JSON.parse(storedSurfaceColor);
+    updateSurfacePalette(color.palette);  // Aplica el color guardado
+}
+
 app.use(ToastService);
 app.use(ConfirmationService);
 
