@@ -300,7 +300,7 @@ const openPlane = (url) => {
             </Column>
             <Column>
                 <template #body="slotProps">
-                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)" />
+                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)" :disabled="!pedido.NUM_CLI" />
                 </template>
             </Column>
             <template #footer>
