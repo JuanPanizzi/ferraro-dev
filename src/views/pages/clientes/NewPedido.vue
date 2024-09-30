@@ -325,12 +325,12 @@ const openPlane = (url) => {
         <div class="my-2">
             <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
                 class="p-button-outlined" chooseLabel="Adjuntar Archivos" uploadLabel="Subir Archivos"
-                cancelLabel="Cancelar" />
+                cancelLabel="Cancelar" :disabled="!pedido.NUM_CLI"/>
         </div>
 
         <div class="flex justify-end gap-2 mt-4">
-            <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
-            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate" />
+            <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog" ></Button>
+            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate" :disabled="!pedido.NUM_CLI"/>
         </div>
 
     </div>
