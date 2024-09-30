@@ -196,15 +196,15 @@ const openPlane = (url) => {
                 </Select>
                 <label for="NUM_CLI" class="font-semibold w-24">Cliente</label>
             </FloatLabel>
-            <FloatLabel class="w-full md:w-56">
+            <FloatLabel class="w-full md:w-56" >
 
-                <InputText v-model="pedido.FEC_FAC" id="FEC_FAC" type="date" class="w-full md:w-full" />
+                <InputText v-model="pedido.FEC_FAC" id="FEC_FAC" type="date" class="w-full md:w-full" :disabled="!pedido.NUM_CLI"/>
                 <label for="FEC_FAC" class="font-semibold w-24">Fecha: </label>
             </FloatLabel>
 
             <!-- Orden de compra -->
             <FloatLabel class="w-full md:w-56">
-                <InputText v-model="pedido.NUM_OC" id="NUM_OC" type="text" class="w-full md:w-full" />
+                <InputText v-model="pedido.NUM_OC" id="NUM_OC" type="text" class="w-full md:w-full" :disabled="!pedido.NUM_CLI"/>
                 <label for="NUM_OC" class="font-semibold w-56">Orden de Compra</label>
             </FloatLabel>
 
@@ -212,19 +212,19 @@ const openPlane = (url) => {
             <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.TIP_MON" optionLabel="label" @change="changeMoneda"
                     :options="[{ label: 'Pesos', value: 'P' }, { label: 'Dólar Div.', value: 'DB' }, { label: 'Dólar Bill.', value: 'DV' }]"
-                    class="w-full md:w-full" />
+                    class="w-full md:w-full" :disabled="!pedido.NUM_CLI"/>
                 <label for="TIP_MON" class="font-semibold w-24">Moneda </label>
             </FloatLabel>
             <!-- cotizacion del dolar -->
 
             <FloatLabel class="w-full md:w-56" v-if="pedido.TIP_MON.value !== 'P'">
-                <InputText v-model="pedido.COT_DOLAR" id="COT_DOLAR" type="number" class="w-full md:w-full" />
+                <InputText v-model="pedido.COT_DOLAR" id="COT_DOLAR" type="number" class="w-full md:w-full"  />
                 <label for="COT_DOLAR" class="font-semibold w-24">Cot. Dólar </label>
             </FloatLabel>
             <!-- forma de pago -->
             <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.FOR_PAG" optionLabel="label" :options="[{ label: 'Efectivo', value: 'E' }, { label: 'Cheque', value: 'C' },
-                { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" />
+                { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" :disabled="!pedido.NUM_CLI" />
                 <label for="FOR_PAG">Forma de Pago</label>
             </FloatLabel>
 
@@ -249,7 +249,7 @@ const openPlane = (url) => {
                             placeholder="Seleccione un artículo" class="w-full"
                             @change="setArticulo(slotProps.data.COD_IT, slotProps.index)"
                             emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
-                            emptySelectionMessage="Seleccione un artículo"></Select>
+                            emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"></Select>
                         <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
                             v-if="slotProps.data.COD_IT" />
                     </div>
@@ -267,19 +267,19 @@ const openPlane = (url) => {
             </Column>
             <Column field="REV_PLANO" header="Rev">
             </Column>
-            <Column field="FEC_ENT" header="Entrega">
+            <Column field="FEC_ENT" header="Entrega" >
                 <template #body="slotProps">
-                    <DatePicker v-model="slotProps.data.FEC_ENT" showButtonBar dateFormat="dd/mm/yy" />
+                    <DatePicker v-model="slotProps.data.FEC_ENT" showButtonBar dateFormat="dd/mm/yy" :disabled="!pedido.NUM_CLI"/>
                 </template>
             </Column>
             <Column field="CAN_IT" header="Cant.">
                 <template #body="slotProps">
-                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid />
+                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid :disabled="!pedido.NUM_CLI"/>
                 </template>
             </Column>
             <Column field="PRE_IT" header="Precio">
                 <template #body="slotProps">
-                    <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid />
+                    <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid :disabled="!pedido.NUM_CLI" />
                 </template>
             </Column>
 
@@ -316,7 +316,7 @@ const openPlane = (url) => {
 
         </div>
 
-        <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full" />
+        <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full" :disabled="!pedido.NUM_CLI" />
 
         <!-- adjuntar archivos -->
         <div class="my-2">
