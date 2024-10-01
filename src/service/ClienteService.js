@@ -29,7 +29,7 @@ export const ClienteService = {
 
     async actualizarCliente(cliente) {
         try {
-            const response = await apiClient.put(`/clientes/${cliente.NUM_CLI}`, cliente);
+            const response = await apiClient.put(`api/clientes/${cliente.NUM_CLI}`, cliente);
             return response.data;
         } catch (error) {
             throw new Error('Error al actualizar cliente');
@@ -38,7 +38,7 @@ export const ClienteService = {
 
     async eliminarCliente(id) {
         try {
-            const response = await apiClient.delete(`/clientes/${id}`);
+            const response = await apiClient.delete(`api/clientes/${id}`);
             return response.data;
         } catch (error) {
             throw new Error('Error al eliminar cliente');
