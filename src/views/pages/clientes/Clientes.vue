@@ -1,6 +1,5 @@
 <script setup>
 import { ClienteService } from '@/service/ClienteService';
-import { CustomerService } from '@/service/CustomerService';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
@@ -10,7 +9,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 onMounted(() => {
-    CustomerService.getCustomersXLarge().then((data) => (clientes.value = data));
+    ClienteService.getClientes().then((data) => (clientes.value = data));
 });
 
 const toast = useToast();
@@ -73,21 +72,21 @@ function ocultarDialogo() {
     enviado.value = false;
 }
 
-async function crearCliente (){
- const clienteCreado = await ClienteService.crearCliente(cliente.value)
- if(clienteCreado){
-    console.log('Este es cliente credo', clienteCreado)
- }else{
-    console.log('error')
- }
+async function crearCliente() {
+    const clienteCreado = await ClienteService.crearCliente(cliente.value)
+    if (clienteCreado) {
+        console.log('Este es cliente credo', clienteCreado)
+    } else {
+        console.log('error')
+    }
 }
-async function actualizarCliente (){
- const clienteCreado = await ClienteService.actualizarCliente(cliente.value)
- if(clienteCreado){
-    console.log('Este es cliente credo', clienteCreado)
- }else{
-    console.log('error')
- }
+async function actualizarCliente() {
+    const clienteCreado = await ClienteService.actualizarCliente(cliente.value)
+    if (clienteCreado) {
+        console.log('Este es cliente credo', clienteCreado)
+    } else {
+        console.log('error')
+    }
 }
 
 
@@ -172,21 +171,14 @@ function verCuentaCorriente(cliente) {
                     <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="abrirNuevo" />
                    <Button label="Eliminar" icon="pi pi-trash" severity="secondary" @click="confirmarEliminarSeleccionados" :disabled="!clientesSeleccionados || !clientesSeleccionados.length" />
                 </template>
-            </Toolbar> -->
+</Toolbar> -->
             <!--
                 v-model:selection="clientesSeleccionados" -->
-            <DataTable
-                ref="dt"
-                :value="clientes"
-                dataKey="NUM_CLI"
-                :paginator="true"
-                :rows="10"
-                :filters="filtros"
+            <DataTable ref="dt" :value="clientes" dataKey="NUM_CLI" :paginator="true" :rows="10" :filters="filtros"
                 :globalFilterFields="['NUM_CLI', 'NOM_CLI']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
-            >
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">CLIENTES</div>
                     <div class="flex justify-between items-center">
@@ -199,7 +191,8 @@ function verCuentaCorriente(cliente) {
                             </IconField>
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary" @click="abrirNuevo" />
+                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary"
+                                @click="abrirNuevo" />
                         </div>
                     </div>
                     <!-- <div class="flex flex-wrap gap-2 items-center justify-between">
@@ -231,7 +224,8 @@ function verCuentaCorriente(cliente) {
             </DataTable>
         </div>
 
-        <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del Cliente" :modal="true">
+        <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del Cliente"
+            :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
                     <div>
@@ -246,7 +240,8 @@ function verCuentaCorriente(cliente) {
 
                 <div>
                     <label for="nombre" class="block font-bold mb-3">Nombre</label>
-                    <InputText id="nombre" v-model.trim="cliente.NOM_CLI" required="true" autofocus :invalid="enviado && !cliente.NOM_CLI" fluid />
+                    <InputText id="nombre" v-model.trim="cliente.NOM_CLI" required="true" autofocus
+                        :invalid="enviado && !cliente.NOM_CLI" fluid />
                     <small v-if="enviado && !cliente.NOM_CLI" class="text-red-500">El nombre es obligatorio.</small>
                 </div>
                 <div>
@@ -276,10 +271,7 @@ function verCuentaCorriente(cliente) {
         <Dialog v-model:visible="eliminarClienteDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
             <div class="flex items-center gap-4">
                 <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span v-if="cliente"
-                    >¿Estás seguro de que quieres eliminar <b>{{ cliente.NOM_CLI }}</b
-                    >?</span
-                >
+                <span v-if="cliente">¿Estás seguro de que quieres eliminar <b>{{ cliente.NOM_CLI }}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />

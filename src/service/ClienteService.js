@@ -1,10 +1,12 @@
 // src/service/ClienteService.js
+
 import apiClient from './api';
+
 
 export const ClienteService = {
     async getClientes() {
         try {
-            const response = await apiClient.get('/clientes');
+            const response = await apiClient.get('api/clientes');
             return response.data;
         } catch (error) {
             throw new Error('Error al obtener clientes');
@@ -13,12 +15,17 @@ export const ClienteService = {
 
     async crearCliente(cliente) {
         try {
-            const response = await apiClient.post('/clientes', cliente);
+            // Ensure CSRF protection is initialized
+            // await initializeCsrfProtection();
+
+            // Make the POST request to create the client
+            const response = await apiClient.post('api/clientes', cliente);
             return response.data;
         } catch (error) {
-            throw new Error('Error al crear cliente');
+            throw new Error('Error al crear cliente', error);
         }
     },
+
 
     async actualizarCliente(cliente) {
         try {
