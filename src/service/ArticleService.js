@@ -4,14 +4,15 @@ import apiClient from './api';
 export const ArticleService = {
     async searchArticle(code) {
         // post
-        const response = await fetch(`${API_BASE_URL}/articulos/search?code=${code}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        // const response = await fetch(`${API_BASE_URL}/articulos/search?code=${code}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
+        const response = await apiClient.get(`api/articulos/search?code=${code}`);
 
-        return await response.json();
+        return await response.data;
     },
     async getArticlesXLarge() {
         const response = await apiClient.get('api/articulos');
@@ -21,7 +22,6 @@ export const ArticleService = {
         //         'Content-Type': 'application/json'
         //     }
         // });
-
         return await response.data;
     },
     async getArticlesByClient(clienteId) {

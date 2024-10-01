@@ -1,5 +1,6 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
+import { ClienteService } from '@/service/ClienteService';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
@@ -15,7 +16,7 @@ const clients = ref([]);
 // });
 
 onMounted(() => {
-    // CustomerService.getCustomersXLarge().then((data) => (clientes.value = data));
+    ClienteService.getClientes().then((data) => (clients.value = data));
     ArticleService.getArticlesXLarge().then((data) => (articulos.value = data));
 });
 
@@ -239,7 +240,7 @@ function verCuentaCorriente(cliente) {
                 <div class="flex gap-4">
                     <label for="cliente" class="block font-bold mb-2">Cliente</label>
                     <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
-                    <Select  :options="clients" filter optionLabel="LABEL_CLI"
+                    <Select  :options="clients" filter optionLabel="NOM_CLI"
                         placeholder="Seleccione un cliente" class="w-full md:w-full"
                         emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
                         @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
