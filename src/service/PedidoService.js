@@ -32,7 +32,7 @@ export const PedidoService = {
         files.forEach((fileData, index) => {
             formData.append(`file${index + 1}`, fileData.file);
         });
-
+        // console.log(formData)
         try {
             // VER ESTE ENDPOINT
             const response = await fetch(`${API_BASE_URL}/pedidos`, {

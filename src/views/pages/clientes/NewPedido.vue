@@ -1,6 +1,6 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
-import { CustomerService } from '@/service/CustomerService';
+import { ClienteService } from '@/service/ClienteService';
 import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
 // import Dialog from 'primevue/dialog';
@@ -74,11 +74,11 @@ const nextStep = () => {
     // Implement nextStep logic here
 };
 
-// getClientes from CustomerService
+// getClientes from ClienteService
 const clients = ref([]);
 
 onMounted(async () => {
-    clients.value = await CustomerService.getCustomersMinimal();
+    clients.value = await ClienteService.getClientes();
 });
 
 
@@ -366,7 +366,7 @@ const uploadFiles = async (files) => {
 
         <div class="flex justify-end gap-2 mt-4">
             <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
-            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate"
+            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="uploadFiles(files)"
                 :disabled="!pedido.NUM_CLI" />
         </div>
 

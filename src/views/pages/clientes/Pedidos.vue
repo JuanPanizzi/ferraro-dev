@@ -1,6 +1,7 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
 import { CustomerService } from '@/service/CustomerService';
+import { ClienteService } from '@/service/ClienteService';
 import { VentasService } from '@/service/VentasService';
 import { onMounted, ref } from 'vue';
  
@@ -90,6 +91,8 @@ onMounted(() => {
     CustomerService.getCustomersMinimal().then((response) => {
         clients.value = response;
     });
+    
+
 });
 const router = useRouter();
 const add = () => {
