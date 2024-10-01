@@ -1,49 +1,40 @@
-import axios from 'axios';
-import { API_BASE_URL } from './config';
-
+// src/service/ClienteService.js
+import apiClient from './api';
 
 export const ClienteService = {
-    // Obtener todos los clientes
     async getClientes() {
-        return axios
-            .get(`${API_BASE_URL}/clientes`)
-            .then((res) => res.data)
-            .catch((error) => {
-                console.error('Hubo un problema al traer los datos de los clientes:', error);
-            });
+        try {
+            const response = await apiClient.get('/clientes');
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al obtener clientes');
+        }
     },
 
-    // Crear un nuevo cliente
     async crearCliente(cliente) {
-        return axios
-            .post(`${API_BASE_URL}/clientes`, cliente)
-            .then((res) =>{
-                console.log('abajo res.data')
-                console.log(res.data)
-                return res.data
-            } )
-            .catch((error) => {
-                console.error('Hubo un problema al crear el cliente:', error);
-            });
+        try {
+            const response = await apiClient.post('/clientes', cliente);
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al crear cliente');
+        }
     },
 
-    // Actualizar un cliente existente
     async actualizarCliente(cliente) {
-        return axios
-            .put(`${API_BASE_URL}/clientes/${cliente.NUM_CLI}`, cliente)
-            .then((res) => res.data)
-            .catch((error) => {
-                console.error('Hubo un problema al actualizar el cliente:', error);
-            });
+        try {
+            const response = await apiClient.put(`/clientes/${cliente.NUM_CLI}`, cliente);
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al actualizar cliente');
+        }
     },
 
-    // Eliminar un cliente
     async eliminarCliente(id) {
-        return axios
-            .delete(`/api/clientes/${id}`)
-            .then((res) => res.data)
-            .catch((error) => {
-                console.error('Hubo un problema al eliminar el cliente:', error);
-            });
+        try {
+            const response = await apiClient.delete(`/clientes/${id}`);
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al eliminar cliente');
+        }
     }
-}
+};

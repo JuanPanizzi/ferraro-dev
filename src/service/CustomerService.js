@@ -37,6 +37,9 @@ export const CustomerService = {
     },
 
     async createCustomer(cliente) {
+
+        await initializeCsrfProtection(); // Asegúrate de obtener el CSRF token
+
         const response = await fetch(`${API_BASE_URL}/clientes`, {
             method: 'POST',
             headers: {
