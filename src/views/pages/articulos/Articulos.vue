@@ -32,6 +32,7 @@ const eliminarClientesDialogo = ref(false);
 const priceHistoryDialog = ref(false);
 
 const selectedArticle = ref([]);
+const clientSelected = ref(null)
 
 const articulo = ref({
     COD_ART: '',
@@ -223,24 +224,24 @@ function verCuentaCorriente(cliente) {
                     <InputText id="codigo" v-model="articulo.COD_ART" readonly />
 
                     <label for="material" class="block font-bold mb-2">Material</label>
-                    <InputText id="material" v-model="articulo.MAT_ART" />
+                    <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''" />
                 </div>
 
                 <div class="flex gap-4">
                     <label for="descripcion" class="block font-bold mb-2">Descripción</label>
-                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full" />
+                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full" :invalid="articulo.NOM_ART == ''" />
                 </div>
 
                 <div class="flex gap-4">
                     <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
-                    <InputText id="nroplano" v-model="articulo.NROPLANO_ART" />
+                    <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
                     <label for="revision" class="block font-bold mb-2">Rev</label>
-                    <InputText id="revision" v-model="articulo.REV_PLANO" />
+                    <InputText id="revision" v-model="articulo.REV_PLANO"  :invalid="articulo.REV_PLANO == ''"/>
                 </div>
                 <div class="flex gap-4">
                     <label for="cliente" class="block font-bold mb-2">Cliente</label>
                     <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
-                    <Select  :options="clients" filter optionLabel="NOM_CLI"
+                    <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter optionLabel="NOM_CLI"
                         placeholder="Seleccione un cliente" class="w-full md:w-full"
                         emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
                         @change="changeCliente" emptySelectionMessage="Seleccione un cliente">

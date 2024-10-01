@@ -5,6 +5,7 @@ export const CustomerService = {
     async getCuentaCorriente(num_cli, page = 1) {
         const response = await fetch(`${API_BASE_URL}/clientes/cuenta-corriente/${num_cli}?page=${page}`);
         return await response.json();
+        
     },
 
     async getCustomersSmall() {
