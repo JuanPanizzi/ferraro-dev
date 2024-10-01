@@ -35,7 +35,7 @@ export const PedidoService = {
 
         try {
             // VER ESTE ENDPOINT
-            const response = await fetch(`${API_BASE_URL}/upload`, {
+            const response = await fetch(`${API_BASE_URL}/pedidos`, {
                 method: 'POST',
                 body: formData,
             });
@@ -47,7 +47,7 @@ export const PedidoService = {
             const data = await response.json();
             console.log('Archivos subidos correctamente:', data);
             
-            return {exito: response.status}
+            return {Estado: response.status}
 
         } catch (error) {
             console.error('Error al subir los archivos:', error);

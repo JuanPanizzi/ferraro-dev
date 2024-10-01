@@ -191,8 +191,8 @@ const onFileSelect = (event) => {
 };
 
 const uploadFiles = async (files) => {
-    const archivosCargados = await PedidoService.uploadFiles(files);
-    console.log('archivos cargados', archivosCargados)
+    const estadoUpload = await PedidoService.uploadFiles(files);
+    console.log('Estado de los archivos cargados:', estadoUpload)
 }
 
 
