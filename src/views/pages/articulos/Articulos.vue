@@ -43,6 +43,7 @@ const articulo = ref({
     NUM_CLI: '',
     PLANO_ART: '',
     COSMP_ART: 0,
+    COSM0_ART: 0,
     PV_ART: 0,
     IVA1_ART: 21,
     UTI_ART: 7
@@ -69,6 +70,7 @@ function abrirNuevo() {
         NUM_CLI: '',
         PLANO_ART: '',
         COSMP_ART: 0,
+        COSMO_ART: 0,
         PV_ART: 0,
         IVA1_ART: 21,
         UTI_ART: 7
@@ -265,7 +267,7 @@ function verCuentaCorriente(cliente) {
                     </div>
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
-                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US" />
+                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.COSMO_ART == 0" />
                     </div>
 
                     <div>
@@ -283,7 +285,7 @@ function verCuentaCorriente(cliente) {
 
                     <div>
                         <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
-                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" />
+                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.PV_ART == 0"/>
                     </div>
                 </div>
             </div>
