@@ -6,6 +6,7 @@ import { PedidoService } from '@/service/PedidoService';
 // import Dialog from 'primevue/dialog';
 import ArticuloDialog from '../../../components/ArticleModal.vue'
 import { computed, onMounted, ref } from 'vue';
+import apiClient from '../../../service/api';
 
 
 const pedido = ref({
@@ -78,7 +79,8 @@ const nextStep = () => {
 const clients = ref([]);
 
 onMounted(async () => {
-    clients.value = await ClienteService.getClientes();
+    clients.value = await ClienteService.getClientes().then((data) => (clients.value = data));;
+    // console.log(clients.value)
 });
 
 
@@ -181,8 +183,9 @@ const files = ref([]);
 const onFileSelect = (event) => {
     const selectedFiles = Array.from(event.files); // Convierte FileList a un array
     selectedFiles.forEach((file) => {
-        // Guardamos las propiedades necesarias
+        // Guardamos el archivo completo y sus propiedades necesarias
         files.value.push({
+            file: file,  // El archivo completo
             name: file.name,
             size: file.size,
             type: file.type
@@ -190,10 +193,40 @@ const onFileSelect = (event) => {
     });
 };
 
+
+//FUNCION PARA ENVIAR ARCHIVOS AL BACKEND
 const uploadFiles = async (files) => {
-    const estadoUpload = await PedidoService.uploadFiles(files);
-    console.log('Estado de los archivos cargados:', estadoUpload)
-}
+    const formData = new FormData();
+    files.forEach((fileData, index) => {
+        // Aquí agregamos el archivo completo al FormData
+        formData.append(`file${index + 1}`, fileData.file);  // Accede al archivo completo
+    });
+
+    try {
+        // const response = await fetch(`${API_BASE_URL}/pedidos`, {
+        //     method: 'POST',
+        //     body: formData,
+        // });
+        const response = await apiClient.post('/pedidos', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data' // Set the appropriate content type
+                }
+            });
+
+        if (!response.ok) {
+            throw new Error(`Error en la subida de archivos: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Archivos subidos correctamente:', data);
+
+        return { Estado: response.status };
+
+    } catch (error) {
+        console.error('Error al subir los archivos:', error);
+        return { error: `Estado ${response.status}` };
+    }
+};
 
 
 
@@ -212,7 +245,7 @@ const uploadFiles = async (files) => {
         <div class="flex items-center gap-4 mb-4 mt-8">
             <div class="flex flex-col" :class="{ 'mt-5': !pedido.NUM_CLI }">
                 <FloatLabel class="w-full md:w-56 ">
-                    <Select v-model="pedido.NUM_CLI" :options="clients" filter optionLabel="LABEL_CLI"
+                    <Select v-model="pedido.NUM_CLI" :options="clients" filter optionLabel="NOM_CLI"
                         placeholder="Seleccione un cliente" class="w-full md:w-full border-red-500"
                         emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
                         @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
@@ -351,18 +384,21 @@ const uploadFiles = async (files) => {
                 class="p-button-outlined" chooseLabel="Adjuntar Archivos" uploadLabel="Subir Archivos"
                 cancelLabel="Cancelar" multiple :disabled="!pedido.NUM_CLI" />
         </div>
-<!-- Archivos seleccionados -->
-        <div class="my-4 ">
-            <h4 class="text-center">Archivos Seleccionados:</h4>
-            <ul class="flex flex-wrap justify-evenly">
-                <li v-for="(file, index) in files" :key="index" class="p-4 border border-gray-400 rounded-lg m-2">
-                    <h2 class=""><strong> Archivo:{{ index + 1 }} </strong></h2>
-                    <span>Nombre:</span> {{ file.name }} <br />
-                    <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
-                    <span>Tipo:</span> {{ file.type }}
-                </li>
-            </ul>
-        </div>
+    <!-- Archivos seleccionados -->
+<div class="my-4">
+    <h4 class="text-center">Archivos Seleccionados:</h4>
+    <ul class="flex flex-wrap justify-evenly">
+        <li v-for="(file, index) in files" :key="index" class="p-4 border border-gray-400 rounded-lg m-2">
+            <h2><strong>Archivo: {{ index + 1 }}</strong></h2>
+            <span>Nombre:</span> {{ file.name }} <br />
+            <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
+            <span>Tipo:</span> {{ file.type }} <br />
+            <!-- Opcional: Si quisieras mostrar alguna información adicional sobre el archivo en sí, podrías acceder a file.file -->
+        </li>
+    </ul>
+</div>
+
+
 
         <div class="flex justify-end gap-2 mt-4">
             <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
