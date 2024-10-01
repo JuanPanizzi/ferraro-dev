@@ -12,6 +12,7 @@ export const ArticleService = {
         // });
         try {
             const response = await apiClient.get(`api/articulos/search?code=${code}`);
+        
             return await response.data;
             
         } catch (error) {
@@ -22,6 +23,7 @@ export const ArticleService = {
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
+            console.log(response.data)
         return await response.data;
             
         } catch (error) {

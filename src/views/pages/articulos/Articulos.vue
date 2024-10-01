@@ -261,7 +261,7 @@ function verCuentaCorriente(cliente) {
                 <div class="flex justify-between gap-4">
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
-                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US" />
+                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.COSMP_ART == 0 " />
                     </div>
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
