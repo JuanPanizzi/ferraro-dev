@@ -164,9 +164,16 @@ const setArticulo = (cod_it, index) => {
 };
 
 
+
+
+
+const openPlane = (url) => {
+    window.open(url, '_blank');
+};
 // const onFileSelect = (e) => {
 //     console.log(e);
 // };
+
 // Estado para almacenar los archivos
 const files = ref([]);
 
@@ -182,9 +189,11 @@ const onFileSelect = (event) => {
         });
     });
 };
-const openPlane = (url) => {
-    window.open(url, '_blank');
-};
+
+const uploadFiles = async (files) => {
+    const estadoUpload = await PedidoService.uploadFiles(files);
+    console.log('Estado de los archivos cargados:', estadoUpload)
+}
 
 
 
