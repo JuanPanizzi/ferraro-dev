@@ -24,7 +24,23 @@ onMounted(() => {
 const toast = useToast();
 const dt = ref();
 const clientes = ref([]);
-const articulos = ref([]);
+const articulos = ref([
+{
+    id: null,
+    COD_ART: '',
+    NOM_ART: '',
+    MAT_ART: '',
+    NROPLANO_ART: '',
+    REV_PLANO: '',
+    NUM_CLI: '',
+    PLANO_ART: '',
+    COSMP_ART: 0,
+    COSM0_ART: 0,
+    PV_ART: 0,
+    IVA1_ART: 21,
+    UTI_ART: 7
+}
+]);
 
 const articuloDialogo = ref(false);
 const eliminararticuloDialogo = ref(false);
@@ -131,8 +147,9 @@ async function crearArticle() {
             console.log('articulo creado');
 
             articuloDialogo.value = false;
-
+            articulos.value.push(response.data);
         } else {
+
             throw new Error('Error en la respuesta del servidor');
         }
     } catch (error) {

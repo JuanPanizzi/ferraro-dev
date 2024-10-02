@@ -23,6 +23,7 @@ export const ArticleService = {
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
+            console.log(response.data)
         return await response.data;
             
         } catch (error) {
@@ -55,7 +56,6 @@ export const ArticleService = {
         console.log("newArticle:", newArticle)
         try {
             const response = await apiClient.post(`api/articulos`, newArticle);
-            console.log('este es el articulo creado', response.data)
             return response;
         } catch (error) {
             throw new Error('Error al crear articulo');
