@@ -65,7 +65,7 @@ export const ArticleService = {
     async editarArticle(article) {
         console.log("article:", article)
         try {
-            const response = await apiClient.put(`api/articulos`, article);
+            const response = await apiClient.put(`api/articulos/${article.id}`, article);
             console.log('este es el articulo editado', response.data)
             return response;
         } catch (error) {

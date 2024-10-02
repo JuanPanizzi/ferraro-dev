@@ -110,16 +110,29 @@ function guardarCliente() {
     }
 }
 
-async function crearArticle(newArticle){
+async function crearArticle(newArticle) {
+    // if (!validarCampos()) {
+    //     return; // No procede si los campos no están completos
+    // }
+    // if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
+    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+    //     return;
+    // }
+        try {
+        const response = await ArticleService.createArticle(newArticle);
 
-    const response = await ArticleService.createArticle(newArticle);
-    
-    if(response.status >= 200 && response.status <= 299){
-        console.log('articulo creado')
-    }else{
-        console.log('error al crear articulo')
+        if (response.status >= 200 && response.status <= 299) {
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
+            console.log('articulo creado');
+        } else {
+            throw new Error('Error en la respuesta del servidor');
+        }
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
+        console.log('error al crear articulo', error);
     }
 }
+
 async function editarArticle(article){
 const response = await ArticleService.editarArticle(article);
 
