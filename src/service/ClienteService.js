@@ -30,7 +30,7 @@ export const ClienteService = {
     async actualizarCliente(cliente) {
         try {
             const response = await apiClient.put(`api/clientes/${cliente.NUM_CLI}`, cliente);
-            return response.data;
+            return response;
         } catch (error) {
             throw new Error('Error al actualizar cliente');
         }

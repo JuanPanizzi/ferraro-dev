@@ -18,6 +18,7 @@ const clientes = ref([]);
 const clienteDialogo = ref(false);
 const eliminarClienteDialogo = ref(false);
 const eliminarClientesDialogo = ref(false);
+const isEditing = ref(false)
 const cliente = ref({
     NUM_CLI: '',
     NOM_CLI: '',
@@ -73,17 +74,16 @@ function ocultarDialogo() {
 }
 
 async function crearCliente() {
+
     const clienteCreado = await ClienteService.crearCliente(cliente.value)
     if (clienteCreado) {
-        console.log('Este es cliente credo', clienteCreado)
     } else {
         console.log('error')
     }
 }
 async function actualizarCliente() {
-    const clienteCreado = await ClienteService.actualizarCliente(cliente.value)
-    if (clienteCreado) {
-        console.log('Este es cliente credo', clienteCreado)
+    const clienteEditado = await ClienteService.actualizarCliente(cliente.value)
+    if (clienteEditado) {
     } else {
         console.log('error')
     }
@@ -118,9 +118,13 @@ function guardarCliente() {
     }
 }
 
-function editarCliente(cli) {
-    cliente.value = { ...cli };
-    clienteDialogo.value = true;
+async function editarCliente(cli) {
+    
+    console.log('este es el cli que llega:', cli)
+        isEditing.value = true
+        cliente.value = { ...cli };
+        clienteDialogo.value = true;
+
 }
 
 function confirmarEliminarCliente(cli) {
@@ -264,7 +268,7 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="crearCliente" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarCliente() : crearCliente()" />
             </template>
         </Dialog>
 

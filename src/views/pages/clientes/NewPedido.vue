@@ -207,12 +207,11 @@ const uploadFiles = async (files) => {
         //     method: 'POST',
         //     body: formData,
         // });
-        const response = await apiClient.post('/pedidos', formData, {
+        const response = await apiClient.post('api/pedidos', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data' // Set the appropriate content type
                 }
             });
-
         if (!response.ok) {
             throw new Error(`Error en la subida de archivos: ${response.statusText}`);
         }
