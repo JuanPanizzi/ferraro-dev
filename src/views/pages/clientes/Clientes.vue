@@ -4,6 +4,8 @@ import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import Toast from 'primevue/toast';
+
 
 // Usa el router
 const router = useRouter();
@@ -76,19 +78,47 @@ function ocultarDialogo() {
 async function crearCliente() {
 
     const clienteCreado = await ClienteService.crearCliente(cliente.value)
+
     if (clienteCreado) {
+        toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Cliente creado correctamente',
+            life: 3000
+        });
+        clienteDialogo.value = false
     } else {
-        console.log('error')
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo crear el cliente',
+            life: 3000
+        });
+        clienteDialogo.value = false;
+
     }
 }
 async function actualizarCliente() {
+
     const response = await ClienteService.actualizarCliente(cliente.value)
     if (response.status >= 200 && response.status <= 299) {
-        
+        toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Cliente editado correctamente',
+            life: 3000
+        });
         clienteDialogo.value = false
-        
+
     } else {
-        console.log('error')
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo crear el cliente',
+            life: 3000
+        });
+        clienteDialogo.value = false
+
     }
 }
 
@@ -122,11 +152,10 @@ function guardarCliente() {
 }
 
 async function editarCliente(cli) {
-    
-    console.log('este es el cli que llega:', cli)
-        isEditing.value = true
-        cliente.value = { ...cli };
-        clienteDialogo.value = true;
+
+    isEditing.value = true
+    cliente.value = { ...cli };
+    clienteDialogo.value = true;
 
 }
 
@@ -225,6 +254,7 @@ function verCuentaCorriente(cliente) {
                     <template #body="slotProps">
                         <Button icon="pi pi-list" severity="info" @click="verCuentaCorriente(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
+                        <Toast />
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
@@ -272,6 +302,7 @@ function verCuentaCorriente(cliente) {
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
                 <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarCliente() : crearCliente()" />
+                <Toast />
             </template>
         </Dialog>
 

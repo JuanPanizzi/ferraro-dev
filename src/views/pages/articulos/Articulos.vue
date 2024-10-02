@@ -121,7 +121,6 @@ async function crearArticle(newArticle){
     }
 }
 async function editarArticle(article){
-
 const response = await ArticleService.editarArticle(article);
 
 if(response.status >= 200 && response.status <= 299){
