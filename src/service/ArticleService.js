@@ -23,7 +23,6 @@ export const ArticleService = {
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
-            console.log(response.data)
         return await response.data;
             
         } catch (error) {
@@ -49,6 +48,28 @@ export const ArticleService = {
             return response.data;
         } catch (error) {
             throw new Error('Error al obtener clientes');
+        }
+    },
+
+    async createArticle(newArticle) {
+        console.log("newArticle:", newArticle)
+        try {
+            const response = await apiClient.post(`api/articulos`, newArticle);
+            console.log('este es el articulo creado', response.data)
+            return response;
+        } catch (error) {
+            throw new Error('Error al crear articulo');
+        }
+    },
+
+    async editarArticle(article) {
+        console.log("article:", article)
+        try {
+            const response = await apiClient.put(`api/articulos`, article);
+            console.log('este es el articulo editado', response.data)
+            return response;
+        } catch (error) {
+            throw new Error('Error al editar articulo');
         }
     }
 

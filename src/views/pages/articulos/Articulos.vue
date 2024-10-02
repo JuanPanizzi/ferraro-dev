@@ -110,6 +110,27 @@ function guardarCliente() {
     }
 }
 
+async function crearArticle(newArticle){
+
+    const response = await ArticleService.createArticle(newArticle);
+    
+    if(response.status >= 200 && response.status <= 299){
+        console.log('articulo creado')
+    }else{
+        console.log('error al crear articulo')
+    }
+}
+async function editarArticle(article){
+
+const response = await ArticleService.editarArticle(article);
+
+if(response.status >= 200 && response.status <= 299){
+    console.log('articulo editado')
+}else{
+    console.log('error al editar articulo')
+}
+}
+
 function editarCliente(cli) {
     cliente.value = { ...cli };
     articuloDialogo.value = true;
@@ -153,6 +174,8 @@ function eliminarClientesSeleccionados() {
 function verCuentaCorriente(cliente) {
     router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
 }
+
+
 </script>
 
 <template>
@@ -224,7 +247,7 @@ function verCuentaCorriente(cliente) {
                 <!-- Código y Descripción -->
                 <div class="flex justify-start gap-4">
                     <label for="codigo" class="block font-bold mb-2">Código</label>
-                    <InputText id="codigo" v-model="articulo.COD_ART" readonly />
+                    <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
 
                     <label for="material" class="block font-bold mb-2">Material</label>
                     <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''" />
@@ -293,7 +316,7 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="guardarCliente" />
+                <Button label="Guardar" icon="pi pi-check" @click="crearArticle(articulo.value)" />
             </template>
         </Dialog>
 
