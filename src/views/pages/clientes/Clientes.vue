@@ -82,8 +82,11 @@ async function crearCliente() {
     }
 }
 async function actualizarCliente() {
-    const clienteEditado = await ClienteService.actualizarCliente(cliente.value)
-    if (clienteEditado) {
+    const response = await ClienteService.actualizarCliente(cliente.value)
+    if (response.status >= 200 && response.status <= 299) {
+        
+        clienteDialogo.value = false
+        
     } else {
         console.log('error')
     }
