@@ -8,6 +8,7 @@ import ArticuloDialog from '../../../components/ArticleModal.vue'
 import { computed, onMounted, ref } from 'vue';
 import apiClient from '../../../service/api';
 
+/* comentario  */
 
 const pedido = ref({
     NUM_CLI: '',
