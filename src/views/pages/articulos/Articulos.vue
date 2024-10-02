@@ -6,6 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+
 // Usa el router
 const router = useRouter();
 // getClientes from CustomerService
@@ -238,7 +239,7 @@ function verCuentaCorriente(cliente) {
                     <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
                     <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
                     <label for="revision" class="block font-bold mb-2">Rev</label>
-                    <InputText id="revision" v-model="articulo.REV_PLANO"  :invalid="articulo.REV_PLANO == ''"/>
+                    <InputText id="revision" v-model="articulo.REV_PLANO"  />
                 </div>
                 <div class="flex gap-4">
                     <label for="cliente" class="block font-bold mb-2">Cliente</label>
@@ -263,11 +264,11 @@ function verCuentaCorriente(cliente) {
                 <div class="flex justify-between gap-4">
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
-                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.COSMP_ART == 0 " />
+                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US"  />
                     </div>
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
-                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.COSMO_ART == 0" />
+                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US"  />
                     </div>
 
                     <div>
