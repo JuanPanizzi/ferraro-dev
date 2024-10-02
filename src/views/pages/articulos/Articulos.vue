@@ -36,6 +36,7 @@ const selectedArticle = ref([]);
 const clientSelected = ref(null)
 
 const articulo = ref({
+    id: null,
     COD_ART: '',
     NOM_ART: '',
     MAT_ART: '',
@@ -63,6 +64,7 @@ const enviado = ref(false);
 
 function abrirNuevo() {
     articulo.value = {
+        id: null,
         COD_ART: '',
         NOM_ART: '',
         MAT_ART: '',
@@ -78,7 +80,7 @@ function abrirNuevo() {
     };
     enviado.value = false;
     articuloDialogo.value = true;
-} 
+}
 
 function ocultarDialogo() {
     articuloDialogo.value = false;
@@ -110,7 +112,10 @@ function guardarCliente() {
     }
 }
 
-async function crearArticle(newArticle) {
+async function crearArticle() {
+
+    let newArticle = articulo.value;
+
     // if (!validarCampos()) {
     //     return; // No procede si los campos no están completos
     // }
@@ -118,12 +123,15 @@ async function crearArticle(newArticle) {
     //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
     //     return;
     // }
-        try {
+    try {
         const response = await ArticleService.createArticle(newArticle);
 
-        if (response.status >= 200 && response.status <= 299) {
+        if (response.status >= 200) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
             console.log('articulo creado');
+
+            articuloDialogo.value = false;
+
         } else {
             throw new Error('Error en la respuesta del servidor');
         }
@@ -133,14 +141,43 @@ async function crearArticle(newArticle) {
     }
 }
 
-async function editarArticle(article){
-const response = await ArticleService.editarArticle(article);
-
-if(response.status >= 200 && response.status <= 299){
-    console.log('articulo editado')
-}else{
-    console.log('error al editar articulo')
+// modalEdit
+function modalEdit(article) {
+    articulo.value = { ...article };
+    articuloDialogo.value = true;
 }
+
+async function updateArticle() {
+
+    let article = articulo.value;
+
+    try {
+        const response = await ArticleService.editarArticle(article);
+
+        if (response.status >= 200) {
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
+            console.log('articulo actualizado');
+
+            articuloDialogo.value = false;
+
+        } else {
+            throw new Error('Error en la respuesta del servidor');
+        }
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
+        console.log('error al actualizar articulo', error);
+    }
+
+}
+
+async function editarArticle(article) {
+    const response = await ArticleService.editarArticle(article);
+
+    if (response.status >= 200 && response.status <= 299) {
+        console.log('articulo editado')
+    } else {
+        console.log('error al editar articulo')
+    }
 }
 
 function editarCliente(cli) {
@@ -188,23 +225,33 @@ function verCuentaCorriente(cliente) {
 }
 
 
+// saveArticle
+
+function saveArticle() {
+
+    console.log('articulo', articulo.value.id);
+
+    if (!articulo.value.id) {
+
+        crearArticle();
+
+    } else {
+
+        updateArticle();
+    }
+}
+
+
 </script>
 
 <template>
     <div>
         <div class="card">
-            <DataTable
-                ref="dt"
-                :value="articulos"
-                dataKey="COD_ART"
-                :paginator="true"
-                :rows="10"
-                :filters="filtros"
+            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="10" :filters="filtros"
                 :globalFilterFields="['COD_ART', 'NOM_ART']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos"
-            >
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">ARTICULOS</div>
                     <div class="flex justify-between items-center">
@@ -217,7 +264,8 @@ function verCuentaCorriente(cliente) {
                             </IconField>
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary" @click="abrirNuevo" />
+                            <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary"
+                                @click="abrirNuevo" />
                         </div>
                     </div>
                     <!-- <div class="flex flex-wrap gap-2 items-center justify-between">
@@ -242,19 +290,24 @@ function verCuentaCorriente(cliente) {
                     <template #body="slotProps"> {{ slotProps.data.CLIENT_LABEL }} </template>
                 </Column>
                 <Column field="PV_ART" header="Ultimo precio" sortable style="text-align: right">
-                    <template #body="slotProps"> {{ slotProps.data.PV_ART.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }} <Button icon="pi pi-history" severity="info" small text @click="priceHistory(slotProps.data)" /> </template>
+                    <template #body="slotProps"> {{ slotProps.data.PV_ART.toLocaleString('es-AR', {
+                        style: 'currency',
+                        currency: 'ARS'
+                    }) }} <Button icon="pi pi-history" severity="info" small text
+                            @click="priceHistory(slotProps.data)" /> </template>
                 </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
+                        <Button icon="pi pi-pencil" class="mx-2" @click="modalEdit(slotProps.data)" />
                         <!--  <Button icon="pi pi-list" severity="info" @click="priceHistory(slotProps.data)" />
-                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
                       <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
             </DataTable>
         </div>
 
-        <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO" :modal="true">
+        <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO"
+            :modal="true">
             <div class="flex flex-col gap-4">
                 <!-- Código y Descripción -->
                 <div class="flex justify-start gap-4">
@@ -267,25 +320,26 @@ function verCuentaCorriente(cliente) {
 
                 <div class="flex gap-4">
                     <label for="descripcion" class="block font-bold mb-2">Descripción</label>
-                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full" :invalid="articulo.NOM_ART == ''" />
+                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full"
+                        :invalid="articulo.NOM_ART == ''" />
                 </div>
 
                 <div class="flex gap-4">
                     <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
                     <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
                     <label for="revision" class="block font-bold mb-2">Rev</label>
-                    <InputText id="revision" v-model="articulo.REV_PLANO"  />
+                    <InputText id="revision" v-model="articulo.REV_PLANO" />
                 </div>
                 <div class="flex gap-4">
                     <label for="cliente" class="block font-bold mb-2">Cliente</label>
                     <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
-                    <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter optionLabel="NOM_CLI"
-                        placeholder="Seleccione un cliente" class="w-full md:w-full"
+                    <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter
+                        optionLabel="NOM_CLI" placeholder="Seleccione un cliente" class="w-full md:w-full"
                         emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
                         @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
                     </Select>
-                
-               
+
+
                 </div>
 
                 <hr />
@@ -299,11 +353,13 @@ function verCuentaCorriente(cliente) {
                 <div class="flex justify-between gap-4">
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
-                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD" locale="en-US"  />
+                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD"
+                            locale="en-US" />
                     </div>
                     <div>
                         <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
-                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD" locale="en-US"  />
+                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD"
+                            locale="en-US" />
                     </div>
 
                     <div>
@@ -321,19 +377,21 @@ function verCuentaCorriente(cliente) {
 
                     <div>
                         <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
-                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" :invalid="articulo.PV_ART == 0"/>
+                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
+                            locale="en-US" :invalid="articulo.PV_ART == 0" />
                     </div>
                 </div>
             </div>
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="crearArticle(articulo.value)" />
+                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" />
             </template>
         </Dialog>
 
         <!-- dialog for priceHistory -->
-        <Dialog v-model:visible="priceHistoryDialog" :style="{ width: '450px' }" header="Historial de precios" :modal="true">
+        <Dialog v-model:visible="priceHistoryDialog" :style="{ width: '450px' }" header="Historial de precios"
+            :modal="true">
             <table class="w-full">
                 <thead>
                     <th style="text-align: left">Fecha</th>
@@ -346,13 +404,17 @@ function verCuentaCorriente(cliente) {
                         <td>{{ price.FEC_FAC }}</td>
                         <td>{{ price.NUM_FAC }}</td>
                         <td>{{ price.CAN_IT }}</td>
-                        <td style="text-align: right">{{ price.PRE_IT.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</td>
+                        <td style="text-align: right">{{ price.PRE_IT.toLocaleString('es-AR', {
+                            style: 'currency',
+                            currency:
+                                'ARS'
+                        }) }}</td>
                     </tr>
                 </tbody>
             </table>
             <pre>
-                {{ selectedArticle.precios }}
-            </pre>
+        {{ selectedArticle.precios }}
+    </pre>
             <template #footer>
                 <Button label="Cerrar" icon="pi pi-times" text @click="priceHistoryDialog = false" />
             </template>
@@ -361,10 +423,7 @@ function verCuentaCorriente(cliente) {
         <Dialog v-model:visible="eliminararticuloDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
             <div class="flex items-center gap-4">
                 <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span v-if="cliente"
-                    >¿Estás seguro de que quieres eliminar <b>{{ cliente.NOM_CLI }}</b
-                    >?</span
-                >
+                <span v-if="cliente">¿Estás seguro de que quieres eliminar <b>{{ cliente.NOM_CLI }}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="eliminararticuloDialogo = false" />
