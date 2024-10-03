@@ -5,7 +5,7 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ProgressSpinner from 'primevue/progressspinner'; // Importa el componente de PrimeVue
+
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
@@ -46,7 +46,7 @@ const handleLogin = async () => {
     <FloatingConfigurator />
     <div
         class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
-        <div v-if="!loading"  class="flex flex-col items-center justify-center">
+        <div  class="flex flex-col items-center justify-center">
             <div
                 style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                 <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
@@ -79,13 +79,11 @@ const handleLogin = async () => {
                             <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">
                                 ¿Olvidaste tu contraseña?</span>
                         </div>
-                        <Button label="Ingresar" class="w-full" @click="handleLogin"></Button>
+                        <Button label="Ingresar" class="w-full" @click="handleLogin" :loading="loading" ></Button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div v-else class="flex justify-center">
-            <ProgressSpinner />
+         
         </div>
     </div>
     <Toast />
