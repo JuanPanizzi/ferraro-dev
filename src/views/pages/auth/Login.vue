@@ -23,7 +23,7 @@ const handleLogin = async () => {
         toast.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: '¡Login correcto!',
+            detail: '¡Inicio de sesión correcto!',
             life: 3000
         });
 
@@ -31,7 +31,7 @@ const handleLogin = async () => {
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Error en el login',
+            detail: 'Error al iniciar sesión',
             life: 3000
         });
 
