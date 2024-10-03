@@ -32,8 +32,16 @@ const articulo = ref({
     IVA1_ART: 21,
     UTI_ART: 7
 });
+const articulos = ref([])
+
 const articuloDialogo = ref(false);
-function abrirNuevo() {
+
+const isEditing = ref(false)
+
+function abrirNuevo(editing) {
+
+    if(!editing){
+     isEditing.value = false   
     articulo.value = {
         id: null,
         COD_ART: '',
@@ -51,6 +59,13 @@ function abrirNuevo() {
     };
     // enviado.value = false;
     articuloDialogo.value = true;
+
+}else{
+    isEditing.value = true   
+    articuloDialogo.value = true;
+
+}
+
 }
 
 const handleCloseModal = () => showArticleModal.value = false
@@ -64,7 +79,56 @@ const searchArticulo = (cod_it, index) => {
     });
 
 };
+async function crearArticle() {
 
+let newArticle = articulo.value;
+
+//VALIDAR CAMPOS
+// if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
+//     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+//     return;
+// }
+try {
+    const response = await ArticleService.createArticle(newArticle);
+
+    if (response.status >= 200) {
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
+        console.log('articulo creado');
+
+        articuloDialogo.value = false;
+        
+        articulos.value.push(response.data);
+    } else {
+
+        throw new Error('Error en la respuesta del servidor');
+    }
+} catch (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
+    console.log('error al crear articulo', error);
+}
+}
+async function editarArticle() {
+
+let article = articulo.value;
+
+try {
+    const response = await ArticleService.editarArticle(article);
+
+    if (response.status >= 200) {
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
+        console.log('articulo actualizado');
+
+        articuloDialogo.value = false;
+
+    } else {
+        throw new Error('Error en la respuesta del servidor');
+    }
+} catch (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
+    console.log('error al actualizar articulo', error);
+}
+
+}
 const addItem = () => {
     pedido.value.items.push({
         NUM_LIN: pedido.value.items.length + 1,
@@ -179,6 +243,10 @@ const setArticulo = (cod_it, index) => {
     pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
     pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
     pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
+    /* Llenamos articulo */
+    articulo.value = { ...cod_it };
+
+
 };
 
 
@@ -326,7 +394,7 @@ const uploadFiles = async (files) => {
                             emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
                             emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"></Select>
                         <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
-                            v-if="slotProps.data.COD_IT" />
+                            v-if="slotProps.data.COD_IT" @click="abrirNuevo(true)" />
                     </div>
 
                 </template>
@@ -377,7 +445,7 @@ const uploadFiles = async (files) => {
             </Column>
             <template #footer>
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text"
-                    label="Crear nuevo articulo" @click="abrirNuevo" />
+                    label="Crear nuevo articulo" @click="abrirNuevo(false)" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
@@ -434,7 +502,7 @@ const uploadFiles = async (files) => {
                     <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
 
                     <label for="material" class="block font-bold mb-2">Material</label>
-                    <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''" />
+                    <InputText id="material" v-model="articulo.MAT_ART"  />
                 </div>
 
                 <div class="flex gap-4">
@@ -504,7 +572,7 @@ const uploadFiles = async (files) => {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? crearArticle() : editarArticle() " />
             </template>
         </Dialog>
 </template>
