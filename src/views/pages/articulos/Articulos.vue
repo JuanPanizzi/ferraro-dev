@@ -146,7 +146,7 @@ function guardarCliente() {
 async function crearArticle() {
 
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.PV_ART) {
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART ) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -411,7 +411,7 @@ function saveArticle() {
                     <div>
                         <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
                         <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
-                            locale="en-US" :invalid="articulo.PV_ART == 0" />
+                            locale="en-US" />
                     </div>
                 </div>
             </div>
