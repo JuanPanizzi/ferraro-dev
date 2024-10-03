@@ -23,7 +23,6 @@ export const ArticleService = {
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
-            console.log(response.data)
         return await response.data;
             
         } catch (error) {

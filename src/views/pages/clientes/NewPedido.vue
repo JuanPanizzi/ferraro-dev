@@ -25,6 +25,7 @@ const pedido = ref({
 const clientSelected = ref(null)
 
 const articulo = ref({
+    id: null,
     COD_ART: '',
     NOM_ART: '',
     MAT_ART: '',
@@ -116,9 +117,10 @@ async function crearArticle() {
     }
 }
 async function editarArticle() {
-    console.log('SE EJECUTA EDITAR')
-    let article = articulo.value;
 
+    let article = articulo.value;
+    //hay que acceder al id
+    
     try {
         const response = await ArticleService.editarArticle(article);
 
@@ -236,6 +238,7 @@ const clientArticles = ref([]);
 const changeCliente = async (e) => {
     try {
         const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
+        // console.log('articles by client', articles) //--> No trae el id
         clientArticles.value = Array.isArray(articles) ? articles : [];
         clientSelected.value = e.value
     } catch (error) {
@@ -252,7 +255,7 @@ const setArticulo = (cod_it, index) => {
     pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
     pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
     /* Llenamos articulo */
-    articulo.value = { ...cod_it };
+    articulo.value = { ...cod_it }; //-->no viene el id
 
 
 };

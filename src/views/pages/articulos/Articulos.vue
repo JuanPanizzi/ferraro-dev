@@ -21,25 +21,40 @@ onMounted(() => {
     ArticleService.getArticlesXLarge().then((data) => (articulos.value = data));
 });
 
+const changeCliente = async (e) => {
+    clientSelected.value = e.value
+    console.log('clientSelected')
+    console.log(e.value)
+    // try {
+    //     const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
+    //     // console.log('articles by client', articles) //--> No trae el id
+    //     clientArticles.value = Array.isArray(articles) ? articles : [];
+    //     clientSelected.value = e.value
+    // } catch (error) {
+    //     console.error('Error fetching client articles:', error);
+    //     clientArticles.value = [];
+    // }
+};
+
 const toast = useToast();
 const dt = ref();
 const clientes = ref([]);
 const articulos = ref([
-{
-    id: null,
-    COD_ART: '',
-    NOM_ART: '',
-    MAT_ART: '',
-    NROPLANO_ART: '',
-    REV_PLANO: '',
-    NUM_CLI: '',
-    PLANO_ART: '',
-    COSMP_ART: 0,
-    COSM0_ART: 0,
-    PV_ART: 0,
-    IVA1_ART: 21,
-    UTI_ART: 7
-}
+    {
+        id: null,
+        COD_ART: '',
+        NOM_ART: '',
+        MAT_ART: '',
+        NROPLANO_ART: '',
+        REV_PLANO: '',
+        NUM_CLI: '',
+        PLANO_ART: '',
+        COSMP_ART: 0,
+        COSM0_ART: 0,
+        PV_ART: 0,
+        IVA1_ART: 21,
+        UTI_ART: 7
+    }
 ]);
 
 const articuloDialogo = ref(false);
@@ -130,15 +145,14 @@ function guardarCliente() {
 
 async function crearArticle() {
 
-    let newArticle = articulo.value;
 
-    // if (!validarCampos()) {
-    //     return; // No procede si los campos no están completos
-    // }
-    // if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
-    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
-    //     return;
-    // }
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.PV_ART) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+        return;
+    }
+
+    let newArticle = articulo.value;
+    console.log('arcitulo que se manda en nuevo arcitulo', newArticle);
     try {
         const response = await ArticleService.createArticle(newArticle);
 
@@ -160,14 +174,16 @@ async function crearArticle() {
 
 // modalEdit
 function modalEdit(article) {
+    console.log('article on modal edit', article)
     articulo.value = { ...article };
     articuloDialogo.value = true;
 }
 
-async function updateArticle() {
+async function editarArticle() {
 
     let article = articulo.value;
-
+    console.log('article que se manda en editar artciulo', article)
+    console.log('article.id', article.id)
     try {
         const response = await ArticleService.editarArticle(article);
 
@@ -187,15 +203,15 @@ async function updateArticle() {
 
 }
 
-async function editarArticle(article) {
-    const response = await ArticleService.editarArticle(article);
+// async function editarArticle(article) {
+//     const response = await ArticleService.editarArticle(article);
 
-    if (response.status >= 200 && response.status <= 299) {
-        console.log('articulo editado')
-    } else {
-        console.log('error al editar articulo')
-    }
-}
+//     if (response.status >= 200 && response.status <= 299) {
+//         console.log('articulo editado')
+//     } else {
+//         console.log('error al editar articulo')
+//     }
+// }
 
 function editarCliente(cli) {
     cliente.value = { ...cli };
@@ -246,7 +262,7 @@ function verCuentaCorriente(cliente) {
 
 function saveArticle() {
 
-    console.log('articulo', articulo.value.id);
+    // console.log('articulo', articulo.value.id);
 
     if (!articulo.value.id) {
 
@@ -254,7 +270,7 @@ function saveArticle() {
 
     } else {
 
-        updateArticle();
+        editarArticle();
     }
 }
 
