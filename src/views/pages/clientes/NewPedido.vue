@@ -7,7 +7,10 @@ import { PedidoService } from '@/service/PedidoService';
 // import ArticuloDialog from '../../../components/ArticleModal.vue'
 import { computed, onMounted, ref } from 'vue';
 import apiClient from '../../../service/api';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast()
 
 const pedido = ref({
     NUM_CLI: '',
@@ -40,8 +43,8 @@ const isEditing = ref(false)
 
 function abrirNuevo(editing) {
 
+    isEditing.value = editing  
     if(!editing){
-     isEditing.value = false   
     articulo.value = {
         id: null,
         COD_ART: '',
@@ -59,13 +62,14 @@ function abrirNuevo(editing) {
     };
     // enviado.value = false;
     articuloDialogo.value = true;
-
+    console.log('CREANDO')
 }else{
-    isEditing.value = true   
+    console.log('EDITANDO')
     articuloDialogo.value = true;
-
 }
-
+}
+function ocultarDialogo() {
+    articuloDialogo.value = false;
 }
 
 const handleCloseModal = () => showArticleModal.value = false
@@ -95,8 +99,6 @@ try {
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
         console.log('articulo creado');
 
-        articuloDialogo.value = false;
-        
         articulos.value.push(response.data);
     } else {
 
@@ -105,10 +107,14 @@ try {
 } catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
     console.log('error al crear articulo', error);
+
+} finally{
+    articuloDialogo.value = false;
+
 }
 }
 async function editarArticle() {
-
+console.log('SE EJECUTA EDITAR')
 let article = articulo.value;
 
 try {
@@ -493,6 +499,8 @@ const uploadFiles = async (files) => {
         </div>
 
     </div>
+    <Toast />
+
     <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO"
             :modal="true">
             <div class="flex flex-col gap-4">
@@ -572,7 +580,7 @@ const uploadFiles = async (files) => {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? crearArticle() : editarArticle() " />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()  " />
             </template>
         </Dialog>
 </template>
