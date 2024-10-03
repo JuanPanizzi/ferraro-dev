@@ -77,15 +77,16 @@ function ocultarDialogo() {
 
 async function crearCliente() {
 
-    const clienteCreado = await ClienteService.crearCliente(cliente.value)
+    const response = await ClienteService.crearCliente(cliente.value)
 
-    if (clienteCreado) {
+    if (response.status >= 200) {
         toast.add({
             severity: 'success',
             summary: 'Éxito',
             detail: 'Cliente creado correctamente',
             life: 3000
         });
+        clientes.value.push(response.data);
         clienteDialogo.value = false
     } else {
         toast.add({

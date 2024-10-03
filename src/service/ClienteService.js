@@ -20,7 +20,7 @@ export const ClienteService = {
 
             // Make the POST request to create the client
             const response = await apiClient.post('api/clientes', cliente);
-            return response.data;
+            return response;
         } catch (error) {
             throw new Error('Error al crear cliente', error);
         }
