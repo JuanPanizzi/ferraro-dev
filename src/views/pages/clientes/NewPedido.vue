@@ -221,8 +221,15 @@ const fetchCotizaciones = async () => {
 onMounted(fetchCotizaciones);
 
 const generate = () => {
-    console.log(pedido.value);
 
+    if(pedido.value.items[0].CAN_IT == 0 ){
+        toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad debe ser mayor a cero.', life: 3000 });
+        return;
+    }
+    if( pedido.value.items[0].PRE_IT == 0 ){
+        toast.add({ severity: 'error', summary: 'Error', detail: 'El precio debe ser mayor a cero.', life: 3000 });
+        return;
+    }
     PedidoService.createPedido(pedido.value).then((response) => {
         console.log(response);
 
@@ -504,7 +511,7 @@ const uploadFiles = async (files) => {
 
         <div class="flex justify-end gap-2 mt-4">
             <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
-            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="uploadFiles(files)"
+            <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate"
                 :disabled="!pedido.NUM_CLI" />
         </div>
 
