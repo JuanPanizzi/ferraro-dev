@@ -16,9 +16,10 @@ const loading = ref(false); // Variable para controlar el estado de carga
 const handleLogin = async () => {
     loading.value = true; // Activar el spinner de carga
     try {
-        await authStore.login({ email: email.value, password: password.value });
+        const userData = await authStore.login({ email: email.value, password: password.value });
 
-
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         router.push({ name: 'dashboard' });
         toast.add({
             severity: 'success',
