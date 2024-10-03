@@ -20,7 +20,8 @@ const pedido = ref({
     OBS_FAC: '',
     FEC_FAC: new Date().toISOString().substr(0, 10),
     TIP_MON: { label: 'Pesos', value: 'P' },
-    COT_DOLAR: 1
+    COT_DOLAR: 1,
+    // FILES: []
 });
 const clientSelected = ref(null)
 
@@ -253,6 +254,7 @@ const setArticulo = (cod_it, index) => {
     pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
     pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
     pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
+    
     /* Llenamos articulo */
     articulo.value = { ...cod_it }; //-->no viene el id
 
@@ -278,7 +280,9 @@ const onFileSelect = (event) => {
     const selectedFiles = Array.from(event.files); // Convierte FileList a un array
     selectedFiles.forEach((file) => {
         // Guardamos el archivo completo y sus propiedades necesarias
-        files.value.push({
+        // pedido.value.FILES.push({
+           files.value.push({
+            
             file: file,  // El archivo completo
             name: file.name,
             size: file.size,
@@ -290,11 +294,13 @@ const onFileSelect = (event) => {
 
 //FUNCION PARA ENVIAR ARCHIVOS AL BACKEND
 const uploadFiles = async (files) => {
+
     const formData = new FormData();
     files.forEach((fileData, index) => {
         // Aquí agregamos el archivo completo al FormData
         formData.append(`file${index + 1}`, fileData.file);  // Accede al archivo completo
     });
+
 
     try {
         // const response = await fetch(`${API_BASE_URL}/pedidos`, {
@@ -428,13 +434,13 @@ const uploadFiles = async (files) => {
             </Column>
             <Column field="CAN_IT" header="Cant.">
                 <template #body="slotProps">
-                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid :disabled="!pedido.NUM_CLI" />
+                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid :disabled="!pedido.NUM_CLI" :invalid="slotProps.data.CAN_IT <= 0"/>
                 </template>
             </Column>
             <Column field="PRE_IT" header="Precio">
                 <template #body="slotProps">
                     <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid
-                        :disabled="!pedido.NUM_CLI" />
+                        :disabled="!pedido.NUM_CLI":invalid="slotProps.data.PRE_IT <= 0" />
                 </template>
             </Column>
 
