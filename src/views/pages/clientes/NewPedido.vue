@@ -90,11 +90,10 @@ async function crearArticle() {
 
     let newArticle = articulo.value;
 
-    //VALIDAR CAMPOS
-    // if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
-    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
-    //     return;
-    // }
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.PV_ART) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+        return;
+    }
     try {
         const response = await ArticleService.createArticle(newArticle);
 
@@ -513,8 +512,8 @@ const uploadFiles = async (files) => {
                 <label for="codigo" class="block font-bold mb-2">Código</label>
                 <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
 
-                <label for="material" class="block font-bold mb-2">Material</label>
-                <InputText id="material" v-model="articulo.MAT_ART" />
+                <label for="material" class="block font-bold mb-2" >Material</label>
+                <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''"  />
             </div>
 
             <div class="flex gap-4">
@@ -532,7 +531,8 @@ const uploadFiles = async (files) => {
             <div class="flex gap-4">
                 <label for="cliente" class="block font-bold mb-2">Cliente</label>
                 <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
-                <InputText id="cliente" v-model="clientSelected.NOM_CLI" />
+                <InputText id="cliente" v-model="clientSelected.NOM_CLI" readonly />
+
                 <!-- <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter
                     optionLabel="NOM_CLI" placeholder="Seleccione un cliente" class="w-full md:w-full"
                     emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
