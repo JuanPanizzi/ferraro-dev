@@ -22,6 +22,8 @@ const pedido = ref({
     TIP_MON: { label: 'Pesos', value: 'P' },
     COT_DOLAR: 1
 });
+const clientSelected = ref(null)
+
 const articulo = ref({
     COD_ART: '',
     NOM_ART: '',
@@ -43,30 +45,30 @@ const isEditing = ref(false)
 
 function abrirNuevo(editing) {
 
-    isEditing.value = editing  
-    if(!editing){
-    articulo.value = {
-        id: null,
-        COD_ART: '',
-        NOM_ART: '',
-        MAT_ART: '',
-        NROPLANO_ART: '',
-        REV_PLANO: '',
-        NUM_CLI: '',
-        PLANO_ART: '',
-        COSMP_ART: 0,
-        COSMO_ART: 0,
-        PV_ART: 0,
-        IVA1_ART: 21,
-        UTI_ART: 7
-    };
-    // enviado.value = false;
-    articuloDialogo.value = true;
-    console.log('CREANDO')
-}else{
-    console.log('EDITANDO')
-    articuloDialogo.value = true;
-}
+    isEditing.value = editing
+    if (!editing) {
+        articulo.value = {
+            id: null,
+            COD_ART: '',
+            NOM_ART: '',
+            MAT_ART: '',
+            NROPLANO_ART: '',
+            REV_PLANO: '',
+            NUM_CLI: '',
+            PLANO_ART: '',
+            COSMP_ART: 0,
+            COSMO_ART: 0,
+            PV_ART: 0,
+            IVA1_ART: 21,
+            UTI_ART: 7
+        };
+        // enviado.value = false;
+        articuloDialogo.value = true;
+        console.log('CREANDO')
+    } else {
+        console.log('EDITANDO')
+        articuloDialogo.value = true;
+    }
 }
 function ocultarDialogo() {
     articuloDialogo.value = false;
@@ -85,54 +87,54 @@ const searchArticulo = (cod_it, index) => {
 };
 async function crearArticle() {
 
-let newArticle = articulo.value;
+    let newArticle = articulo.value;
 
-//VALIDAR CAMPOS
-// if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
-//     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
-//     return;
-// }
-try {
-    const response = await ArticleService.createArticle(newArticle);
+    //VALIDAR CAMPOS
+    // if (!articulo.COD_ART || !articulo.MAT_ART || !articulo.NOM_ART || !clientSelected || !articulo.PV_ART) {
+    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+    //     return;
+    // }
+    try {
+        const response = await ArticleService.createArticle(newArticle);
 
-    if (response.status >= 200) {
-        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
-        console.log('articulo creado');
+        if (response.status >= 200) {
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
+            console.log('articulo creado');
 
-        articulos.value.push(response.data);
-    } else {
+            articulos.value.push(response.data);
+        } else {
 
-        throw new Error('Error en la respuesta del servidor');
-    }
-} catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
-    console.log('error al crear articulo', error);
+            throw new Error('Error en la respuesta del servidor');
+        }
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
+        console.log('error al crear articulo', error);
 
-} finally{
-    articuloDialogo.value = false;
-
-}
-}
-async function editarArticle() {
-console.log('SE EJECUTA EDITAR')
-let article = articulo.value;
-
-try {
-    const response = await ArticleService.editarArticle(article);
-
-    if (response.status >= 200) {
-        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
-        console.log('articulo actualizado');
-
+    } finally {
         articuloDialogo.value = false;
 
-    } else {
-        throw new Error('Error en la respuesta del servidor');
     }
-} catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
-    console.log('error al actualizar articulo', error);
 }
+async function editarArticle() {
+    console.log('SE EJECUTA EDITAR')
+    let article = articulo.value;
+
+    try {
+        const response = await ArticleService.editarArticle(article);
+
+        if (response.status >= 200) {
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
+            console.log('articulo actualizado');
+
+            articuloDialogo.value = false;
+
+        } else {
+            throw new Error('Error en la respuesta del servidor');
+        }
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
+        console.log('error al actualizar articulo', error);
+    }
 
 }
 const addItem = () => {
@@ -235,6 +237,7 @@ const changeCliente = async (e) => {
     try {
         const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
         clientArticles.value = Array.isArray(articles) ? articles : [];
+        clientSelected.value = e.value
     } catch (error) {
         console.error('Error fetching client articles:', error);
         clientArticles.value = [];
@@ -242,7 +245,6 @@ const changeCliente = async (e) => {
 };
 
 const setArticulo = (cod_it, index) => {
-    console.log(cod_it, index);
     pedido.value.items[index].DES_IT = cod_it.NOM_ART;
     pedido.value.items[index].MAT_ART = cod_it.MAT_ART;
     // NROPLANO_ART, REV_PLANO, PLANO_ART
@@ -298,10 +300,10 @@ const uploadFiles = async (files) => {
         //     body: formData,
         // });
         const response = await apiClient.post('api/pedidos', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data' // Set the appropriate content type
-                }
-            });
+            headers: {
+                'Content-Type': 'multipart/form-data' // Set the appropriate content type
+            }
+        });
         if (!response.ok) {
             throw new Error(`Error en la subida de archivos: ${response.statusText}`);
         }
@@ -459,7 +461,7 @@ const uploadFiles = async (files) => {
 
             <!-- <ArticuloDialog :visible="showArticleModal" :articulo="articulo" :clients="clients"
                 :onCancelar="handleCloseModal" /> -->
-            
+
 
         </DataTable>
         <div class="my-2">
@@ -476,19 +478,19 @@ const uploadFiles = async (files) => {
                 class="p-button-outlined" chooseLabel="Adjuntar Archivos" uploadLabel="Subir Archivos"
                 cancelLabel="Cancelar" multiple :disabled="!pedido.NUM_CLI" />
         </div>
-    <!-- Archivos seleccionados -->
-<div class="my-4">
-    <h4 class="text-center">Archivos Seleccionados:</h4>
-    <ul class="flex flex-wrap justify-evenly">
-        <li v-for="(file, index) in files" :key="index" class="p-4 border border-gray-400 rounded-lg m-2">
-            <h2><strong>Archivo: {{ index + 1 }}</strong></h2>
-            <span>Nombre:</span> {{ file.name }} <br />
-            <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
-            <span>Tipo:</span> {{ file.type }} <br />
-            <!-- Opcional: Si quisieras mostrar alguna información adicional sobre el archivo en sí, podrías acceder a file.file -->
-        </li>
-    </ul>
-</div>
+        <!-- Archivos seleccionados -->
+        <div class="my-4">
+            <h4 class="text-center">Archivos Seleccionados:</h4>
+            <ul class="flex flex-wrap justify-evenly">
+                <li v-for="(file, index) in files" :key="index" class="p-4 border border-gray-400 rounded-lg m-2">
+                    <h2><strong>Archivo: {{ index + 1 }}</strong></h2>
+                    <span>Nombre:</span> {{ file.name }} <br />
+                    <span>Tamaño:</span> {{ (file.size / 1024).toFixed(2) }} KB <br />
+                    <span>Tipo:</span> {{ file.type }} <br />
+                    <!-- Opcional: Si quisieras mostrar alguna información adicional sobre el archivo en sí, podrías acceder a file.file -->
+                </li>
+            </ul>
+        </div>
 
 
 
@@ -501,86 +503,86 @@ const uploadFiles = async (files) => {
     </div>
     <Toast />
 
-    <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO"
-            :modal="true">
-            <div class="flex flex-col gap-4">
-                <!-- Código y Descripción -->
-                <div class="flex justify-start gap-4">
-                    <label for="codigo" class="block font-bold mb-2">Código</label>
-                    <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
+    <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO" :modal="true">
+        <div class="flex flex-col gap-4">
+            <!-- Código y Descripción -->
+            <div class="flex justify-start gap-4">
+                <label for="codigo" class="block font-bold mb-2">Código</label>
+                <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
 
-                    <label for="material" class="block font-bold mb-2">Material</label>
-                    <InputText id="material" v-model="articulo.MAT_ART"  />
-                </div>
+                <label for="material" class="block font-bold mb-2">Material</label>
+                <InputText id="material" v-model="articulo.MAT_ART" />
+            </div>
 
-                <div class="flex gap-4">
-                    <label for="descripcion" class="block font-bold mb-2">Descripción</label>
-                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full"
-                        :invalid="articulo.NOM_ART == ''" />
-                </div>
+            <div class="flex gap-4">
+                <label for="descripcion" class="block font-bold mb-2">Descripción</label>
+                <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full"
+                    :invalid="articulo.NOM_ART == ''" />
+            </div>
 
-                <div class="flex gap-4">
-                    <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
-                    <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
-                    <label for="revision" class="block font-bold mb-2">Rev</label>
-                    <InputText id="revision" v-model="articulo.REV_PLANO" />
-                </div>
-                <div class="flex gap-4">
-                    <label for="cliente" class="block font-bold mb-2">Cliente</label>
-                    <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
-                    <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter
-                        optionLabel="NOM_CLI" placeholder="Seleccione un cliente" class="w-full md:w-full"
-                        emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
-                        @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
-                    </Select>
+            <div class="flex gap-4">
+                <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
+                <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
+                <label for="revision" class="block font-bold mb-2">Rev</label>
+                <InputText id="revision" v-model="articulo.REV_PLANO" />
+            </div>
+            <div class="flex gap-4">
+                <label for="cliente" class="block font-bold mb-2">Cliente</label>
+                <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
+                <InputText id="cliente" v-model="clientSelected.NOM_CLI" />
+                <!-- <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter
+                    optionLabel="NOM_CLI" placeholder="Seleccione un cliente" class="w-full md:w-full"
+                    emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                    @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
+                </Select> -->
 
 
-                </div>
+            </div>
 
-                <hr />
-                <!-- Ubicación del Plano
+            <hr />
+            <!-- Ubicación del Plano
                 <div>
                     <label for="ubicacion_plano" class="block font-bold mb-2">Ubicación del Plano</label>
                     <InputText id="ubicacion_plano" v-model="articulo.PLANO_ART" />
                 </div>-->
 
-                <!-- Costo y Precio de Venta -->
-                <div class="flex justify-between gap-4">
-                    <div>
-                        <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
-                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD"
-                            locale="en-US" />
-                    </div>
-                    <div>
-                        <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
-                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD"
-                            locale="en-US" />
-                    </div>
-
-                    <div>
-                        <label for="costo_total" class="block font-bold mb-2">Costo Total</label>
-                        <!-- <InputNumber id="costo_total" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" /> --->
-                    </div>
+            <!-- Costo y Precio de Venta -->
+            <div class="flex justify-between gap-4">
+                <div>
+                    <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
+                    <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD"
+                        locale="en-US" />
+                </div>
+                <div>
+                    <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
+                    <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD"
+                        locale="en-US" />
                 </div>
 
-                <!-- IVA y Utilidad -->
-                <div class="flex justify-between gap-4">
-                    <div>
-                        <label for="utilidad" class="block font-bold mb-2">Utilidad</label>
-                        <InputNumber id="utilidad" v-model="articulo.UTI_ART" suffix="%" />
-                    </div>
-
-                    <div>
-                        <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
-                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
-                            locale="en-US" :invalid="articulo.PV_ART == 0" />
-                    </div>
+                <div>
+                    <label for="costo_total" class="block font-bold mb-2">Costo Total</label>
+                    <!-- <InputNumber id="costo_total" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" /> --->
                 </div>
             </div>
 
-            <template #footer>
-                <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()  " />
-            </template>
-        </Dialog>
+            <!-- IVA y Utilidad -->
+            <div class="flex justify-between gap-4">
+                <div>
+                    <label for="utilidad" class="block font-bold mb-2">Utilidad</label>
+                    <InputNumber id="utilidad" v-model="articulo.UTI_ART" suffix="%" />
+                </div>
+
+                <div>
+                    <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
+                    <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
+                        locale="en-US" :invalid="articulo.PV_ART == 0" />
+                </div>
+            </div>
+        </div>
+
+        <template #footer>
+            <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
+            <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()" />
+        </template>
+    </Dialog>
 </template>
