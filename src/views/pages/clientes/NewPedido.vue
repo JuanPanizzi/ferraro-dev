@@ -4,7 +4,7 @@ import { ClienteService } from '@/service/ClienteService';
 import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
 // import Dialog from 'primevue/dialog';
-import ArticuloDialog from '../../../components/ArticleModal.vue'
+// import ArticuloDialog from '../../../components/ArticleModal.vue'
 import { computed, onMounted, ref } from 'vue';
 import apiClient from '../../../service/api';
 
@@ -32,11 +32,27 @@ const articulo = ref({
     IVA1_ART: 21,
     UTI_ART: 7
 });
-const showArticleModal = ref(false);
+const articuloDialogo = ref(false);
+function abrirNuevo() {
+    articulo.value = {
+        id: null,
+        COD_ART: '',
+        NOM_ART: '',
+        MAT_ART: '',
+        NROPLANO_ART: '',
+        REV_PLANO: '',
+        NUM_CLI: '',
+        PLANO_ART: '',
+        COSMP_ART: 0,
+        COSMO_ART: 0,
+        PV_ART: 0,
+        IVA1_ART: 21,
+        UTI_ART: 7
+    };
+    // enviado.value = false;
+    articuloDialogo.value = true;
+}
 
-const handleArticleModal = (boolean) => {
-    showArticleModal.value = boolean;
-};
 const handleCloseModal = () => showArticleModal.value = false
 
 const searchArticulo = (cod_it, index) => {
@@ -361,18 +377,21 @@ const uploadFiles = async (files) => {
             </Column>
             <template #footer>
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text"
-                    label="Crear nuevo articulo" @click="handleArticleModal(true)" />
+                    label="Crear nuevo articulo" @click="abrirNuevo" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
             </template>
 
-            <ArticuloDialog :visible="showArticleModal" :articulo="articulo" :clients="clients"
-                :onCancelar="handleCloseModal" />
+            <!-- <ArticuloDialog :visible="showArticleModal" :articulo="articulo" :clients="clients"
+                :onCancelar="handleCloseModal" /> -->
+            
+
         </DataTable>
         <div class="my-2">
 
         </div>
+
 
         <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full"
             :disabled="!pedido.NUM_CLI" />
@@ -406,4 +425,86 @@ const uploadFiles = async (files) => {
         </div>
 
     </div>
+    <Dialog v-model:visible="articuloDialogo" :style="{ width: '650px' }" header="Detalles del ARTICULO"
+            :modal="true">
+            <div class="flex flex-col gap-4">
+                <!-- Código y Descripción -->
+                <div class="flex justify-start gap-4">
+                    <label for="codigo" class="block font-bold mb-2">Código</label>
+                    <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
+
+                    <label for="material" class="block font-bold mb-2">Material</label>
+                    <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''" />
+                </div>
+
+                <div class="flex gap-4">
+                    <label for="descripcion" class="block font-bold mb-2">Descripción</label>
+                    <InputText id="descripcion" v-model="articulo.NOM_ART" class="w-full"
+                        :invalid="articulo.NOM_ART == ''" />
+                </div>
+
+                <div class="flex gap-4">
+                    <label for="nroplano" class="block font-bold mb-2">Nº de Plano</label>
+                    <InputText id="nroplano" v-model="articulo.NROPLANO_ART" :invalid="articulo.NROPLANO_ART == ''" />
+                    <label for="revision" class="block font-bold mb-2">Rev</label>
+                    <InputText id="revision" v-model="articulo.REV_PLANO" />
+                </div>
+                <div class="flex gap-4">
+                    <label for="cliente" class="block font-bold mb-2">Cliente</label>
+                    <!-- <InputText id="cliente" v-model="articulo.NUM_CLI" /> -->
+                    <Select :invalid="clientSelected == null" v-model="clientSelected" :options="clients" filter
+                        optionLabel="NOM_CLI" placeholder="Seleccione un cliente" class="w-full md:w-full"
+                        emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                        @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
+                    </Select>
+
+
+                </div>
+
+                <hr />
+                <!-- Ubicación del Plano
+                <div>
+                    <label for="ubicacion_plano" class="block font-bold mb-2">Ubicación del Plano</label>
+                    <InputText id="ubicacion_plano" v-model="articulo.PLANO_ART" />
+                </div>-->
+
+                <!-- Costo y Precio de Venta -->
+                <div class="flex justify-between gap-4">
+                    <div>
+                        <label for="costo_mp" class="block font-bold mb-2">Costo MP</label>
+                        <InputNumber id="costo_mp" v-model="articulo.COSMP_ART" mode="currency" currency="USD"
+                            locale="en-US" />
+                    </div>
+                    <div>
+                        <label for="costo_mp" class="block font-bold mb-2">Costo MO</label>
+                        <InputNumber id="costo_mo" v-model="articulo.COSMO_ART" mode="currency" currency="USD"
+                            locale="en-US" />
+                    </div>
+
+                    <div>
+                        <label for="costo_total" class="block font-bold mb-2">Costo Total</label>
+                        <!-- <InputNumber id="costo_total" v-model="articulo.PV_ART" mode="currency" currency="USD" locale="en-US" /> --->
+                    </div>
+                </div>
+
+                <!-- IVA y Utilidad -->
+                <div class="flex justify-between gap-4">
+                    <div>
+                        <label for="utilidad" class="block font-bold mb-2">Utilidad</label>
+                        <InputNumber id="utilidad" v-model="articulo.UTI_ART" suffix="%" />
+                    </div>
+
+                    <div>
+                        <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
+                        <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
+                            locale="en-US" :invalid="articulo.PV_ART == 0" />
+                    </div>
+                </div>
+            </div>
+
+            <template #footer>
+                <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
+                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" />
+            </template>
+        </Dialog>
 </template>
