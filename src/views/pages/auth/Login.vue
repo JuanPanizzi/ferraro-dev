@@ -16,17 +16,25 @@ const loading = ref(false); // Variable para controlar el estado de carga
 const handleLogin = async () => {
     loading.value = true; // Activar el spinner de carga
     try {
-        const userData = await authStore.login({ email: email.value, password: password.value });
+        const response = await authStore.login({ email: email.value, password: password.value });
 
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        router.push({ name: 'dashboard' });
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: '¡Inicio de sesión correcto!',
-            life: 3000
-        });
+        console.log(response.status)
+        // localStorage.setItem('user', JSON.stringify(userData));
+        if(response.status >= 200){
+
+            toast.add({
+                severity: 'success',
+                summary: 'Inicio de sesión correcto',
+                detail: 'Cargando... ',
+                life: 3000
+            });
+            setTimeout(() => {
+                router.push({ name: 'dashboard' });
+                
+            }, 3000);
+        }else{
+            throw new Error
+        }
 
     } catch (error) {
         toast.add({
