@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+
 import apiClient from './api';
 
 export const PedidoService = {
@@ -11,7 +11,7 @@ export const PedidoService = {
             return response.data;
         } catch (error) {
             console.error('Error fetching pedidos:', error);
-            throw error; 
+            throw error;
         }
     },
 
@@ -24,7 +24,7 @@ export const PedidoService = {
             return response.data;
         } catch (error) {
             console.error(`Error fetching pedido with id ${id}:`, error);
-            throw error; 
+            throw error;
         }
     },
 
@@ -38,9 +38,9 @@ export const PedidoService = {
         // });
         // return response.json();
         try {
-            const response = await apiClient.post('api/pedidos/', pedido, {
+            const response = await apiClient.post('api/pedidos', pedido, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
             });
             return response.data;
@@ -51,9 +51,9 @@ export const PedidoService = {
         }
     },
 
-     // POST PARA ARCHIVOS MULTIMEDIA
+    // POST PARA ARCHIVOS MULTIMEDIA
     //  async uploadFiles(files) {
-        
+
     // }
 
 };

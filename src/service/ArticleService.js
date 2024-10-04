@@ -1,75 +1,58 @@
-import { API_BASE_URL } from './config';
 import apiClient from './api';
 
 export const ArticleService = {
     async searchArticle(code) {
-        // post
-        // const response = await fetch(`${API_BASE_URL}/articulos/search?code=${code}`, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
         try {
             const response = await apiClient.get(`api/articulos/search?code=${code}`);
-        
             return await response.data;
-            
         } catch (error) {
-            throw new Error("Error al buscar articulo");
-            
+            throw new Error("Error al buscar artículo");
         }
     },
+
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
-        return await response.data;
-            
+            return await response.data;
         } catch (error) {
-            throw new Error('error al buscar clientes')
+            throw new Error('Error al obtener artículos');
         }
-        // const response = await fetch(`${API_BASE_URL}/articulos`, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
     },
+
+    async getArticlesPaginated(page = 1, perPage = 50) {
+        // Nuevo método para paginación
+        try {
+            const response = await apiClient.get(`api/articulos?page=${page}&per_page=${perPage}`);
+            return response.data;  // El backend devuelve el objeto paginado completo
+        } catch (error) {
+            throw new Error('Error al obtener artículos paginados');
+        }
+    },
+
     async getArticlesByClient(clienteId) {
-        // const response = await fetch(`${API_BASE_URL}/articulos/cliente/${clienteId}`, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
-        // return await response.json();
         try {
             const response = await apiClient.get(`api/articulos/cliente/${clienteId}`);
             return response.data;
         } catch (error) {
-            throw new Error('Error al obtener clientes');
+            throw new Error('Error al obtener artículos por cliente');
         }
     },
 
     async createArticle(newArticle) {
-        console.log("newArticle:", newArticle)
         try {
             const response = await apiClient.post(`api/articulos`, newArticle);
             return response;
         } catch (error) {
-            throw new Error('Error al crear articulo');
+            throw new Error('Error al crear artículo');
         }
     },
 
     async editarArticle(article) {
-        console.log("article:", article)
         try {
             const response = await apiClient.put(`api/articulos/${article.id}`, article);
-            console.log('este es el articulo editado', response.data)
             return response;
         } catch (error) {
-            throw new Error('Error al editar articulo');
+            throw new Error('Error al editar artículo');
         }
     }
-
 };

@@ -5,10 +5,10 @@ import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
 // import Dialog from 'primevue/dialog';
 // import ArticuloDialog from '../../../components/ArticleModal.vue'
-import { computed, onMounted, ref } from 'vue';
-import apiClient from '../../../service/api';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { computed, onMounted, ref } from 'vue';
+import apiClient from '../../../service/api';
 
 const toast = useToast()
 
@@ -91,7 +91,7 @@ async function crearArticle() {
 
     let newArticle = articulo.value;
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART ) {
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -120,15 +120,23 @@ async function editarArticle() {
 
     let article = articulo.value;
     //hay que acceder al id
-    
+
     try {
         const response = await ArticleService.editarArticle(article);
 
         if (response.status >= 200) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
             console.log('articulo actualizado');
-
             articuloDialogo.value = false;
+
+            // find and update the article in pedido.value.items
+            const index = pedido.value.items.findIndex(item => item.COD_ART === article.COD_ART);
+
+            console.log('index in list to edit', index);
+
+
+
+
 
         } else {
             throw new Error('Error en la respuesta del servidor');
@@ -139,6 +147,8 @@ async function editarArticle() {
     }
 
 }
+
+
 const addItem = () => {
     pedido.value.items.push({
         NUM_LIN: pedido.value.items.length + 1,
@@ -222,11 +232,11 @@ onMounted(fetchCotizaciones);
 
 const generate = () => {
 
-    if(pedido.value.items[0].CAN_IT == 0 ){
+    if (pedido.value.items[0].CAN_IT == 0) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad debe ser mayor a cero.', life: 3000 });
         return;
     }
-    if( pedido.value.items[0].PRE_IT == 0 ){
+    if (pedido.value.items[0].PRE_IT == 0) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'El precio debe ser mayor a cero.', life: 3000 });
         return;
     }
@@ -261,7 +271,7 @@ const setArticulo = (cod_it, index) => {
     pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
     pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
     pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
-    
+
     /* Llenamos articulo */
     articulo.value = { ...cod_it }; //-->no viene el id
 
@@ -288,8 +298,8 @@ const onFileSelect = (event) => {
     selectedFiles.forEach((file) => {
         // Guardamos el archivo completo y sus propiedades necesarias
         // pedido.value.FILES.push({
-           files.value.push({
-            
+        files.value.push({
+
             file: file,  // El archivo completo
             name: file.name,
             size: file.size,
@@ -441,13 +451,14 @@ const uploadFiles = async (files) => {
             </Column>
             <Column field="CAN_IT" header="Cant.">
                 <template #body="slotProps">
-                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid :disabled="!pedido.NUM_CLI" :invalid="slotProps.data.CAN_IT <= 0"/>
+                    <InputNumber v-model="slotProps.data.CAN_IT" mode="decimal" fluid :disabled="!pedido.NUM_CLI"
+                        :invalid="slotProps.data.CAN_IT <= 0" />
                 </template>
             </Column>
             <Column field="PRE_IT" header="Precio">
                 <template #body="slotProps">
                     <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid
-                        :disabled="!pedido.NUM_CLI":invalid="slotProps.data.PRE_IT <= 0" />
+                        :disabled="!pedido.NUM_CLI" :invalid="slotProps.data.PRE_IT <= 0" />
                 </template>
             </Column>
 
@@ -525,8 +536,8 @@ const uploadFiles = async (files) => {
                 <label for="codigo" class="block font-bold mb-2">Código</label>
                 <InputText id="codigo" v-model="articulo.COD_ART" :invalid="articulo.COD_ART == ''" />
 
-                <label for="material" class="block font-bold mb-2" >Material</label>
-                <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''"  />
+                <label for="material" class="block font-bold mb-2">Material</label>
+                <InputText id="material" v-model="articulo.MAT_ART" :invalid="articulo.MAT_ART == ''" />
             </div>
 
             <div class="flex gap-4">
@@ -591,7 +602,7 @@ const uploadFiles = async (files) => {
                 <div>
                     <label for="precio_venta" class="block font-bold mb-2">Precio de Venta</label>
                     <InputNumber id="precio_venta" v-model="articulo.PV_ART" mode="currency" currency="USD"
-                        locale="en-US"  />
+                        locale="en-US" />
                 </div>
             </div>
         </div>

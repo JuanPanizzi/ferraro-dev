@@ -18,7 +18,7 @@ const clients = ref([]);
 
 onMounted(() => {
     ClienteService.getClientes().then((data) => (clients.value = data));
-    ArticleService.getArticlesXLarge().then((data) => (articulos.value = data));
+    ArticleService.getArticlesXLarge().then((data) => (articulos.value = data.data));
 });
 
 const changeCliente = async (e) => {
@@ -146,7 +146,7 @@ function guardarCliente() {
 async function crearArticle() {
 
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART ) {
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -180,28 +180,39 @@ function modalEdit(article) {
 }
 
 async function editarArticle() {
-
     let article = articulo.value;
-    console.log('article que se manda en editar artciulo', article)
-    console.log('article.id', article.id)
+    console.log('article que se manda en editar artículo', article);
+    console.log('article.id', article.id);
+
+    // set article.NUM_CLI to the selected client
+    article.NUM_CLI = clientSelected.value.NUM_CLI;
+
     try {
         const response = await ArticleService.editarArticle(article);
 
         if (response.status >= 200) {
+            // Aquí asumimos que los datos actualizados vienen en response.data
+            const updatedArticle = response.data;
+
+            // Buscar el artículo en el arreglo 'articulos' por su ID
+            const index = articulos.value.findIndex(a => a.id === article.id);
+            if (index !== -1) {
+                // Actualizar el artículo en el arreglo
+                articulos.value[index] = { ...articulos.value[index], ...updatedArticle };
+                console.log('artículo actualizado en la lista de artículos');
+            }
+
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
-            console.log('articulo actualizado');
-
             articuloDialogo.value = false;
-
         } else {
             throw new Error('Error en la respuesta del servidor');
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
-        console.log('error al actualizar articulo', error);
+        console.log('error al actualizar artículo', error);
     }
-
 }
+
 
 // async function editarArticle(article) {
 //     const response = await ArticleService.editarArticle(article);
@@ -280,10 +291,11 @@ function saveArticle() {
 <template>
     <div>
         <div class="card">
-            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="10" :filters="filtros"
+
+            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="50" :filters="filtros"
                 :globalFilterFields="['COD_ART', 'NOM_ART']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                :rowsPerPageOptions="[5, 10, 25]"
+                :rowsPerPageOptions="[50]"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">ARTICULOS</div>
@@ -326,11 +338,11 @@ function saveArticle() {
                     <template #body="slotProps"> {{ slotProps.data.PV_ART.toLocaleString('es-AR', {
                         style: 'currency',
                         currency: 'ARS'
-                    }) }} <Button icon="pi pi-history" severity="info" small text
-                            @click="priceHistory(slotProps.data)" /> </template>
+                    }) }} </template>
                 </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
+                        <Button icon="pi pi-history" severity="info" small text @click="priceHistory(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mx-2" @click="modalEdit(slotProps.data)" />
                         <!--  <Button icon="pi pi-list" severity="info" @click="priceHistory(slotProps.data)" />
                       <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
