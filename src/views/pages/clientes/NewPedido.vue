@@ -121,7 +121,7 @@ async function crearArticle() {
 async function editarArticle() {
 
     let article = articulo.value;
-    //hay que acceder al id
+   
 
     try {
         const response = await ArticleService.editarArticle(article);
@@ -132,11 +132,12 @@ async function editarArticle() {
             articuloDialogo.value = false;
 
             // find and update the article in pedido.value.items
+            
             const index = pedido.value.items.findIndex(item => item.COD_ART === article.COD_ART);
 
             console.log('index in list to edit', index);
 
-
+            // pedido.value.items[0].COD_IT = response.data; --> Agregar articulo editado a pedido items ?
 
 
 
