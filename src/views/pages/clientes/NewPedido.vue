@@ -95,6 +95,8 @@ async function crearArticle() {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
+    newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
+
     try {
         const response = await ArticleService.createArticle(newArticle);
 

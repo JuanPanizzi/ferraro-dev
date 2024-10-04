@@ -151,8 +151,8 @@ async function crearArticle() {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
-
     let newArticle = articulo.value;
+    newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
     console.log('arcitulo que se manda en nuevo arcitulo', newArticle);
     try {
         const response = await ArticleService.createArticle(newArticle);
@@ -182,8 +182,8 @@ function modalEdit(article) {
 
 async function editarArticle() {
     let article = articulo.value;
-    console.log('article que se manda en editar artículo', article);
-    console.log('article.id', article.id);
+    
+    
 
     // set article.NUM_CLI to the selected client
     article.NUM_CLI = clientSelected.value.NUM_CLI;
