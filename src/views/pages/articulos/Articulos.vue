@@ -89,7 +89,8 @@ function priceHistory(data) {
 
 const clientesSeleccionados = ref([]);
 const filtros = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    MAT_ART: { value: null, matchMode: FilterMatchMode.CONTAINS } 
 });
 const enviado = ref(false);
 
@@ -293,7 +294,7 @@ function saveArticle() {
         <div class="card">
 
             <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="50" :filters="filtros"
-                :globalFilterFields="['COD_ART', 'NOM_ART']"
+                :globalFilterFields="['COD_ART', 'NOM_ART', 'MAT_ART']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[50]"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
