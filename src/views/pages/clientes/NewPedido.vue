@@ -101,6 +101,8 @@ async function crearArticle() {
             let newItem = {
                 id: response.data.id,
                 NUM_LIN: pedido.value.items.length + 1,
+                COD_ART: newArticle.COD_ART,
+                NOM_ART: newArticle.NOM_ART,
                 MAT_ART: newArticle.MAT_ART,
                 NROPLANO_ART: newArticle.NROPLANO_ART,
                 REV_PLANO: newArticle.REV_PLANO,
@@ -434,7 +436,7 @@ const uploadFiles = async (files) => {
 
             <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.TIP_MON" optionLabel="label" @change="changeMoneda"
-                    :options="[{ label: 'Pesos', value: 'P' }, { label: 'Dólar Div.', value: 'DB' }, { label: 'Dólar Bill.', value: 'DV' }]"
+                    :options="[{ label: 'Pesos', value: 'P' }, { label: 'Dólar Div.', value: 'DV' }, { label: 'Dólar Bill.', value: 'DB' }]"
                     class="w-full md:w-full" :disabled="!pedido.NUM_CLI" />
                 <label for="TIP_MON" class="font-semibold w-24">Moneda </label>
             </FloatLabel>
