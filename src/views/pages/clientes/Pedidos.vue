@@ -38,7 +38,16 @@ const add = () => {
     router.push('/pedidos/new');
 };
 
+const hiddenPrices = ref(false);
 
+
+const pdfPedido = (id) => {
+    PedidoService.pdfPedido(id, hiddenPrices.value).then((response) => {
+        //console.log('response:', response.data.file);
+        window.open(response.data.file, '_blank');
+
+    });
+};
 </script>
 
 <template>
@@ -50,8 +59,15 @@ const add = () => {
                 <template #header>
                     <div class="font-semibold text-xl mb-4">PEDIDOS DE CLIENTES</div>
                     <div class="flex justify-between items-center">
-                        <div class="">
+
+                        <div class="card flex flex-wrap justify-center gap-4">
+                            <div class="flex items-center">
+                                <Checkbox v-model="hiddenPrices" inputId="hiddenPrices" name="hiddenPrices"
+                                    :binary="true" />
+                                <label for="hiddenPrices" class="ml-2"> Ocultar precios </label>
+                            </div>
                         </div>
+
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo pedido" class="mx-2 p-button-primary" @click="add" />
                         </div>
@@ -89,8 +105,9 @@ const add = () => {
                 <Column header="Acciones">
                     <template #body="data">
                         <div class="flex justify-center items-center">
-                            <Button icon="pi pi-file-pdf" severity="danger" class="mr-2" />
-                            <Button icon="pi pi-paperclip" severity="help" />
+                            <Button icon="pi pi-file-pdf" severity="danger" class="mr-2"
+                                @click="pdfPedido(data.data.id)" />
+                            <Button icon="pi pi-paperclip" severity="help" disabled />
                         </div>
                     </template>
                 </Column>

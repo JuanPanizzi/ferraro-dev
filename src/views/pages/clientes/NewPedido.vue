@@ -3,11 +3,10 @@ import { ArticleService } from '@/service/ArticleService';
 import { ClienteService } from '@/service/ClienteService';
 import { DolarService } from '@/service/DolarService';
 import { PedidoService } from '@/service/PedidoService';
-// import Dialog from 'primevue/dialog';
-// import ArticuloDialog from '../../../components/ArticleModal.vue'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import apiClient from '../../../service/api';
 
 const toast = useToast()
@@ -25,6 +24,8 @@ const pedido = ref({
 });
 const clientSelected = ref(null)
 
+const itemEditIndex = ref(null);
+
 const articulo = ref({
     id: null,
     COD_ART: '',
@@ -39,15 +40,19 @@ const articulo = ref({
     IVA1_ART: 21,
     UTI_ART: 7
 });
-const articulos = ref([])
 
 const articuloDialogo = ref(false);
 
 const isEditing = ref(false)
 
-function abrirNuevo(editing) {
+function abrirNuevo(editing, index) {
 
+    if (editing) {
+        itemEditIndex.value = index;
+    }
+    console.log('index in pedidos', index);
     isEditing.value = editing
+
     if (!editing) {
         articulo.value = {
             id: null,
@@ -64,7 +69,6 @@ function abrirNuevo(editing) {
             IVA1_ART: 21,
             UTI_ART: 7
         };
-        // enviado.value = false;
         articuloDialogo.value = true;
         console.log('CREANDO')
     } else {
@@ -76,17 +80,6 @@ function ocultarDialogo() {
     articuloDialogo.value = false;
 }
 
-const handleCloseModal = () => showArticleModal.value = false
-
-const searchArticulo = (cod_it, index) => {
-
-    ArticleService.searchArticle(cod_it).then((response) => {
-        if (response) {
-            pedido.value.items[index].DES_IT = response.NOM_ART;
-        }
-    });
-
-};
 async function crearArticle() {
 
     let newArticle = articulo.value;
@@ -104,7 +97,39 @@ async function crearArticle() {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
             console.log('articulo creado');
 
-            articulos.value.push(response.data);
+            // add new article to pedido items
+            let newItem = {
+                id: response.data.id,
+                NUM_LIN: pedido.value.items.length + 1,
+                MAT_ART: newArticle.MAT_ART,
+                NROPLANO_ART: newArticle.NROPLANO_ART,
+                REV_PLANO: newArticle.REV_PLANO,
+                PLANO_ART: newArticle.PLANO_ART,
+                DES_IT: newArticle.NOM_ART,
+                CAN_IT: 1,
+                PRE_IT: newArticle.PV_ART,
+                ART_LABEL: newArticle.COD_ART + ' - ' + newArticle.NOM_ART
+            };
+
+            clientArticles.value.push(newItem);
+
+            // add new item to pedido items
+            pedido.value.items.push({
+                OC: '',
+                OC_ITEM: '',
+                NUM_LIN: pedido.value.items.length + 1,
+                COD_IT: newItem,
+                DES_IT: newItem.DES_IT,
+                CAN_IT: 1,
+                PRE_IT: newItem.PRE_IT,
+                MAT_ART: newItem.MAT_ART,
+                NROPLANO_ART: newItem.NROPLANO_ART,
+                REV_PLANO: newItem.REV_PLANO,
+                PLANO_ART: newItem.PLANO_ART
+            });
+
+
+
         } else {
 
             throw new Error('Error en la respuesta del servidor');
@@ -121,7 +146,7 @@ async function crearArticle() {
 async function editarArticle() {
 
     let article = articulo.value;
-   
+
 
     try {
         const response = await ArticleService.editarArticle(article);
@@ -131,13 +156,8 @@ async function editarArticle() {
             console.log('articulo actualizado');
             articuloDialogo.value = false;
 
-            // find and update the article in pedido.value.items
-            
-            const index = pedido.value.items.findIndex(item => item.COD_ART === article.COD_ART);
+            // find In pedido items the item to update
 
-            console.log('index in list to edit', index);
-
-            // pedido.value.items[0].COD_IT = response.data; --> Agregar articulo editado a pedido items ?
 
 
 
@@ -170,20 +190,20 @@ const removeItem = (index) => {
     pedido.value.items.splice(index, 1);
 };
 
-const closeDialog = () => {
-    // Implement closeDialog logic here
-};
+const router = useRouter();
+const cancelPedido = () => {
 
-const nextStep = () => {
-    // Implement nextStep logic here
-};
 
+    // go back to /pedidos
+    router.push('/pedidos');
+
+}
 // getClientes from ClienteService
 const clients = ref([]);
 
 onMounted(async () => {
-    clients.value = await ClienteService.getClientes().then((data) => (clients.value = data));;
-    // console.log(clients.value)
+    await fetchCotizaciones();
+    clients.value = await ClienteService.getClientes();
 });
 
 
@@ -231,9 +251,27 @@ const fetchCotizaciones = async () => {
     }
 };
 
-onMounted(fetchCotizaciones);
 
 const generate = () => {
+
+    // vadidate for_pago
+    if (!pedido.value.FOR_PAG) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una forma de pago.', life: 3000 });
+        return;
+    }
+
+    // validate pedido items ids
+    if (pedido.value.items.some(item => !item.COD_IT)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione un artículo para cada línea.', life: 3000 });
+        return;
+    }
+
+    // validate fecha de entrega 
+    if (pedido.value.items.some(item => !item.FEC_ENT)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una fecha de entrega para cada línea.', life: 3000 });
+        return;
+    }
+
 
     if (pedido.value.items[0].CAN_IT == 0) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad debe ser mayor a cero.', life: 3000 });
@@ -243,11 +281,22 @@ const generate = () => {
         toast.add({ severity: 'error', summary: 'Error', detail: 'El precio debe ser mayor a cero.', life: 3000 });
         return;
     }
+
+
+    // si no puso el numero de orden de compra consultar si desea continuar
+    if (!pedido.value.NUM_OC) {
+        if (!confirm('¿Desea continuar sin ingresar el número de orden de compra?')) {
+            return;
+        }
+    }
+
+
     PedidoService.createPedido(pedido.value).then((response) => {
         console.log(response);
 
         if (response) {
-            alert('Pedido generado correctamente');
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido creado exitosamente.', life: 3000 });
+            router.push('/pedidos');
         }
     });
 
@@ -282,15 +331,9 @@ const setArticulo = (cod_it, index) => {
 };
 
 
-
-
-
 const openPlane = (url) => {
     window.open(url, '_blank');
 };
-// const onFileSelect = (e) => {
-//     console.log(e);
-// };
 
 // Estado para almacenar los archivos
 const files = ref([]);
@@ -364,10 +407,11 @@ const uploadFiles = async (files) => {
         <div class="flex items-center gap-4 mb-4 mt-8">
             <div class="flex flex-col" :class="{ 'mt-5': !pedido.NUM_CLI }">
                 <FloatLabel class="w-full md:w-56 ">
-                    <Select v-model="pedido.NUM_CLI" :options="clients" filter optionLabel="NOM_CLI"
-                        placeholder="Seleccione un cliente" class="w-full md:w-full border-red-500"
-                        emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
-                        @change="changeCliente" emptySelectionMessage="Seleccione un cliente">
+                    <Select v-model="pedido.NUM_CLI" :loading="clients.length === 0" :options="clients" filter
+                        optionLabel="NOM_CLI" placeholder="Seleccione un cliente"
+                        class="w-full md:w-full border-red-500" emptyFilterMessage="No se encontraron clientes"
+                        emptyMessage="No hay clientes" @change="changeCliente"
+                        emptySelectionMessage="Seleccione un cliente">
                     </Select>
                     <label for="NUM_CLI" class="font-semibold w-24 border-red-500">Cliente</label>
                 </FloatLabel>
@@ -426,11 +470,12 @@ const uploadFiles = async (files) => {
 
                         <Select v-model="slotProps.data.COD_IT" :options="clientArticles" filter optionLabel="ART_LABEL"
                             placeholder="Seleccione un artículo" class="w-full"
+                            :virtualScrollerOptions="{ itemSize: 38 }"
                             @change="setArticulo(slotProps.data.COD_IT, slotProps.index)"
                             emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
                             emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"></Select>
                         <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
-                            v-if="slotProps.data.COD_IT" @click="abrirNuevo(true)" />
+                            v-if="slotProps.data.COD_IT" @click="abrirNuevo(true, slotProps.index)" />
                     </div>
 
                 </template>
@@ -439,8 +484,8 @@ const uploadFiles = async (files) => {
             </Column>
             <Column field="NROPLANO_ART" header="Plano">
                 <template #body="slotProps">
-                    <Button v-if="slotProps.data.PLANO_ART" icon="pi pi-file" size="small" severity="info" link
-                        @click="openPlane(slotProps.data.PLANO_ART)" :label="slotProps.data.NROPLANO_ART" />
+                    <Button v-if="slotProps.data.NROPLANO_ART" icon="pi pi-file" size="small" severity="info" link
+                        @click="openPlane(slotProps.data.NROPLANO_ART)" :label="slotProps.data.NROPLANO_ART" />
 
                 </template>
             </Column>
@@ -488,15 +533,10 @@ const uploadFiles = async (files) => {
 
             </template>
 
-            <!-- <ArticuloDialog :visible="showArticleModal" :articulo="articulo" :clients="clients"
-                :onCancelar="handleCloseModal" /> -->
-
-
         </DataTable>
         <div class="my-2">
 
         </div>
-
 
         <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full"
             :disabled="!pedido.NUM_CLI" />
@@ -521,10 +561,15 @@ const uploadFiles = async (files) => {
             </ul>
         </div>
 
-
+        <!-- <pre>
+    {{ clientArticles }}
+</pre>
+        <pre>
+    {{ pedido.items }}
+</pre> -->
 
         <div class="flex justify-end gap-2 mt-4">
-            <Button type="button" label="Cancelar" severity="secondary" @click="closeDialog"></Button>
+            <Button type="button" label="Cancelar" severity="secondary" @click="cancelPedido"></Button>
             <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate"
                 :disabled="!pedido.NUM_CLI" />
         </div>

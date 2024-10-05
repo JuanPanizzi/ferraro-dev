@@ -56,4 +56,17 @@ export const PedidoService = {
 
     // }
 
+    // pdfPedido
+    async pdfPedido(id, hiddenprices) {
+        try {
+            const response = await apiClient.get(`api/pedidos/${id}/pdf?hiddenprices=${hiddenprices}`, {
+
+            });
+            return response;
+        } catch (error) {
+            console.error(`Error fetching pdf pedido with id ${id}:`, error);
+            throw error;
+        }
+    },
+
 };
