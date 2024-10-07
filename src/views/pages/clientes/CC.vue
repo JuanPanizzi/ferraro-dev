@@ -1,13 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { CustomerService } from '@/service/CustomerService';
-import Dialog from 'primevue/dialog';
-import Tag from 'primevue/tag';
+import { ClienteService } from '@/service/ClienteService';
 import Button from 'primevue/button';
-import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import Dialog from 'primevue/dialog';
 import ProgressSpinner from 'primevue/progressspinner';
+import Tag from 'primevue/tag';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const ventas = ref([]);
@@ -28,7 +28,7 @@ onMounted(async () => {
 async function loadVentas(page = 1) {
     const num_cli = route.params.id;
     loading.value = true;
-    const response = await CustomerService.getCuentaCorriente(num_cli, page);
+    const response = await ClienteService.getCuentaCorriente(num_cli, page);
     ventas.value = response.data;
     totalRecords.value = response.total; // Total number of records
     clienteNombre.value = ventas.value.length > 0 ? ventas.value[0].NOM_CLI : '';
@@ -72,7 +72,8 @@ function showDetail(venta) {
 
 <template>
     <div>
-        <DataTable :loading="loading" :value="ventas" paginator :rows="rowsPerPage" :total-records="totalRecords" :lazy="true" :first="(currentPage - 1) * rowsPerPage" @page="onPageChange">
+        <DataTable :loading="loading" :value="ventas" paginator :rows="rowsPerPage" :total-records="totalRecords"
+            :lazy="true" :first="(currentPage - 1) * rowsPerPage" @page="onPageChange">
             <template #header>
                 <h1>{{ clienteNombre }}</h1>
             </template>
@@ -91,21 +92,28 @@ function showDetail(venta) {
                 <template #body="rowData">{{ facturaTemplate(rowData.data) }}</template>
             </Column>
 
-            <Column field="SUBT_FAC" header="Subtotal" filter filterField="SUBT_FAC" filterPlaceholder="Buscar por subtotal">
-                <template #body="rowData">{{ rowData.data.SUBT_FAC.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</template>
+            <Column field="SUBT_FAC" header="Subtotal" filter filterField="SUBT_FAC"
+                filterPlaceholder="Buscar por subtotal">
+                <template #body="rowData">{{ rowData.data.SUBT_FAC.toLocaleString('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS' }) }}</template>
             </Column>
 
             <Column header="IVA" filter filterField="TOT_IVA1" filterPlaceholder="Buscar por IVA">
-                <template #body="rowData">{{ rowData.data.TOT_IVA1.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</template>
+                <template #body="rowData">{{ rowData.data.TOT_IVA1.toLocaleString('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS' }) }}</template>
             </Column>
 
             <Column field="TOT_FAC" header="Total" filter filterField="TOT_FAC" filterPlaceholder="Buscar por total">
-                <template #body="rowData">{{ (rowData.data.SUBT_FAC + rowData.data.TOT_IVA1).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</template>
+                <template #body="rowData">{{ (rowData.data.SUBT_FAC + rowData.data.TOT_IVA1).toLocaleString('es-AR', {
+                    style: 'currency', currency: 'ARS' }) }}</template>
             </Column>
 
             <Column header="Estado">
                 <template #body="slotProps">
-                    <Tag v-if="slotProps.data.TOT_PAG == slotProps.data.SUBT_FAC + slotProps.data.TOT_IVA1" severity="success" value="Pagada" />
+                    <Tag v-if="slotProps.data.TOT_PAG == slotProps.data.SUBT_FAC + slotProps.data.TOT_IVA1"
+                        severity="success" value="Pagada" />
                     <Tag v-else-if="slotProps.data.TOT_PAG >= 1" severity="info" value="Parcial" />
                     <Tag v-else-if="slotProps.data.ANULADA" severity="danger" value="Anulada" />
                     <Tag v-else severity="warn" value="Pendiente" />
@@ -120,7 +128,8 @@ function showDetail(venta) {
         </DataTable>
 
         <!-- Detail Modal -->
-        <Dialog :header="facturaTemplate(selectedVenta)" v-model:visible="showModal" :modal="true" :style="{ width: '50vw' }">
+        <Dialog :header="facturaTemplate(selectedVenta)" v-model:visible="showModal" :modal="true"
+            :style="{ width: '50vw' }">
             <template v-if="selectedVenta">
                 <div class="">
                     <div class="p-2 flex justify-between">
@@ -143,42 +152,56 @@ function showDetail(venta) {
                             <Column field="DES_IT" header="Descripción" />
                             <Column field="CAN_IT" header="Cantidad" />
                             <Column field="PRE_IT" header="Precio">
-                                <template #body="rowData">{{ rowData.data.PRE_IT.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</template>
+                                <template #body="rowData">{{ rowData.data.PRE_IT.toLocaleString('es-AR', {
+                                    style:
+                                    'currency', currency: 'ARS' }) }}</template>
                             </Column>
                             <Column header="Subtotal">
                                 <template #body="rowData">
-                                    {{ (rowData.data.PRE_IT * rowData.data.CAN_IT).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                                    {{ (rowData.data.PRE_IT * rowData.data.CAN_IT).toLocaleString('es-AR', {
+                                        style:
+                                    'currency', currency: 'ARS' }) }}
                                 </template>
                                 <template #footer>
                                     <div class="flex justify-end">
                                         <strong>
-                                            {{ selectedVenta.items.reduce((acc, item) => acc + item.PRE_IT * item.CAN_IT, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                                            {{ selectedVenta.items.reduce((acc, item) => acc + item.PRE_IT *
+                                                item.CAN_IT, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS'
+                                            }) }}
                                         </strong>
                                     </div>
                                 </template>
                             </Column>
                             <Column field="IVA1_IT" header="IVA">
-                                <template #body="rowData">{{ (((rowData.data.PRE_IT * rowData.data.IVA1_IT) / 100) * rowData.data.CAN_IT).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</template>
+                                <template #body="rowData">{{ (((rowData.data.PRE_IT * rowData.data.IVA1_IT) / 100) *
+                                    rowData.data.CAN_IT).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
+                                    }}</template>
                                 <template #footer>
                                     <div class="flex justify-end">
                                         <strong>
-                                            {{ selectedVenta.items.reduce((acc, item) => acc + ((item.PRE_IT * item.IVA1_IT) / 100) * item.CAN_IT, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                                            {{ selectedVenta.items.reduce((acc, item) => acc + ((item.PRE_IT *
+                                                item.IVA1_IT) / 100) * item.CAN_IT, 0).toLocaleString('es-AR', { style:
+                                            'currency', currency: 'ARS' }) }}
                                         </strong>
                                     </div>
                                 </template>
                             </Column>
                             <Column header="Total">
                                 <template #body="rowData">
-                                    {{ ((rowData.data.PRE_IT + (rowData.data.PRE_IT * rowData.data.IVA1_IT) / 100) * rowData.data.CAN_IT).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                                    {{ ((rowData.data.PRE_IT + (rowData.data.PRE_IT * rowData.data.IVA1_IT) / 100) *
+                                        rowData.data.CAN_IT).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
+                                    }}
                                 </template>
                                 <template #footer>
                                     <div class="flex justify-end">
                                         <strong>
                                             {{
-                                                (selectedVenta.items.reduce((acc, item) => acc + item.PRE_IT * item.CAN_IT, 0) + selectedVenta.items.reduce((acc, item) => acc + ((item.PRE_IT * item.IVA1_IT) / 100) * item.CAN_IT, 0)).toLocaleString(
-                                                    'es-AR',
-                                                    { style: 'currency', currency: 'ARS' }
-                                                )
+                                                (selectedVenta.items.reduce((acc, item) => acc + item.PRE_IT * item.CAN_IT,
+                                                    0) + selectedVenta.items.reduce((acc, item) => acc + ((item.PRE_IT *
+                                                        item.IVA1_IT) / 100) * item.CAN_IT, 0)).toLocaleString(
+                                                            'es-AR',
+                                                            { style: 'currency', currency: 'ARS' }
+                                            )
                                             }}
                                         </strong>
                                     </div>

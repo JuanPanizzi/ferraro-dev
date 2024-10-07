@@ -59,7 +59,6 @@ const articulos = ref([
 
 const articuloDialogo = ref(false);
 const eliminararticuloDialogo = ref(false);
-const eliminarClientesDialogo = ref(false);
 
 const priceHistoryDialog = ref(false);
 
@@ -90,7 +89,7 @@ function priceHistory(data) {
 const clientesSeleccionados = ref([]);
 const filtros = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    MAT_ART: { value: null, matchMode: FilterMatchMode.CONTAINS } 
+    MAT_ART: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const enviado = ref(false);
 
@@ -119,35 +118,11 @@ function ocultarDialogo() {
     enviado.value = false;
 }
 
-function guardarCliente() {
-    enviado.value = true;
-
-    if (cliente.value.NOM_CLI?.trim()) {
-        if (cliente.value.NUM_CLI) {
-            const index = buscarIndicePorId(cliente.value.NUM_CLI);
-            if (index >= 0) {
-                clientes.value[index] = cliente.value;
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Actualizado', life: 3000 });
-            } else {
-                cliente.value.NUM_CLI = crearId();
-                clientes.value.push(cliente.value);
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
-            }
-        } else {
-            cliente.value.NUM_CLI = crearId();
-            clientes.value.push(cliente.value);
-            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
-        }
-
-        articuloDialogo.value = false;
-        cliente.value = {};
-    }
-}
 
 async function crearArticle() {
 
 
-    if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART ) {
+    if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -163,6 +138,9 @@ async function crearArticle() {
 
             articuloDialogo.value = false;
             articulos.value.push(response.data);
+
+            // go to last page
+            dt.value.paginate({ first: Math.ceil(articulos.value.length / 50) * 50, rows: 50 });
         } else {
 
             throw new Error('Error en la respuesta del servidor');
@@ -182,8 +160,8 @@ function modalEdit(article) {
 
 async function editarArticle() {
     let article = articulo.value;
-    
-    
+
+
 
     // set article.NUM_CLI to the selected client
     article.NUM_CLI = clientSelected.value.NUM_CLI;
@@ -215,25 +193,6 @@ async function editarArticle() {
 }
 
 
-// async function editarArticle(article) {
-//     const response = await ArticleService.editarArticle(article);
-
-//     if (response.status >= 200 && response.status <= 299) {
-//         console.log('articulo editado')
-//     } else {
-//         console.log('error al editar articulo')
-//     }
-// }
-
-function editarCliente(cli) {
-    cliente.value = { ...cli };
-    articuloDialogo.value = true;
-}
-
-function confirmarEliminarCliente(cli) {
-    cliente.value = cli;
-    eliminararticuloDialogo.value = true;
-}
 
 function eliminarCliente() {
     clientes.value = clientes.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
@@ -242,39 +201,9 @@ function eliminarCliente() {
     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
 }
 
-function buscarIndicePorId(id) {
-    return clientes.value.findIndex((cliente) => cliente.NUM_CLI === id);
-}
-
-function crearId() {
-    return (clientes.value.length + 1).toString().padStart(4, '0');
-}
-
-function exportarCSV() {
-    dt.value.exportCSV();
-}
-
-function confirmarEliminarSeleccionados() {
-    eliminarClientesDialogo.value = true;
-}
-
-function eliminarClientesSeleccionados() {
-    clientes.value = clientes.value.filter((val) => !clientesSeleccionados.value.includes(val));
-    eliminarClientesDialogo.value = false;
-    clientesSeleccionados.value = null;
-    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Clientes Eliminados', life: 3000 });
-}
-
-function verCuentaCorriente(cliente) {
-    router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
-}
-
-
-// saveArticle
 
 function saveArticle() {
 
-    // console.log('articulo', articulo.value.id);
 
     if (!articulo.value.id) {
 
@@ -294,9 +223,10 @@ function saveArticle() {
         <div class="card">
 
             <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="50" :filters="filtros"
-                :globalFilterFields="['COD_ART', 'NOM_ART', 'MAT_ART']"
+                :totalRecords="totalRecords" @page="onPageChange"
+                :globalFilterFields="['COD_ART', 'NOM_ART', 'MAT_ART', 'NROPLANO_ART', 'CLIENT_LABEL']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                :rowsPerPageOptions="[50]"
+                :rowsPerPageOptions="[50]" sortField="id" :sortOrder="-1"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">ARTICULOS</div>
@@ -314,14 +244,6 @@ function saveArticle() {
                                 @click="abrirNuevo" />
                         </div>
                     </div>
-                    <!-- <div class="flex flex-wrap gap-2 items-center justify-between">
-                        <IconField>
-                            <InputIcon>
-                                <i class="pi pi-search" />
-                            </InputIcon>
-                            <InputText v-model="filtros['global'].value" placeholder="Buscar..." />
-                        </IconField>
-                    </div> -->
                 </template>
 
                 <!-- <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column> -->
@@ -477,15 +399,5 @@ function saveArticle() {
             </template>
         </Dialog>
 
-        <Dialog v-model:visible="eliminarClientesDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
-            <div class="flex items-center gap-4">
-                <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span v-if="cliente">¿Estás seguro de que quieres eliminar los clientes seleccionados?</span>
-            </div>
-            <template #footer>
-                <Button label="No" icon="pi pi-times" text @click="eliminarClientesDialogo = false" />
-                <Button label="Sí" icon="pi pi-check" text @click="eliminarClientesSeleccionados" />
-            </template>
-        </Dialog>
     </div>
 </template>

@@ -58,6 +58,16 @@ export const ClienteService = {
         } catch (error) {
             throw new Error('Error al obtener IVA Ventas');
         }
+    },
+
+    async getCuentaCorriente(num_cli, page = 1) {
+        try {
+            const response = await apiClient.get(`api/clientes/cuenta-corriente/${num_cli}?page=${page}`);
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al obtener cuenta corriente');
+        }
+
     }
 
 };
