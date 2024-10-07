@@ -520,6 +520,7 @@ const uploadFiles = async (files) => {
                         currency: 'ARS'
                     }) }}
 
+
                 </template>
             </Column>
             <Column>

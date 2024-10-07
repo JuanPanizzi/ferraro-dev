@@ -77,21 +77,21 @@ const pdfPedido = (id) => {
                     <div class="p-4 text-center">No hay datos para mostrar.</div>
                 </template>
 
-                <Column field="fec_fac" header="Fecha" sortable>
-                </Column>
+                <!-- <Column field="fec_fac" header="Fecha" sortable>
+                </Column> -->
 
                 <Column field="num_oc" header="Nro OC" sortable></Column>
                 <Column field="nom_cli" header="Cliente" sortable>
                 </Column>
                 <Column field="obs_fac" header="Observaciones" sortable></Column>
-                <Column header="Total" sortable>
+                <Column header="Total" sortable >
                     <template #body="data">
-                        <div class="flex justify-end items-center">
+                        <div class="flex justify-start items-center">
                             {{ data.data.tip_mon == 'P' ? '$' : 'u$d' }} {{ data.data.total }}
                         </div>
                     </template>
                 </Column>
-                <Column field="for_pag" header="Forma de Pago" sortable>
+                <!-- <Column field="for_pag" header="Forma de Pago" sortable>
 
                     <template #body="data">
                         <div class="flex justify-center items-center">
@@ -100,11 +100,11 @@ const pdfPedido = (id) => {
                             <span v-if="data.data.for_pag == 'C'">Cheque</span>
                         </div>
                     </template>
-                </Column>
+                </Column> -->
                 <!-- buttons: pdf, attachments -->
                 <Column header="Acciones">
                     <template #body="data">
-                        <div class="flex justify-center items-center">
+                        <div class="flex justify-start items-center">
                             <Button icon="pi pi-file-pdf" severity="danger" class="mr-2"
                                 @click="pdfPedido(data.data.id)" />
                             <Button icon="pi pi-paperclip" severity="help" disabled />
