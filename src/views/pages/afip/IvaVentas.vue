@@ -1,6 +1,6 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
-import { CustomerService } from '@/service/CustomerService';
+import { ClienteService } from '@/service/ClienteService';
 import { VentasService } from '@/service/VentasService';
 import { onMounted, ref } from 'vue';
 
@@ -33,11 +33,11 @@ const years = Array.from({ length: 20 }, (_, i) => ({
 const search = async () => {
     if (selectedMonth.value && selectedYear.value) {
         try {
-            // Fetch IVA Ventas data using CustomerService
+            // Fetch IVA Ventas data using ClienteService
             const mes = selectedMonth.value.value;
             const anio = selectedYear.value.value;
 
-            const response = await CustomerService.getIvaVentas(mes, anio);
+            const response = await ClienteService.getIvaVentas(mes, anio);
             ventasData.value = response;
         } catch (error) {
             console.error('Error :', error);
@@ -87,7 +87,7 @@ onMounted(() => {
     search();
 
     // GET CLIENTS
-    CustomerService.getCustomersMinimal().then((response) => {
+    ClienteService.getCustomersMinimal().then((response) => {
         clients.value = response;
     });
 });
@@ -204,12 +204,14 @@ const exportExcel = () => {
 
                 <template #footer>
                     <div class="flex justify-end gap-2 mt-4">
-                        <Button icon="pi pi-times" label="Cerrar" class="p-button-secondary" @click="visibleDialogIvaVentas = false" />
+                        <Button icon="pi pi-times" label="Cerrar" class="p-button-secondary"
+                            @click="visibleDialogIvaVentas = false" />
                     </div>
                 </template>
             </Dialog>
 
-            <ComprobanteDialog v-model:visibleDialog="visibleDialogAdd" :afipComp="afipComp" :clients="clients" :types="types" header="Nuevo comprobante" @next="newNext" @search-articulo="searchArticulo" />
+            <ComprobanteDialog v-model:visibleDialog="visibleDialogAdd" :afipComp="afipComp" :clients="clients"
+                :types="types" header="Nuevo comprobante" @next="newNext" @search-articulo="searchArticulo" />
 
             <DataTable :value="ventasData" ref="dt">
                 <template #header>
@@ -219,19 +221,24 @@ const exportExcel = () => {
                             MES :
 
                             <!-- Month Selector -->
-                            <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2" placeholder="Mes" />
+                            <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2"
+                                placeholder="Mes" />
 
                             AÑO :
                             <!-- Year Selector -->
-                            <Select v-model="selectedYear" :options="years" :optionLabel="'label'" class="mx-2" placeholder="Año" />
+                            <Select v-model="selectedYear" :options="years" :optionLabel="'label'" class="mx-2"
+                                placeholder="Año" />
                             <!-- Search Button -->
-                            <Button @click="search" class="mx-2" :disabled="!selectedMonth || !selectedYear" icon="pi pi-search" />
-                            <Button icon="pi pi-file-export" label="IVA Ventas" @click="dialogIvaVentas" :disabled="ventasData.length === 0" class="mx-2 p-button-info" />
+                            <Button @click="search" class="mx-2" :disabled="!selectedMonth || !selectedYear"
+                                icon="pi pi-search" />
+                            <Button icon="pi pi-file-export" label="IVA Ventas" @click="dialogIvaVentas"
+                                :disabled="ventasData.length === 0" class="mx-2 p-button-info" />
                             <!--- download PDF
                             <Button icon="pi pi-file-pdf" label="PDF" @click="exportPDF" :disabled="ventasData.length === 0" class="mx-2 p-button-danger" />-->
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo comprobante" class="mx-2 p-button-primary" @click="add" />
+                            <Button icon="pi pi-plus" label="Nuevo comprobante" class="mx-2 p-button-primary"
+                                @click="add" />
                         </div>
                     </div>
                 </template>
@@ -239,7 +246,8 @@ const exportExcel = () => {
                     <div class="p-4 text-center">No hay datos para mostrar, seleccione un mes y un año.</div>
                 </template>
                 <Column field="FEC_FAC" header="Fecha Fac.">
-                    <template #body="slotProps">{{ new Date(slotProps.data.FEC_FAC).toLocaleDateString('es-AR') }}</template>
+                    <template #body="slotProps">{{ new Date(slotProps.data.FEC_FAC).toLocaleDateString('es-AR')
+                        }}</template>
                 </Column>
                 <!-- NUM_FAC -->
                 <Column field="NUM_FAC" header="Nº Comp.">
@@ -257,16 +265,21 @@ const exportExcel = () => {
                     </template>
                     <template #footer>
                         <!-- Total -->
-                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
+                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC, 0).toLocaleString('es-AR', {
+                            style:
+                            'currency', currency: 'ARS' }) }}</b>
                     </template>
                 </Column>
                 <Column field="TOT_IVA1" header="Iva Inscripto" style="text-align: right" headerClass="th-text-right">
                     <template #body="slotProps">
-                        {{ (slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                        {{ (slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', {
+                            style: 'currency', currency: 'ARS'
+                        }) }}
                     </template>
                     <template #footer>
                         <!-- Total -->
-                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC * 0.21, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
+                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC * 0.21, 0).toLocaleString('es-AR', {
+                            style: 'currency', currency: 'ARS' }) }}</b>
                     </template>
                 </Column>
                 <!-- <Column field="TOT_IVA2" header="Iva No Insc." style="text-align: right">
@@ -286,11 +299,14 @@ const exportExcel = () => {
                 </Column> -->
                 <Column header="Total" style="text-align: right" headerClass="th-text-right">
                     <template #body="slotProps">
-                        {{ (slotProps.data.SUBT_FAC + slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}
+                        {{ (slotProps.data.SUBT_FAC + slotProps.data.SUBT_FAC * 0.21).toLocaleString('es-AR', {
+                            style:
+                                'currency', currency: 'ARS' }) }}
                     </template>
                     <template #footer>
                         <!-- Total -->
-                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC + item.SUBT_FAC * 0.21, 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
+                        <b>{{ ventasData.reduce((acc, item) => acc + item.SUBT_FAC + item.SUBT_FAC * 0.21,
+                            0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }) }}</b>
                     </template>
                 </Column>
             </DataTable>

@@ -48,5 +48,16 @@ export const ClienteService = {
         } catch (error) {
             throw new Error('Error al eliminar cliente');
         }
+    },
+
+
+    async getIvaVentas(mes, anio) {
+        try {
+            const response = await apiClient.get(`api/iva-ventas?mes=${mes}&anio=${anio}`);
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al obtener IVA Ventas');
+        }
     }
+
 };

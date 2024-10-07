@@ -76,15 +76,22 @@ const router = createRouter({
                 {
                     path: '/iva-ventas',
                     name: 'ivaventas',
-                    component: () => import('@/views/pages/afip/IvaVentas.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/afip/IvaVentas.vue'),
+                    meta: { requiresAuth: true }
                 },
                 {
                     path: '/documentation',
                     name: 'documentation',
                     component: () => import('@/views/pages/Documentation.vue')
                     //meta: { requiresAuth: true }
-                }
+                },
+                // profile
+                {
+                    path: '/profile',
+                    name: 'profile',
+                    component: () => import('@/views/pages/auth/Profile.vue'),
+                    meta: { requiresAuth: true }
+                },
             ]
         },
         {

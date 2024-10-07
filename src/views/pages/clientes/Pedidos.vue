@@ -77,6 +77,7 @@ const pdfPedido = (id) => {
                     <div class="p-4 text-center">No hay datos para mostrar.</div>
                 </template>
 
+                <Column field="id" header="#" sortable></Column>
                 <Column field="fec_fac" header="Fecha" sortable>
                 </Column>
 

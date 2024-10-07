@@ -15,15 +15,15 @@ export const useAuthStore = defineStore('auth', {
                 this.token = response.data.token;
                 this.user = response.data.user;
                 localStorage.setItem('auth_token', this.token); // Guardar token en localStorage
-                localStorage.setItem('user', this.user); // Guardar user en localStorage
-                
+                // localStorage.setItem('user', this.user); // Guardar user en localStorage
+
                 return response;
             } catch (error) {
                 throw new Error('Error al iniciar sesión');
             }
         },
         async logout() {
-            await apiClient.post('/logout');
+            await apiClient.post('/api/logout');
             this.user = null;
             this.token = null;
             localStorage.removeItem('auth_token'); // Eliminar token de localStorage
@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
         async fetchUser() {
             try {
                 const response = await apiClient.get('/api/user');
-                this.user = response.data;
+                this.user = response.data.user;
             } catch (error) {
                 throw new Error('Error al obtener el usuario');
             }

@@ -1,6 +1,5 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
-import { ProductService } from '@/service/ProductService';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -16,7 +15,6 @@ const items = ref([
 ]);
 
 onMounted(() => {
-    ProductService.getProductsSmall().then((data) => (products.value = data));
     chartData.value = setChartData();
     chartOptions.value = setChartOptions();
 });
@@ -114,7 +112,7 @@ watch([getPrimary, getSurface, isDarkTheme], () => {
         <div>
             <!-- button agregar compra, venta, cotizar -->
             <Button :label="'Nueva venta'" icon="pi pi-dollar" class="p-button-success m-1" />
-            <Button :label="'Nueva compra'" icon="pi pi-shopping-cart" class="p-button-warn m-1"  />
+            <Button :label="'Nueva compra'" icon="pi pi-shopping-cart" class="p-button-warn m-1" />
             <Button :label="'Nueva cotización'" icon="pi pi-file" class="p-button-info m-1" />
             <Button :label="'Nuevo Pedido'" icon="pi pi-cart-plus" class="p-button-help m-1" @click="add" />
 
