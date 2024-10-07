@@ -12,6 +12,15 @@ export const ClienteService = {
             throw new Error('Error al obtener clientes');
         }
     },
+    async getCustomersMinimal() {
+        try {
+            const response = await apiClient.get('api/clientes?minimal=true');
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al obtener clientes ( minimal )');
+        }
+
+    },
 
     async crearCliente(cliente) {
         try {

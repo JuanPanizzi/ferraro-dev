@@ -1,5 +1,5 @@
 <script setup>
-import { CustomerService } from '@/service/CustomerService';
+import { ClienteService } from '@/service/ClienteService';
 import { PedidoService } from '@/service/PedidoService';
 import { onMounted, ref } from 'vue';
 
@@ -24,7 +24,7 @@ onMounted(() => {
     search();
 
     // GET CLIENTS
-    CustomerService.getCustomersMinimal().then((response) => {
+    ClienteService.getCustomersMinimal().then((response) => {
         clients.value = response;
     });
 
