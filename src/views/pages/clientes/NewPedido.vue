@@ -84,7 +84,7 @@ async function crearArticle() {
 
     let newArticle = articulo.value;
 
-    if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART  ) {
+    if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -147,7 +147,7 @@ async function crearArticle() {
 }
 async function editarArticle() {
 
-    
+
     let article = articulo.value;
 
 
@@ -161,7 +161,17 @@ async function editarArticle() {
 
             // find In pedido items the item to update
 
+            // Encuentra y actualiza el artículo en clientArticles
+            const index = clientArticles.value.findIndex(a => a.MAT_ART === article.MAT_ART);
+            if (index !== -1) {
+                clientArticles.value[index] = { ...article };
+            }
 
+            // Actualizar también el artículo seleccionado en el pedido
+            const pedidoIndex = pedido.value.items.findIndex(item => item.MAT_ART === article.MAT_ART);
+            if (pedidoIndex !== -1) {
+                setArticulo(article, pedidoIndex); // Actualiza el pedido con el artículo editado
+            }
 
 
         } else {
@@ -320,15 +330,18 @@ const changeCliente = async (e) => {
 };
 
 const setArticulo = (cod_it, index) => {
-    pedido.value.items[index].DES_IT = cod_it.NOM_ART;
-    pedido.value.items[index].MAT_ART = cod_it.MAT_ART;
+    // pedido.value.items[index].DES_IT = cod_it.NOM_ART;
+    // pedido.value.items[index].MAT_ART = cod_it.MAT_ART;
+    // pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
+    // pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
+    // pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
     // NROPLANO_ART, REV_PLANO, PLANO_ART
-    pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
-    pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
-    pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
 
+    // Actualizamos todos los campos del artículo seleccionado
+    pedido.value.items[index] = { ...pedido.value.items[index], ...cod_it };
+    articulo.value = { ...cod_it }; // Asignamos el artículo para editar
     /* Llenamos articulo */
-    articulo.value = { ...cod_it }; //-->no viene el id
+    articulo.value = { ...cod_it };
 
 
 };
@@ -466,23 +479,29 @@ const uploadFiles = async (files) => {
             </template>
             <Column field="NUM_LIN" header="#"></Column>
             <Column field="COD_IT" header="Artículo">
-
-                <template #body="slotProps">
-
-                    <div style="display: flex;">
-
-                        <Select v-model="slotProps.data.COD_IT" :options="clientArticles" filter optionLabel="ART_LABEL"
-                            placeholder="Seleccione un artículo" class="w-full"
-                            :virtualScrollerOptions="{ itemSize: 38 }"
-                            @change="setArticulo(slotProps.data.COD_IT, slotProps.index)"
-                            emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
-                            emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"></Select>
-                        <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
-                            v-if="slotProps.data.COD_IT" @click="abrirNuevo(true, slotProps.index)" />
-                    </div>
-
-                </template>
-            </Column>
+      <template #body="slotProps">
+        <div style="display: flex;">
+          <!-- v-model debe apuntar al artículo completo, no solo a un campo -->
+          <Select v-model="pedido.items[slotProps.index]"
+                  :options="clientArticles"
+                  filter
+                  optionLabel="NOM_ART" 
+                  placeholder="Seleccione un artículo"
+                  class="w-full"
+                  :virtualScrollerOptions="{ itemSize: 38 }"
+                  @change="setArticulo(pedido.items[slotProps.index], slotProps.index)"
+                  emptyFilterMessage="No se encontraron artículos"
+                  emptyMessage="No hay artículos"
+                  emptySelectionMessage="Seleccione un artículo"
+                  :disabled="!pedido.NUM_CLI" />
+          <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
+          <Button outlined icon="pi pi-pencil"
+                  class="ml-2 p-button-sm p-button-success"
+                  v-if="pedido.items[slotProps.index].MAT_ART" 
+                  @click="abrirNuevo(true, slotProps.index)" />
+        </div>
+      </template>
+    </Column>
             <Column field="MAT_ART" header="Material">
             </Column>
             <Column field="NROPLANO_ART" header="Plano">
@@ -497,7 +516,8 @@ const uploadFiles = async (files) => {
             <Column field="FEC_ENT" header="Entrega">
                 <template #body="slotProps">
                     <DatePicker v-model="slotProps.data.FEC_ENT" showButtonBar dateFormat="dd/mm/yy"
-                        :disabled="!pedido.NUM_CLI"  :invalid="pedido.NUM_CLI && !slotProps.data.FEC_ENT|| slotProps.data.FEC_ENT == ''"/>
+                        :disabled="!pedido.NUM_CLI"
+                        :invalid="pedido.NUM_CLI && !slotProps.data.FEC_ENT || slotProps.data.FEC_ENT == ''" />
                 </template>
             </Column>
             <Column field="CAN_IT" header="Cant.">
