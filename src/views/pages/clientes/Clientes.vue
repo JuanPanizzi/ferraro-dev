@@ -1,10 +1,10 @@
 <script setup>
 import { ClienteService } from '@/service/ClienteService';
 import { FilterMatchMode } from '@primevue/core/api';
+import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import Toast from 'primevue/toast';
 
 
 // Usa el router
@@ -77,6 +77,17 @@ function ocultarDialogo() {
 
 async function crearCliente() {
 
+    // toast error if cliente NOM_CLI is empty
+    if (!cliente.value.NOM_CLI) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El nombre es obligatorio',
+            life: 3000
+        });
+        return;
+    }
+
     const response = await ClienteService.crearCliente(cliente.value)
 
     if (response.status >= 200) {
@@ -88,6 +99,7 @@ async function crearCliente() {
         });
         clientes.value.push(response.data);
         clienteDialogo.value = false
+        isEditing.value = false
     } else {
         toast.add({
             severity: 'error',
@@ -110,6 +122,11 @@ async function actualizarCliente() {
             life: 3000
         });
         clienteDialogo.value = false
+
+        // update cliente in clientes array
+        const index = buscarIndicePorId(cliente.value.NUM_CLI);
+        clientes.value[index] = cliente.value;
+        isEditing.value = false
 
     } else {
         toast.add({
@@ -215,7 +232,8 @@ function verCuentaCorriente(cliente) {
                 :globalFilterFields="['NUM_CLI', 'NOM_CLI']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes">
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes" sortField="NUM_CLI"
+                :sortOrder="-1">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">CLIENTES</div>
                     <div class="flex justify-between items-center">

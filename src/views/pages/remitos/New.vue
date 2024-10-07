@@ -1,6 +1,6 @@
 <script setup>
 import { ArticleService } from '@/service/ArticleService';
-import { CustomerService } from '@/service/CustomerService';
+import { ClienteService } from '@/service/ClienteService';
 import { RemitoService } from '@/service/RemitoService';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -22,7 +22,7 @@ onMounted(() => {
     const today = new Date();
     remito.value.FEC_REM = today.toLocaleDateString('es-ES');
 
-    CustomerService.getCustomersMinimal().then((response) => {
+    ClienteService.getCustomersMinimal().then((response) => {
         clients.value = response;
     });
 });
@@ -81,7 +81,8 @@ const generate = () => {
 
         <div class="flex items-center gap-4 mb-4">
             <label for="NUM_CLI" class="font-semibold w-24">Cliente:</label>
-            <Select v-model="remito.NUM_CLI" :options="clients" filter optionLabel="LABEL_CLI" placeholder="Seleccione un cliente" class="w-full md:w-64" />
+            <Select v-model="remito.NUM_CLI" :options="clients" filter optionLabel="LABEL_CLI"
+                placeholder="Seleccione un cliente" class="w-full md:w-64" />
 
             <label for="FEC_REM" class="font-semibold w-24">Fecha:</label>
             <DatePicker v-model="remito.FEC_REM" id="FEC_REM" dateFormat="dd/mm/yy" placeholder="dd/mm/aaaa" />
@@ -109,28 +110,36 @@ const generate = () => {
                     <tr v-for="(item, index) in remito.items" :key="index">
                         <td style="border: 1px solid #ccc; padding: 1px; text-align: center">{{ item.NUM_LIN }}</td>
                         <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.OC_NUMBRE" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
+                            <input type="text" v-model="item.OC_NUMBRE"
+                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                         </td>
                         <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.OC_LINE" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
+                            <input type="text" v-model="item.OC_LINE"
+                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                         </td>
                         <td style="border: 1px solid #ccc; padding: 4px; display: flex; align-items: center; gap: 4px">
-                            <input type="text" v-model="item.COD_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
-                            <Button icon="pi pi-search" outlined severity="info" v-if="item.COD_IT" size="small" @click="searchArticulo(item.COD_IT, index)" />
+                            <input type="text" v-model="item.COD_IT"
+                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
+                            <Button icon="pi pi-search" outlined severity="info" v-if="item.COD_IT" size="small"
+                                @click="searchArticulo(item.COD_IT, index)" />
                         </td>
                         <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="text" v-model="item.DES_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
+                            <input type="text" v-model="item.DES_IT"
+                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                         </td>
                         <td style="border: 1px solid #ccc; padding: 1px">
-                            <input type="number" v-model="item.CAN_IT" style="border: 1px solid #aaa; width: 100%; padding: 4px" />
+                            <input type="number" v-model="item.CAN_IT"
+                                style="border: 1px solid #aaa; width: 100%; padding: 4px" />
                         </td>
-                        <td style="border: 1px solid #ccc; padding: 4px; text-align: center; cursor: pointer" @click="removeItem(index)">
+                        <td style="border: 1px solid #ccc; padding: 4px; text-align: center; cursor: pointer"
+                            @click="removeItem(index)">
                             <Button icon="pi pi-trash" outlined severity="danger" size="small" />
                         </td>
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr style="text-align: center; padding: 2px; font-weight: bold; cursor: pointer" class="bg-green-200 hover:bg-green-300">
+                    <tr style="text-align: center; padding: 2px; font-weight: bold; cursor: pointer"
+                        class="bg-green-200 hover:bg-green-300">
                         <td colspan="7" @click="addItem"><i class="pi pi-plus"></i> Añadir</td>
                     </tr>
                 </tfoot>
