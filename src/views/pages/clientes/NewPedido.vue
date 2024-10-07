@@ -84,7 +84,7 @@ async function crearArticle() {
 
     let newArticle = articulo.value;
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.NROPLANO_ART  ) {
+    if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART  ) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -258,10 +258,10 @@ const fetchCotizaciones = async () => {
 const generate = () => {
 
     // vadidate for_pago
-    if (!pedido.value.FOR_PAG) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una forma de pago.', life: 3000 });
-        return;
-    }
+    // if (!pedido.value.FOR_PAG) {
+    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una forma de pago.', life: 3000 });
+    //     return;
+    // }
 
     // validate pedido items ids
     if (pedido.value.items.some(item => !item.COD_IT)) {
@@ -431,7 +431,7 @@ const uploadFiles = async (files) => {
             <FloatLabel class="w-full md:w-56">
                 <InputText v-model="pedido.NUM_OC" id="NUM_OC" type="text" class="w-full md:w-full"
                     :disabled="!pedido.NUM_CLI" :invalid="pedido.NUM_CLI && !pedido.NUM_OC || pedido.NUM_OC == ''" />
-                <label for="NUM_OC" class="font-semibold w-56">Orden de Compra</label>
+                <label for="NUM_OC" class="font-semibold w-56">Pedido de Cliente</label>
             </FloatLabel>
 
 
@@ -448,11 +448,11 @@ const uploadFiles = async (files) => {
                 <label for="COT_DOLAR" class="font-semibold w-24">Cot. Dólar </label>
             </FloatLabel>
             <!-- forma de pago -->
-            <FloatLabel class="w-full md:w-56">
+            <!-- <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.FOR_PAG" optionLabel="label" :options="[{ label: 'Efectivo', value: 'E' }, { label: 'Cheque', value: 'C' },
                 { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" :disabled="!pedido.NUM_CLI" :invalid="pedido.NUM_CLI && !pedido.FOR_PAG || pedido.FOR_PAG == ''" />
                 <label for="FOR_PAG">Forma de Pago</label>
-            </FloatLabel>
+            </FloatLabel> -->
 
 
         </div>
