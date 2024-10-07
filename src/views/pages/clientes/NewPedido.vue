@@ -450,7 +450,7 @@ const uploadFiles = async (files) => {
             <!-- forma de pago -->
             <FloatLabel class="w-full md:w-56">
                 <Select v-model="pedido.FOR_PAG" optionLabel="label" :options="[{ label: 'Efectivo', value: 'E' }, { label: 'Cheque', value: 'C' },
-                { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" :disabled="!pedido.NUM_CLI" />
+                { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" :disabled="!pedido.NUM_CLI" :invalid="pedido.NUM_CLI && !pedido.FOR_PAG || pedido.FOR_PAG == ''" />
                 <label for="FOR_PAG">Forma de Pago</label>
             </FloatLabel>
 
@@ -497,7 +497,7 @@ const uploadFiles = async (files) => {
             <Column field="FEC_ENT" header="Entrega">
                 <template #body="slotProps">
                     <DatePicker v-model="slotProps.data.FEC_ENT" showButtonBar dateFormat="dd/mm/yy"
-                        :disabled="!pedido.NUM_CLI" />
+                        :disabled="!pedido.NUM_CLI"  :invalid="pedido.NUM_CLI && !slotProps.data.FEC_ENT|| slotProps.data.FEC_ENT == ''"/>
                 </template>
             </Column>
             <Column field="CAN_IT" header="Cant.">
