@@ -147,7 +147,7 @@ function guardarCliente() {
 async function crearArticle() {
 
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART) {
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.NROPLANO_ART ) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }

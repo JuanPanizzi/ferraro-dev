@@ -48,7 +48,9 @@ const isEditing = ref(false)
 function abrirNuevo(editing, index) {
 
     if (editing) {
+        console.log(pedido.value.NUM_OC)
         itemEditIndex.value = index;
+
     }
     console.log('index in pedidos', index);
     isEditing.value = editing
@@ -70,9 +72,7 @@ function abrirNuevo(editing, index) {
             UTI_ART: 7
         };
         articuloDialogo.value = true;
-        console.log('CREANDO')
     } else {
-        console.log('EDITANDO')
         articuloDialogo.value = true;
     }
 }
@@ -84,7 +84,7 @@ async function crearArticle() {
 
     let newArticle = articulo.value;
 
-    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART) {
+    if (!articulo.value.COD_ART || !articulo.value.MAT_ART || !clientSelected.value || !articulo.value.NOM_ART || !articulo.value.NROPLANO_ART  ) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
@@ -147,6 +147,7 @@ async function crearArticle() {
 }
 async function editarArticle() {
 
+    
     let article = articulo.value;
 
 
@@ -429,7 +430,7 @@ const uploadFiles = async (files) => {
             <!-- Orden de compra -->
             <FloatLabel class="w-full md:w-56">
                 <InputText v-model="pedido.NUM_OC" id="NUM_OC" type="text" class="w-full md:w-full"
-                    :disabled="!pedido.NUM_CLI" />
+                    :disabled="!pedido.NUM_CLI" :invalid="pedido.NUM_CLI && !pedido.NUM_OC || pedido.NUM_OC == ''" />
                 <label for="NUM_OC" class="font-semibold w-56">Orden de Compra</label>
             </FloatLabel>
 
