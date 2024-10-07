@@ -493,7 +493,9 @@ const uploadFiles = async (files) => {
                   emptyFilterMessage="No se encontraron artículos"
                   emptyMessage="No hay artículos"
                   emptySelectionMessage="Seleccione un artículo"
-                  :disabled="!pedido.NUM_CLI" />
+                  :disabled="!pedido.NUM_CLI" 
+                  style="max-width: 300px;"/>
+                  
           <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
           <Button outlined icon="pi pi-pencil"
                   class="ml-2 p-button-sm p-button-success"
