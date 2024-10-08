@@ -45,6 +45,26 @@ const model = ref([
             //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
             //            { label: 'IVA Ventas', icon: '', to: '/iva-ventas' }
         ]
+    },
+    {
+        label: 'USERS',
+        items: [
+            // movimientos
+            // {
+            //     label: 'Comprobantes',
+            //     icon: '',
+            //     to: '/comprobantes',
+            //     items: [
+            //         { label: 'Compras', icon: '', to: '/afip-compras' },
+            //         { label: 'Ventas', icon: '', to: '/afip-ventas' }
+            //     ]
+            // },
+            { label: 'Users', icon: 'pi pi-users', to: '/users' }
+
+            //{ label: 'Compras', icon: '', to: '/afip-compras', items: [] }
+            //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
+            //            { label: 'IVA Ventas', icon: '', to: '/iva-ventas' }
+        ]
     }
 ]);
 </script>

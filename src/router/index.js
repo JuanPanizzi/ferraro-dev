@@ -92,6 +92,13 @@ const router = createRouter({
                     component: () => import('@/views/pages/auth/Profile.vue'),
                     meta: { requiresAuth: true }
                 },
+                //users
+                {
+                    path: '/users',
+                    name: 'users',
+                    component: () => import('@/views/pages/users/Users.vue')
+                    //meta: { requiresAuth: true }
+                },
             ]
         },
         {

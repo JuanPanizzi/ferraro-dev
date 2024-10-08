@@ -164,7 +164,7 @@ async function editarArticle() {
             articuloDialogo.value = false;
 
             // Encuentra y actualiza el artículo en clientArticles
-            const index = clientArticles.value.findIndex(  => a.id === article.id);
+            const index = clientArticles.value.findIndex(a => a.id === article.id);
             if (index !== -1) {
                 clientArticles.value[index] = { ...article };
             }
