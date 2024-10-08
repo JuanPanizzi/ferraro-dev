@@ -246,7 +246,6 @@ function saveArticle() {
                     </div>
                 </template>
 
-                <!-- <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column> -->
                 <Column field="COD_ART" header="Código" sortable style="min-width: 12rem"></Column>
                 <Column field="NOM_ART" header="Nombre" sortable style="min-width: 16rem"></Column>
                 <Column field="MAT_ART" header="Material" sortable style="min-width: 16rem"></Column>
