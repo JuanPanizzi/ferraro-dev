@@ -1,5 +1,6 @@
 <script setup>
 import { ClienteService } from '@/service/ClienteService';
+import { UserService } from '@/service/UserService';
 import { FilterMatchMode } from '@primevue/core/api';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
@@ -10,9 +11,20 @@ import { useRouter } from 'vue-router';
 // Usa el router
 const router = useRouter();
 
+
 onMounted(() => {
-    ClienteService.getClientes().then((data) => (clientes.value = data));
+    // ClienteService.getClientes().then((data) => (clientes.value = data));
+    UserService.getUsers()
+        .then((response) => {
+            users.value = response.data; 
+        })
+        .catch((error) => {
+            console.error("Error al obtener los usuarios: ", error); 
+        });
 });
+
+const users = ref([])
+
 
 const toast = useToast();
 const dt = ref();
@@ -228,14 +240,14 @@ function verCuentaCorriente(cliente) {
 </Toolbar> -->
             <!--
                 v-model:selection="clientesSeleccionados" -->
-            <DataTable ref="dt" :value="clientes" dataKey="NUM_CLI" :paginator="true" :rows="10" :filters="filtros"
+            <DataTable ref="dt" :value="users" dataKey="NUM_CLI" :paginator="true" :rows="10" :filters="filtros"
                 :globalFilterFields="['NUM_CLI', 'NOM_CLI']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes" sortField="NUM_CLI"
                 :sortOrder="-1">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">CLIENTES</div>
+                    <div class="font-semibold text-xl mb-4">USUARIOS</div>
                     <div class="flex justify-between items-center">
                         <div class="">
                             <IconField>
@@ -246,7 +258,7 @@ function verCuentaCorriente(cliente) {
                             </IconField>
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary"
+                            <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
                                 @click="abrirNuevo" />
                         </div>
                     </div>
