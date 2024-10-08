@@ -14,7 +14,7 @@ const toast = useToast()
 const pedido = ref({
     NUM_CLI: '',
     items: [
-        { OC: '', OC_ITEM: '', NUM_LIN: 1, COD_IT: '', DES_IT: '', CAN_IT: 1, PRE_IT: 1 }
+        { NUM_LIN: 1, COD_IT: '', DES_IT: '', CAN_IT: 1, PRE_IT: 1 }
     ],
     OBS_FAC: '',
     FEC_FAC: new Date().toISOString().substr(0, 10),
@@ -74,6 +74,10 @@ function abrirNuevo(editing, index) {
         articuloDialogo.value = true;
     } else {
         articuloDialogo.value = true;
+
+
+        console.log('index in pedidos', index);
+        articulo.value = pedido.value.items[index];
     }
 }
 function ocultarDialogo() {
@@ -159,18 +163,16 @@ async function editarArticle() {
             console.log('articulo actualizado');
             articuloDialogo.value = false;
 
-            // find In pedido items the item to update
-
             // Encuentra y actualiza el artículo en clientArticles
-            const index = clientArticles.value.findIndex(a => a.MAT_ART === article.MAT_ART);
+            const index = clientArticles.value.findIndex(  => a.id === article.id);
             if (index !== -1) {
                 clientArticles.value[index] = { ...article };
             }
 
             // Actualizar también el artículo seleccionado en el pedido
-            const pedidoIndex = pedido.value.items.findIndex(item => item.MAT_ART === article.MAT_ART);
+            const pedidoIndex = pedido.value.items.findIndex(item => item.id === article.id);
             if (pedidoIndex !== -1) {
-                setArticulo(article, pedidoIndex); // Actualiza el pedido con el artículo editado
+                setArticulo(article.COD_IT, pedidoIndex); // Actualiza el pedido con el artículo editado
             }
 
 
@@ -330,18 +332,24 @@ const changeCliente = async (e) => {
 };
 
 const setArticulo = (cod_it, index) => {
-    // pedido.value.items[index].DES_IT = cod_it.NOM_ART;
-    // pedido.value.items[index].MAT_ART = cod_it.MAT_ART;
-    // pedido.value.items[index].NROPLANO_ART = cod_it.NROPLANO_ART;
-    // pedido.value.items[index].REV_PLANO = cod_it.REV_PLANO;
-    // pedido.value.items[index].PLANO_ART = cod_it.PLANO_ART;
+
+    // find in ClientArticles
+    const cod_it_index = clientArticles.value.findIndex(a => a.id === cod_it);
+
+    pedido.value.items[index].COD_ART = clientArticles.value[cod_it_index].COD_ART;
+    pedido.value.items[index].NOM_ART = clientArticles.value[cod_it_index].NOM_ART;
+    pedido.value.items[index].MAT_ART = clientArticles.value[cod_it_index].MAT_ART;
+    pedido.value.items[index].NROPLANO_ART = clientArticles.value[cod_it_index].NROPLANO_ART;
+    pedido.value.items[index].REV_PLANO = clientArticles.value[cod_it_index].REV_PLANO;
+    pedido.value.items[index].PLANO_ART = clientArticles.value[cod_it_index].PLANO_ART;
+
     // NROPLANO_ART, REV_PLANO, PLANO_ART
 
     // Actualizamos todos los campos del artículo seleccionado
-    pedido.value.items[index] = { ...pedido.value.items[index], ...cod_it };
-    articulo.value = { ...cod_it }; // Asignamos el artículo para editar
+    //pedido.value.items[index] = { ...pedido.value.items[index], ...cod_it };
+    //articulo.value = { ...cod_it }; // Asignamos el artículo para editar
     /* Llenamos articulo */
-    articulo.value = { ...cod_it };
+    //articulo.value = { ...cod_it };
 
 
 };
@@ -478,32 +486,27 @@ const uploadFiles = async (files) => {
                 </div>
             </template>
             <Column field="NUM_LIN" header="#"></Column>
-            <Column field="COD_IT" header="Artículo">
-      <template #body="slotProps">
-        <div style="display: flex;">
-          <!-- v-model debe apuntar al artículo completo, no solo a un campo -->
-          <Select v-model="pedido.items[slotProps.index]"
-                  :options="clientArticles"
-                  filter
-                  optionLabel="NOM_ART" 
-                  placeholder="Seleccione un artículo"
-                  class="w-full"
-                  :virtualScrollerOptions="{ itemSize: 38 }"
-                  @change="setArticulo(pedido.items[slotProps.index], slotProps.index)"
-                  emptyFilterMessage="No se encontraron artículos"
-                  emptyMessage="No hay artículos"
-                  emptySelectionMessage="Seleccione un artículo"
-                  :disabled="!pedido.NUM_CLI" 
-                  style="max-width: 300px;"/>
-                  
-          <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
-          <Button outlined icon="pi pi-pencil"
-                  class="ml-2 p-button-sm p-button-success"
-                  v-if="pedido.items[slotProps.index].MAT_ART" 
-                  @click="abrirNuevo(true, slotProps.index)" />
-        </div>
-      </template>
-    </Column>
+            <Column field="COD_ART" header="Artículo">
+                <template #body="slotProps">
+                    <div style="display: flex;">
+
+                        <!-- v-model debe apuntar al artículo completo, no solo a un campo -->
+                        <Select v-model="slotProps.data.id" :options="clientArticles" filter optionLabel="ART_LABEL"
+                            optionValue="id" placeholder="Seleccione un artículo" class="w-full"
+                            :virtualScrollerOptions="{ itemSize: 38 }"
+                            @change="setArticulo(slotProps.data.id, slotProps.index)"
+                            emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
+                            emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"
+                            style="max-width: 300px;" />
+                        <pre>
+                        {{ slotProps.data }}
+                    </pre>
+                        <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
+                        <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
+                            v-if="slotProps.data.COD_ART" @click="abrirNuevo(true, slotProps.index)" />
+                    </div>
+                </template>
+            </Column>
             <Column field="MAT_ART" header="Material">
             </Column>
             <Column field="NROPLANO_ART" header="Plano">
