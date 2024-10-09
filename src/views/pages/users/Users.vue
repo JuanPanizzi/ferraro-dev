@@ -16,6 +16,8 @@ onMounted(() => {
     // ClienteService.getClientes().then((data) => (clientes.value = data));
     UserService.getUsers()
         .then((response) => {
+
+            console.log(response.data)
             users.value = response.data; 
         })
         .catch((error) => {
@@ -240,56 +242,35 @@ function verCuentaCorriente(cliente) {
 </Toolbar> -->
             <!--
                 v-model:selection="clientesSeleccionados" -->
-            <DataTable ref="dt" :value="users" dataKey="NUM_CLI" :paginator="true" :rows="10" :filters="filtros"
-                :globalFilterFields="['NUM_CLI', 'NOM_CLI']"
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes" sortField="NUM_CLI"
-                :sortOrder="-1">
-                <template #header>
-                    <div class="font-semibold text-xl mb-4">USUARIOS</div>
-                    <div class="flex justify-between items-center">
-                        <div class="">
-                            <IconField>
-                                <InputIcon>
-                                    <i class="pi pi-search" />
-                                </InputIcon>
-                                <InputText v-model="filtros['global'].value" placeholder="Buscador" />
-                            </IconField>
-                        </div>
-                        <div>
-                            <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
-                                @click="abrirNuevo" />
-                        </div>
-                    </div>
-                    <!-- <div class="flex flex-wrap gap-2 items-center justify-between">
-                        <IconField>
-                            <InputIcon>
-                                <i class="pi pi-search" />
-                            </InputIcon>
-                            <InputText v-model="filtros['global'].value" placeholder="Buscar..." />
-                        </IconField>
-                    </div> -->
-                </template>
+                <DataTable :value="users" dataKey="id" :paginator="true" :rows="10" 
+    :globalFilterFields="['id', 'name', 'email']"
+    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+    :rowsPerPageOptions="[5, 10, 25]"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios" sortField="id"
+    :sortOrder="-1">
+    <template #header>
+        <div class="font-semibold text-xl mb-4">USUARIOS</div>
+        <div class="flex justify-between items-center">
+            <div class="">
+                <IconField>
+                    <InputIcon>
+                        <i class="pi pi-search" />
+                    </InputIcon>
+                    <InputText v-model="filtros['global'].value" placeholder="Buscador" />
+                </IconField>
+            </div>
+            <div>
+                <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
+                    @click="abrirNuevo" />
+            </div>
+        </div>
+    </template>
 
-                <!-- <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column> -->
-                <Column field="NUM_CLI" header="Código" sortable style="min-width: 12rem"></Column>
-                <Column field="NOM_CLI" header="Nombre" sortable style="min-width: 16rem"></Column>
-                <Column field="CUIT_CLI" header="Nombre" sortable style="min-width: 16rem"></Column>
+    <Column field="id" header="Id" sortable style="min-width: 12rem"></Column>
+    <Column field="name" header="Nombre" sortable style="min-width: 16rem"></Column>
+    <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
+</DataTable>
 
-                <!-- <Column field="DIR_CLI" header="Dirección" sortable style="min-width: 16rem"></Column> -->
-                <!-- <Column field="LOC_CLI" header="Localidad" sortable style="min-width: 12rem"></Column> -->
-                <Column field="PRO_CLI" header="Provincia" sortable style="min-width: 12rem"></Column>
-                <Column field="TEL_CLI" header="Teléfono" sortable style="min-width: 12rem"></Column>
-                <Column :exportable="false" style="min-width: 12rem">
-                    <template #body="slotProps">
-                        <Button icon="pi pi-list" severity="info" @click="verCuentaCorriente(slotProps.data)" />
-                        <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Toast />
-                        <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
-                    </template>
-                </Column>
-            </DataTable>
         </div>
 
         <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del Cliente"
