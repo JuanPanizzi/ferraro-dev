@@ -21,6 +21,7 @@ export const UserService = {
             throw new Error('Error al crear usuario', error);
         }
     },
+    
 
     async updateUser(user) {
         try {

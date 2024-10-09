@@ -15,6 +15,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 const router = useRouter();
 const confirm = useConfirm();
 const isVisible = ref(false);
+
 const openPopup = (event) => {
     confirm.require({
         target: event.currentTarget,
@@ -24,7 +25,7 @@ const openPopup = (event) => {
             isVisible.value = true;
         },
         onHide: () => {
-            alert('elemento el')
+            // alert('elemento el')
             isVisible.value = false;
         }
     });
@@ -152,7 +153,7 @@ async function crearUsuario() {
 }
 
 
-async function actualizarUser() {
+async function actualizarUsuario() {
 
     const response = await UserService.updateUser(user.value)
     if (response.status >= 200) {
@@ -168,6 +169,32 @@ async function actualizarUser() {
         const index = buscarIndicePorId(user.value.id);
         users.value[index] = user.value;
         isEditing.value = false
+
+    } else {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo crear el cliente',
+            life: 3000
+        });
+        userDialogo.value = false
+
+    }
+}
+
+async function eliminarUsuario(usuario) {
+    
+    console.log('usuario', usuario)
+    const response = await UserService.deleteUser(usuario.id)
+    if (response.status >= 200) {
+        toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Usario eliminado correctamente',
+            life: 3000
+        });
+        users.value = users.value.filter((user) => user.id !== usuario.id);
+        userDialogo.value = false
 
     } else {
         toast.add({
@@ -223,12 +250,12 @@ function confirmarEliminarCliente(cli) {
     eliminarClienteDialogo.value = true;
 }
 
-function eliminarCliente() {
-    users.value = users.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
-    eliminarClienteDialogo.value = false;
-    cliente.value = {};
-    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
-}
+// function eliminarUsuario() {
+//     users.value = users.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
+//     eliminarClienteDialogo.value = false;
+//     cliente.value = {};
+//     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
+// }
 
 function buscarIndicePorId(id) {
     return users.value.findIndex((user) => user.id === id);
@@ -296,9 +323,9 @@ function verCuentaCorriente(cliente) {
                     <template #body="slotProps">
                         <ConfirmPopup></ConfirmPopup>
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Button icon="pi pi-trash" @click="openPopup"  class="mx-2"   severity="danger" ></Button>
+                        <Button icon="pi pi-trash" @click="eliminarUsuario(slotProps.data)"  class="mx-2"   severity="danger" ></Button>
                             <Toast />
-                        {{ slotProps.name }}
+
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
@@ -336,7 +363,7 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUser() : crearUsuario()" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()" />
                 <Toast />
             </template>
         </Dialog>
