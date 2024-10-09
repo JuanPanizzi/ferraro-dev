@@ -271,6 +271,7 @@ function verCuentaCorriente(cliente) {
                 <Column field="TEL_CLI" header="Teléfono" sortable style="min-width: 12rem"></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
+                        
                         <Button icon="pi pi-list" severity="info" @click="verCuentaCorriente(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
                         <Toast />

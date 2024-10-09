@@ -3,32 +3,50 @@ import { ClienteService } from '@/service/ClienteService';
 import { UserService } from '@/service/UserService';
 import { FilterMatchMode } from '@primevue/core/api';
 import Toast from 'primevue/toast';
+import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import ConfirmPopup from 'primevue/confirmpopup';
+
 
 // Usa el router
 const router = useRouter();
-
+const confirm = useConfirm();
+const isVisible = ref(false);
+const openPopup = (event) => {
+    confirm.require({
+        target: event.currentTarget,
+        message: '¿Esta seguro que desea eliminar este usuario?',
+        header: 'Confirmation',
+        onShow: () => {
+            isVisible.value = true;
+        },
+        onHide: () => {
+            alert('elemento el')
+            isVisible.value = false;
+        }
+    });
+}
 
 onMounted(() => {
     // ClienteService.getClientes().then((data) => (clientes.value = data));
     UserService.getUsers()
         .then((response) => {
 
-            users.value = response.data; 
+            users.value = response.data;
         })
         .catch((error) => {
-            console.error("Error al obtener los usuarios: ", error); 
+            console.error("Error al obtener los usuarios: ", error);
         });
 });
 
 const users = ref([])
 const user = ref({
-name: '',
-email: '',
-password: ''
+    name: '',
+    email: '',
+    password: ''
 })
 
 const toast = useToast();
@@ -92,7 +110,7 @@ function ocultarDialogo() {
     enviado.value = false;
 }
 
-function openDialog(){
+function openDialog() {
     userDialogo.value = true;
 
 }
@@ -137,7 +155,7 @@ async function crearUsuario() {
 async function actualizarUser() {
 
     const response = await UserService.updateUser(user.value)
-    if (response.status >= 200 ) {
+    if (response.status >= 200) {
         toast.add({
             severity: 'success',
             summary: 'Éxito',
@@ -206,7 +224,7 @@ function confirmarEliminarCliente(cli) {
 }
 
 function eliminarCliente() {
-    clientes.value = clientes.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
+    users.value = users.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
     eliminarClienteDialogo.value = false;
     cliente.value = {};
     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
@@ -238,62 +256,64 @@ function eliminarClientesSeleccionados() {
 function verCuentaCorriente(cliente) {
     router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
 }
+
 </script>
 
 <template>
     <div>
         <div class="card">
-           
+
             <!--
                 v-model:selection="clientesSeleccionados" -->
-                <DataTable :value="users" dataKey="id" :paginator="true" :rows="10" 
-    :globalFilterFields="['id', 'name', 'email']"
-    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-    :rowsPerPageOptions="[5, 10, 25]"
-    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios" sortField="id"
-    :sortOrder="-1">
-    <template #header>
-        <div class="font-semibold text-xl mb-4">USUARIOS</div>
-        <div class="flex justify-between items-center">
-            <div class="">
-                <IconField>
-                    <InputIcon>
-                        <i class="pi pi-search" />
-                    </InputIcon>
-                    <InputText v-model="filtros['global'].value" placeholder="Buscador" />
-                </IconField>
-            </div>
-            <div>
-                <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
-                    @click="abrirNuevo" />
-            </div>
-        </div>
-    </template>
+            <DataTable :value="users" dataKey="id" :paginator="true" :rows="10"
+                :globalFilterFields="['id', 'name', 'email']"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                :rowsPerPageOptions="[5, 10, 25]"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios" sortField="id"
+                :sortOrder="-1">
+                <template #header>
+                    <div class="font-semibold text-xl mb-4">USUARIOS</div>
+                    <div class="flex justify-between items-center">
+                        <div class="">
+                            <IconField>
+                                <InputIcon>
+                                    <i class="pi pi-search" />
+                                </InputIcon>
+                                <InputText v-model="filtros['global'].value" placeholder="Buscador" />
+                            </IconField>
+                        </div>
+                        <div>
+                            <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
+                                @click="abrirNuevo" />
+                        </div>
+                    </div>
+                </template>
 
-    <Column field="id" header="Id" sortable style="min-width: 12rem"></Column>
-    <Column field="name" header="Nombre" sortable style="min-width: 16rem"></Column>
-    <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
-    <Column :exportable="false" style="min-width: 12rem">
+                <Column field="id" header="Id" sortable style="min-width: 12rem"></Column>
+                <Column field="name" header="Nombre" sortable style="min-width: 16rem"></Column>
+                <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
+                <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
+                        <ConfirmPopup></ConfirmPopup>
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Toast />
+                        <Button icon="pi pi-trash" @click="openPopup"  class="mx-2"   severity="danger" ></Button>
+                            <Toast />
                         {{ slotProps.name }}
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
-</DataTable>
+            </DataTable>
 
         </div>
 
-        <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Cliente"
-            :modal="true">
+        <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Cliente" :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
                     <!-- <div>
                         <label for="codigo" class="block font-bold mb-3">Código</label>
                         <InputText id="codigo" v-model="cliente.NUM_CLI" readonly />
                     </div> -->
-                    
+
                 </div>
 
                 <div>
@@ -311,7 +331,7 @@ function verCuentaCorriente(cliente) {
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
                     <InputText id="direccion" v-model="user.password" fluid />
                 </div>
-               
+
             </div>
 
             <template #footer>
