@@ -125,6 +125,8 @@ async function crearCliente() {
 
     }
 }
+
+
 async function actualizarCliente() {
 
     const response = await ClienteService.actualizarCliente(cliente.value)
@@ -234,12 +236,7 @@ function verCuentaCorriente(cliente) {
 <template>
     <div>
         <div class="card">
-            <!-- <Toolbar class="mb-6">
-                <template #start>
-                    <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="abrirNuevo" />
-                   <Button label="Eliminar" icon="pi pi-trash" severity="secondary" @click="confirmarEliminarSeleccionados" :disabled="!clientesSeleccionados || !clientesSeleccionados.length" />
-                </template>
-</Toolbar> -->
+           
             <!--
                 v-model:selection="clientesSeleccionados" -->
                 <DataTable :value="users" dataKey="id" :paginator="true" :rows="10" 
@@ -277,14 +274,11 @@ function verCuentaCorriente(cliente) {
             :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
-                    <div>
+                    <!-- <div>
                         <label for="codigo" class="block font-bold mb-3">Código</label>
                         <InputText id="codigo" v-model="cliente.NUM_CLI" readonly />
-                    </div>
-                    <div>
-                        <label for="cuit" class="block font-bold mb-3">CUIT</label>
-                        <InputText id="cuit" v-model="cliente.CUIT_CLI" fluid />
-                    </div>
+                    </div> -->
+                    
                 </div>
 
                 <div>
@@ -294,21 +288,10 @@ function verCuentaCorriente(cliente) {
                     <small v-if="enviado && !cliente.NOM_CLI" class="text-red-500">El nombre es obligatorio.</small>
                 </div>
                 <div>
-                    <label for="direccion" class="block font-bold mb-3">Dirección</label>
+                    <label for="direccion" class="block font-bold mb-3">Email</label>
                     <InputText id="direccion" v-model="cliente.DIR_CLI" fluid />
                 </div>
-                <div>
-                    <label for="localidad" class="block font-bold mb-3">Localidad</label>
-                    <InputText id="localidad" v-model="cliente.LOC_CLI" fluid />
-                </div>
-                <div>
-                    <label for="provincia" class="block font-bold mb-3">Provincia</label>
-                    <InputText id="provincia" v-model="cliente.PRO_CLI" fluid />
-                </div>
-                <div>
-                    <label for="telefono" class="block font-bold mb-3">Teléfono</label>
-                    <InputText id="telefono" v-model="cliente.TEL_CLI" fluid />
-                </div>
+               
             </div>
 
             <template #footer>
