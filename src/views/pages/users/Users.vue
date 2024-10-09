@@ -17,7 +17,6 @@ onMounted(() => {
     UserService.getUsers()
         .then((response) => {
 
-            console.log(response.data)
             users.value = response.data; 
         })
         .catch((error) => {
@@ -26,12 +25,16 @@ onMounted(() => {
 });
 
 const users = ref([])
-
+const user = ref({
+name: '',
+email: '',
+password: ''
+})
 
 const toast = useToast();
 const dt = ref();
 const clientes = ref([]);
-const clienteDialogo = ref(false);
+const userDialogo = ref(false);
 const eliminarClienteDialogo = ref(false);
 const eliminarClientesDialogo = ref(false);
 const isEditing = ref(false)
@@ -81,18 +84,22 @@ function abrirNuevo() {
         PERIB_CLI: 0
     };
     enviado.value = false;
-    clienteDialogo.value = true;
+    userDialogo.value = true;
 }
 
 function ocultarDialogo() {
-    clienteDialogo.value = false;
+    userDialogo.value = false;
     enviado.value = false;
 }
 
-async function crearCliente() {
+function openDialog(){
+    userDialogo.value = true;
 
+}
+
+async function crearUsuario() {
     // toast error if cliente NOM_CLI is empty
-    if (!cliente.value.NOM_CLI) {
+    if (!user.value.name) {
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -102,7 +109,7 @@ async function crearCliente() {
         return;
     }
 
-    const response = await ClienteService.crearCliente(cliente.value)
+    const response = await UserService.createUser(user.value)
 
     if (response.status >= 200) {
         toast.add({
@@ -111,8 +118,8 @@ async function crearCliente() {
             detail: 'Cliente creado correctamente',
             life: 3000
         });
-        clientes.value.push(response.data);
-        clienteDialogo.value = false
+        users.value.push(response.data);
+        userDialogo.value = false
         isEditing.value = false
     } else {
         toast.add({
@@ -121,27 +128,27 @@ async function crearCliente() {
             detail: 'No se pudo crear el cliente',
             life: 3000
         });
-        clienteDialogo.value = false;
+        userDialogo.value = false;
 
     }
 }
 
 
-async function actualizarCliente() {
+async function actualizarUser() {
 
-    const response = await ClienteService.actualizarCliente(cliente.value)
-    if (response.status >= 200 && response.status <= 299) {
+    const response = await UserService.updateUser(user.value)
+    if (response.status >= 200 ) {
         toast.add({
             severity: 'success',
             summary: 'Éxito',
             detail: 'Cliente editado correctamente',
             life: 3000
         });
-        clienteDialogo.value = false
+        userDialogo.value = false
 
         // update cliente in clientes array
-        const index = buscarIndicePorId(cliente.value.NUM_CLI);
-        clientes.value[index] = cliente.value;
+        const index = buscarIndicePorId(user.value.id);
+        users.value[index] = user.value;
         isEditing.value = false
 
     } else {
@@ -151,7 +158,7 @@ async function actualizarCliente() {
             detail: 'No se pudo crear el cliente',
             life: 3000
         });
-        clienteDialogo.value = false
+        userDialogo.value = false
 
     }
 }
@@ -180,16 +187,16 @@ function guardarCliente() {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
         }
 
-        clienteDialogo.value = false;
+        userDialogo.value = false;
         cliente.value = {};
     }
 }
 
-async function editarCliente(cli) {
+async function editarCliente(usuario) {
 
     isEditing.value = true
-    cliente.value = { ...cli };
-    clienteDialogo.value = true;
+    user.value = { ...usuario };
+    userDialogo.value = true;
 
 }
 
@@ -206,7 +213,7 @@ function eliminarCliente() {
 }
 
 function buscarIndicePorId(id) {
-    return clientes.value.findIndex((cliente) => cliente.NUM_CLI === id);
+    return users.value.findIndex((user) => user.id === id);
 }
 
 function crearId() {
@@ -266,11 +273,19 @@ function verCuentaCorriente(cliente) {
     <Column field="id" header="Id" sortable style="min-width: 12rem"></Column>
     <Column field="name" header="Nombre" sortable style="min-width: 16rem"></Column>
     <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
+    <Column :exportable="false" style="min-width: 12rem">
+                    <template #body="slotProps">
+                        <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
+                        <Toast />
+                        {{ slotProps.name }}
+                        <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
+                    </template>
+                </Column>
 </DataTable>
 
         </div>
 
-        <Dialog v-model:visible="clienteDialogo" :style="{ width: '450px' }" header="Detalles del Cliente"
+        <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Cliente"
             :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
@@ -283,20 +298,25 @@ function verCuentaCorriente(cliente) {
 
                 <div>
                     <label for="nombre" class="block font-bold mb-3">Nombre</label>
-                    <InputText id="nombre" v-model.trim="cliente.NOM_CLI" required="true" autofocus
-                        :invalid="enviado && !cliente.NOM_CLI" fluid />
-                    <small v-if="enviado && !cliente.NOM_CLI" class="text-red-500">El nombre es obligatorio.</small>
+                    <InputText id="nombre" v-model.trim="user.name" required="true" autofocus
+                        :invalid="enviado && !user.name" fluid />
+                    <small v-if="enviado && !user.name" class="text-red-500">El nombre es obligatorio.</small>
+                    <!-- {{ user.name }} -->
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
-                    <InputText id="direccion" v-model="cliente.DIR_CLI" fluid />
+                    <InputText id="direccion" v-model="user.email" fluid />
+                </div>
+                <div>
+                    <label for="direccion" class="block font-bold mb-3">Contraseña</label>
+                    <InputText id="direccion" v-model="user.password" fluid />
                 </div>
                
             </div>
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarCliente() : crearCliente()" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUser() : crearUsuario()" />
                 <Toast />
             </template>
         </Dialog>
