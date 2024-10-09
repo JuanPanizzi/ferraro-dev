@@ -79,9 +79,9 @@ const pdfPedido = (id) => {
 
                 <Column field="nom_cli" header="Cliente" sortable>
                 </Column>
-                <Column field="num_oc" header="Nro OC" sortable></Column>
+                <Column field="num_oc" header="N° de Pedido" sortable></Column>
                 <Column field="obs_fac" header="Observaciones" sortable></Column>
-                <Column header="Total" sortable >
+                <Column header="Total" sortable v-if="!hiddenPrices">
                     <template #body="data">
                         <div class="flex justify-start items-center">
                             {{ data.data.tip_mon == 'P' ? '$' : 'u$d' }} {{ data.data.total }}

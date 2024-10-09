@@ -14,7 +14,7 @@ const toast = useToast()
 const pedido = ref({
     NUM_CLI: '',
     items: [
-        { NUM_LIN: 1, COD_IT: '', DES_IT: '', CAN_IT: 1, PRE_IT: 1 }
+        { NUM_LIN: 1, ART: {}, CAN_IT: 1, PRE_IT: 1 }
     ],
     OBS_FAC: '',
     FEC_FAC: new Date().toISOString().substr(0, 10),
@@ -83,6 +83,14 @@ function abrirNuevo(editing, index) {
 function ocultarDialogo() {
     articuloDialogo.value = false;
 }
+
+const editArticle = (data) => {
+    console.log('data', data);
+    articulo.value = data.ART;
+    itemEditIndex.value = data.index;
+    isEditing.value = true;
+    articuloDialogo.value = true;
+};
 
 async function crearArticle() {
 
@@ -160,21 +168,9 @@ async function editarArticle() {
 
         if (response.status >= 200) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
-            console.log('articulo actualizado');
+
+            console.log('articulo actualizado RES:', response.data);
             articuloDialogo.value = false;
-
-            // Encuentra y actualiza el artículo en clientArticles
-            const index = clientArticles.value.findIndex(a => a.id === article.id);
-            if (index !== -1) {
-                clientArticles.value[index] = { ...article };
-            }
-
-            // Actualizar también el artículo seleccionado en el pedido
-            const pedidoIndex = pedido.value.items.findIndex(item => item.id === article.id);
-            if (pedidoIndex !== -1) {
-                setArticulo(article.COD_IT, pedidoIndex); // Actualiza el pedido con el artículo editado
-            }
-
 
         } else {
             throw new Error('Error en la respuesta del servidor');
@@ -269,14 +265,9 @@ const fetchCotizaciones = async () => {
 
 const generate = () => {
 
-    // vadidate for_pago
-    // if (!pedido.value.FOR_PAG) {
-    //     toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una forma de pago.', life: 3000 });
-    //     return;
-    // }
-
+    console.log(pedido.value.items)
     // validate pedido items ids
-    if (pedido.value.items.some(item => !item.COD_IT)) {
+    if (pedido.value.items.some(item => !item.ART.id)) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione un artículo para cada línea.', life: 3000 });
         return;
     }
@@ -288,21 +279,21 @@ const generate = () => {
     }
 
 
-    if (pedido.value.items[0].CAN_IT == 0) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad debe ser mayor a cero.', life: 3000 });
+    if (pedido.value.items.some(item => item.CAN_IT <= 0)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad de los artículos debe ser mayor a 0.', life: 3000 });
         return;
     }
-    if (pedido.value.items[0].PRE_IT == 0) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'El precio debe ser mayor a cero.', life: 3000 });
+
+    if (pedido.value.items.some(item => item.PRE_IT <= 0)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'El precio de los artículos debe ser mayor a 0.', life: 3000 });
         return;
     }
 
 
     // si no puso el numero de orden de compra consultar si desea continuar
     if (!pedido.value.NUM_OC) {
-        if (!confirm('¿Desea continuar sin ingresar el número de orden de compra?')) {
-            return;
-        }
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, ingrese el número pedido del cliente.', life: 3000 });
+        return;
     }
 
 
@@ -468,12 +459,6 @@ const uploadFiles = async (files) => {
                 <InputText v-model="pedido.COT_DOLAR" id="COT_DOLAR" type="number" class="w-full md:w-full" />
                 <label for="COT_DOLAR" class="font-semibold w-24">Cot. Dólar </label>
             </FloatLabel>
-            <!-- forma de pago -->
-            <!-- <FloatLabel class="w-full md:w-56">
-                <Select v-model="pedido.FOR_PAG" optionLabel="label" :options="[{ label: 'Efectivo', value: 'E' }, { label: 'Cheque', value: 'C' },
-                { label: 'Transferencia', value: 'T' }]" class="w-full md:w-full" :disabled="!pedido.NUM_CLI" :invalid="pedido.NUM_CLI && !pedido.FOR_PAG || pedido.FOR_PAG == ''" />
-                <label for="FOR_PAG">Forma de Pago</label>
-            </FloatLabel> -->
 
 
         </div>
@@ -486,37 +471,61 @@ const uploadFiles = async (files) => {
                 </div>
             </template>
             <Column field="NUM_LIN" header="#"></Column>
-            <Column field="COD_ART" header="Artículo">
+            <Column header="Código" field="COD_IT">
                 <template #body="slotProps">
                     <div style="display: flex;">
 
                         <!-- v-model debe apuntar al artículo completo, no solo a un campo -->
-                        <Select v-model="slotProps.data.id" :options="clientArticles" filter optionLabel="ART_LABEL"
-                            optionValue="id" placeholder="Seleccione un artículo" class="w-full"
-                            :virtualScrollerOptions="{ itemSize: 38 }"
-                            @change="setArticulo(slotProps.data.id, slotProps.index)"
-                            emptyFilterMessage="No se encontraron artículos" emptyMessage="No hay artículos"
-                            emptySelectionMessage="Seleccione un artículo" :disabled="!pedido.NUM_CLI"
-                            style="max-width: 300px;" />
-                        <pre>
-                        {{ slotProps.data }}
-                    </pre>
+                        <Select v-model="slotProps.data.ART" :options="clientArticles" filter
+                            placeholder="Seleccione un artículo" class="w-full"
+                            :virtualScrollerOptions="{ itemSize: 38 }" emptyFilterMessage="No se encontraron artículos"
+                            emptyMessage="No hay artículos" emptySelectionMessage="Seleccione un artículo"
+                            :disabled="!pedido.NUM_CLI" style="max-width: 300px;">
+
+                            <template #option="slotProps">
+                                <div class="flex items center">
+                                    <span>{{ slotProps.option.COD_ART }}</span>
+                                    <span class="ml-2">{{ slotProps.option.NOM_ART }}</span>
+                                </div>
+                            </template>
+                            <template #value="slotProps">
+                                <div class="flex items center">
+                                    <span>{{ slotProps.value?.COD_ART }}</span>
+                                </div>
+                            </template>
+
+                        </Select>
+
                         <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
                         <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
-                            v-if="slotProps.data.COD_ART" @click="abrirNuevo(true, slotProps.index)" />
+                            @click="editArticle(slotProps.data)" />
                     </div>
                 </template>
             </Column>
-            <Column field="MAT_ART" header="Material">
+            <Column header="Descripción">
+                <template #body="slotProps">
+                    <InputText v-model="slotProps.data.ART.NOM_ART" v-if="slotProps.data.ART" />
+                </template>
+            </Column>
+            <Column header="Material">
+                <template #body="slotProps">
+                    <InputText v-model="slotProps.data.ART.MAT_ART" v-if="slotProps.data.ART"
+                        style="max-width: 150px;" />
+                </template>
             </Column>
             <Column field="NROPLANO_ART" header="Plano">
                 <template #body="slotProps">
-                    <Button v-if="slotProps.data.NROPLANO_ART" icon="pi pi-file" size="small" severity="info" link
-                        @click="openPlane(slotProps.data.NROPLANO_ART)" :label="slotProps.data.NROPLANO_ART" />
+                    <Button icon="pi pi-file" size="small" severity="info" link
+                        @click="openPlane(slotProps.data.ART.NROPLANO_ART)" :label="slotProps.data.ART.NROPLANO_ART"
+                        v-if="slotProps.data.ART" />
 
                 </template>
             </Column>
             <Column field="REV_PLANO" header="Rev">
+                <template #body="slotProps">
+                    <InputText v-model="slotProps.data.ART.REV_PLANO" v-if="slotProps.data.ART"
+                        style="max-width: 50px;" />
+                </template>
             </Column>
             <Column field="FEC_ENT" header="Entrega">
                 <template #body="slotProps">
@@ -555,8 +564,8 @@ const uploadFiles = async (files) => {
                 </template>
             </Column>
             <template #footer>
-                <Button :disabled="!pedido.NUM_CLI" icon="pi pi-box" class="p-button-sm p-button-text"
-                    label="Crear nuevo articulo" @click="abrirNuevo(false)" />
+                <Button disabled icon="pi pi-box" class="p-button-sm p-button-text" label="Crear nuevo articulo"
+                    @click="abrirNuevo(false)" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
