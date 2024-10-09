@@ -344,7 +344,7 @@ function verCuentaCorriente(cliente) {
 
         </div>
 
-        <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Cliente" :modal="true">
+        <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Usuario" :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
                     <!-- <div>
@@ -363,7 +363,7 @@ function verCuentaCorriente(cliente) {
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
-                    <InputText id="direccion" v-model="user.email" fluid />
+                    <InputText id="direccion" v-model="user.email" fluid  :mask="'^[\\w-\\.]+@([\\w]+\\.)+[\\w]{2,4}$'" />
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
