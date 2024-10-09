@@ -15,7 +15,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 const router = useRouter();
 const confirm = useConfirm();
 const isVisible = ref(false);
-
+const loading = ref(false); 
 const openPopup = (event) => {
     confirm.require({
         target: event.currentTarget,
@@ -184,28 +184,39 @@ async function actualizarUsuario() {
 
 async function eliminarUsuario(usuario) {
     
-    console.log('usuario', usuario)
-    const response = await UserService.deleteUser(usuario.id)
-    if (response.status >= 200) {
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Usario eliminado correctamente',
-            life: 3000
-        });
-        users.value = users.value.filter((user) => user.id !== usuario.id);
-        userDialogo.value = false
 
-    } else {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudo crear el cliente',
-            life: 3000
-        });
-        userDialogo.value = false
+    try {
+        
+        const response = await UserService.deleteUser(usuario.id)
+      
+        if (response.status >= 200) {
+            toast.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Usario eliminado correctamente',
+                life: 3000
+            });
 
+            users.value = users.value.filter((user) => user.id !== usuario.id);
+    
+        } else {
+            throw new Error()
+        }
+    } catch (error) {
+        toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se pudo eliminar al usuario, intente nuevamente.',
+                life: 3000
+            });
+    } finally {
+        loading.value = true
     }
+
+
+    console.log('usuario', usuario)
+    loading.value = false
+
 }
 
 
@@ -363,7 +374,7 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()" :loading="loading" />
                 <Toast />
             </template>
         </Dialog>

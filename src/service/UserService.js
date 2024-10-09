@@ -21,7 +21,7 @@ export const UserService = {
             throw new Error('Error al crear usuario', error);
         }
     },
-    
+
 
     async updateUser(user) {
         try {
@@ -35,7 +35,7 @@ export const UserService = {
     async deleteUser(id) {
         try {
             const response = await apiClient.delete(`api/users/${id}`);
-            return response.data;
+            return response;
         } catch (error) {
             throw new Error('Error al eliminar usuario');
         }
