@@ -31,7 +31,6 @@ export const ArticleService = {
 
     async getArticlesByClient(clienteId) {
         try {
-            // api/pedidos?cliente=${id}`
             const response = await apiClient.get(`api/articulos?cliente=${clienteId}`);
             return response.data;
         } catch (error) {
