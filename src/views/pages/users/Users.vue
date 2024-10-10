@@ -38,11 +38,7 @@ const user = ref({
 })
 
 const toast = useToast();
-const dt = ref();
-const clientes = ref([]);
 const userDialogo = ref(false);
-const eliminarClienteDialogo = ref(false);
-const eliminarClientesDialogo = ref(false);
 const isEditing = ref(false)
 
 const clientesSeleccionados = ref([]);
@@ -59,14 +55,14 @@ function ocultarDialogo(type) {
         eliminarUserDialog.value = false;
     } else {
         userDialogo.value = false;
-        // enviado.value = false;
+      
     }
 }
 
 function openDialog(type, usuario) {
 
     if (type == 'delete') {
-        user.value = usuario //Cuando se eliminta un usuario el usuario seleccionado queda en user
+        user.value = usuario 
         eliminarUserDialog.value = true;
 
     } else if (type == 'edit') {
@@ -80,7 +76,6 @@ function openDialog(type, usuario) {
             name: '',
             email: '',
             password: ''
-
         }
         userDialogo.value = true;
     }
@@ -144,8 +139,6 @@ async function editarUsuario() {
             });
 
             userDialogo.value = false
-
-
             const index = buscarIndicePorId(user.value.id);
             users.value[index] = user.value;
             isEditing.value = false
@@ -173,7 +166,6 @@ async function eliminarUsuario(usuario) {
     try {
 
         const response = await UserService.deleteUser(usuario.id)
-
         if (response.status >= 200) {
             toast.add({
                 severity: 'success',
@@ -275,11 +267,6 @@ function validarEmail(email) {
         <Dialog v-model:visible="userDialogo" :style="{ width: '450px' }" header="Detalles del Usuario" :modal="true">
             <div class="flex flex-col gap-6">
                 <div class="flex justify-between gap-6">
-                    <!-- <div>
-                        <label for="codigo" class="block font-bold mb-3">Código</label>
-                        <InputText id="codigo" v-model="cliente.NUM_CLI" readonly />
-                    </div> -->
-
                 </div>
 
                 <div>
@@ -287,7 +274,6 @@ function validarEmail(email) {
                     <InputText id="nombre" v-model.trim="user.name" required="true" autofocus
                         :invalid="enviado && !user.name" fluid />
                     <small v-if="enviado && !user.name" class="text-red-500">El nombre es obligatorio.</small>
-                    <!-- {{ user.name }} -->
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
