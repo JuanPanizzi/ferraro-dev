@@ -7,7 +7,6 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import apiClient from '../../../service/api';
 
 const toast = useToast()
 
@@ -265,7 +264,6 @@ const fetchCotizaciones = async () => {
 
 const generate = () => {
 
-    console.log(pedido.value.items)
     // validate pedido items ids
     if (pedido.value.items.some(item => !item.ART.id)) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione un artículo para cada línea.', life: 3000 });
@@ -274,10 +272,9 @@ const generate = () => {
 
     // validate fecha de entrega 
     if (pedido.value.items.some(item => !item.FEC_ENT)) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una fecha de entrega para cada línea.', life: 3000 });
-        return;
+        //toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, seleccione una fecha de entrega para cada línea.', life: 3000 });
+        //return;
     }
-
 
     if (pedido.value.items.some(item => item.CAN_IT <= 0)) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'La cantidad de los artículos debe ser mayor a 0.', life: 3000 });
@@ -289,13 +286,18 @@ const generate = () => {
         return;
     }
 
-
     // si no puso el numero de orden de compra consultar si desea continuar
     if (!pedido.value.NUM_OC) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, ingrese el número pedido del cliente.', life: 3000 });
         return;
     }
 
+    // add selectedFiles to pedido.FILES
+    pedido.value.FILES = files.value;
+
+    // add usd_div and usd_bill to pedido
+    pedido.value.usd_div = divisaFormatted.value;
+    pedido.value.usd_bill = billeteFormatted.value;
 
     PedidoService.createPedido(pedido.value).then((response) => {
         console.log(response);
@@ -309,13 +311,15 @@ const generate = () => {
 };
 
 const clientArticles = ref([]);
-
+const loadingArticles = ref(false);
 const changeCliente = async (e) => {
+
     try {
+        loadingArticles.value = true;
         const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
-        // console.log('articles by client', articles) //--> No trae el id
         clientArticles.value = Array.isArray(articles) ? articles : [];
         clientSelected.value = e.value
+        loadingArticles.value = false;
     } catch (error) {
         console.error('Error fetching client articles:', error);
         clientArticles.value = [];
@@ -369,41 +373,6 @@ const onFileSelect = (event) => {
     });
 };
 
-
-//FUNCION PARA ENVIAR ARCHIVOS AL BACKEND
-const uploadFiles = async (files) => {
-
-    const formData = new FormData();
-    files.forEach((fileData, index) => {
-        // Aquí agregamos el archivo completo al FormData
-        formData.append(`file${index + 1}`, fileData.file);  // Accede al archivo completo
-    });
-
-
-    try {
-        // const response = await fetch(`${API_BASE_URL}/pedidos`, {
-        //     method: 'POST',
-        //     body: formData,
-        // });
-        const response = await apiClient.post('api/pedidos', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data' // Set the appropriate content type
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`Error en la subida de archivos: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Archivos subidos correctamente:', data);
-
-        return { Estado: response.status };
-
-    } catch (error) {
-        console.error('Error al subir los archivos:', error);
-        return { error: `Estado ${response.status}` };
-    }
-};
 
 
 
@@ -480,7 +449,7 @@ const uploadFiles = async (files) => {
                             placeholder="Seleccione un artículo" class="w-full"
                             :virtualScrollerOptions="{ itemSize: 38 }" emptyFilterMessage="No se encontraron artículos"
                             emptyMessage="No hay artículos" emptySelectionMessage="Seleccione un artículo"
-                            :disabled="!pedido.NUM_CLI" style="max-width: 300px;">
+                            :loading="loadingArticles" :disabled="!pedido.NUM_CLI" style=" max-width: 300px;">
 
                             <template #option="slotProps">
                                 <div class="flex items center">
@@ -491,14 +460,12 @@ const uploadFiles = async (files) => {
                             <template #value="slotProps">
                                 <div class="flex items center">
                                     <span>{{ slotProps.value?.COD_ART }}</span>
+                                    <span v-if="!slotProps.value?.COD_ART" class="ml-2"> Buscar por artículo</span>
                                 </div>
                             </template>
 
                         </Select>
 
-                        <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
-                        <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
-                            @click="editArticle(slotProps.data)" />
                     </div>
                 </template>
             </Column>
@@ -559,8 +526,13 @@ const uploadFiles = async (files) => {
             </Column>
             <Column>
                 <template #body="slotProps">
-                    <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)"
-                        :disabled="!pedido.NUM_CLI" />
+                    <div class="flex">
+                        <Button icon="pi pi-trash" outlined severity="danger" @click="removeItem(slotProps.index)"
+                            :disabled="!pedido.NUM_CLI" />
+                        <!-- Mostrar el botón de editar solo si hay un artículo seleccionado -->
+                        <Button outlined icon="pi pi-pencil" class="ml-2 p-button-sm p-button-success"
+                            @click="editArticle(slotProps.data)" />
+                    </div>
                 </template>
             </Column>
             <template #footer>
