@@ -55,12 +55,37 @@ const pdfPedido = (id) => {
 
     });
 };
+
+const visibleDialogFiles = ref(false);
+const files = ref([]);
+const selectedPedido = ref(null);
+
+const dialogFiles = (pedfiles, id) => {
+
+    selectedPedido.value = id;
+    files.value = pedfiles;
+    visibleDialogFiles.value = true;
+
+
+};
+
 </script>
 
 <template>
     <div>
         <div class="mt-4">
 
+            <Dialog v-model="visibleDialogFiles" header="Archivos adjuntos" :visible="visibleDialogFiles" width="70%"
+                @hide="visibleDialogFiles = false">
+                <div class="p-4">
+                    <div class="flex flex-wrap">
+                        <div v-for="file in files" class="p-2">
+                            <a :href="'https://fm.dactil.ar/storage/pedidos/' + selectedPedido + '/' + file"
+                                target="_blank">{{ file }}</a>
+                        </div>
+                    </div>
+                </div>
+            </Dialog>
 
             <DataTable :value="pedidosData" ref="dt">
                 <template #header>
@@ -121,7 +146,8 @@ const pdfPedido = (id) => {
                         <div class="flex justify-start items-center">
                             <Button icon="pi pi-file-pdf" severity="danger" class="mr-2"
                                 @click="pdfPedido(data.data.id)" />
-                            <Button icon="pi pi-paperclip" severity="help" disabled />
+                            <Button icon="pi pi-paperclip" severity="help" :disabled="data.data.files.length == 0"
+                                @click="dialogFiles(data.data.files, data.data.id)" class="mr-2" />
                         </div>
                     </template>
                 </Column>
