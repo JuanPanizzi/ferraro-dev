@@ -6,6 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 
 import ConfirmPopup from 'primevue/confirmpopup';
+import Password from 'primevue/password';
 
 
 const loading = ref(false);
@@ -311,9 +312,12 @@ function validarEmail(email) {
                         válido.</small>
 
                 </div>
-                <div>
+                <div class="mb-16">
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
-                    <InputText id="direccion" v-model="user.password" fluid :invalid="!isEditing && !user.password"/>
+                    <Password class="block font-bold mb-3" v-model="user.password" toggleMask fluid :invalid="!isEditing && !user.password" />
+                   
+                    <!-- <InputText id="direccion" v-model="user.password" fluid :invalid="!isEditing && !user.password"/> -->
+                
                 </div>
 
             </div>
