@@ -118,6 +118,7 @@ function abrirNuevo() {
 function ocultarDialogo() {
     articuloDialogo.value = false;
     enviado.value = false;
+    clientSelected.value = null;
 }
 
 
