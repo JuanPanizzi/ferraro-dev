@@ -17,7 +17,9 @@ const model = ref([
             },
             // pedidos
             { label: 'Pedidos', icon: 'pi pi-shopping-cart', to: '/pedidos' },
-            { label: 'Remitos', icon: 'pi pi-file', to: '/remitos' }
+            { label: 'Remitos', icon: 'pi pi-file', to: '/remitos' },
+            { label: 'Cotizaciones', icon: 'pi pi-file-import', to: '/cotizaciones' }
+
             //  { label: 'Proveedores', icon: '', to: '/empty' },
 
             // cotizaciones
@@ -65,7 +67,8 @@ const model = ref([
             //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
             //            { label: 'IVA Ventas', icon: '', to: '/iva-ventas' }
         ]
-    }
+    },
+    
 ]);
 </script>
 

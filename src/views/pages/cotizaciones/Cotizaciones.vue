@@ -89,7 +89,7 @@ const dialogFiles = (pedfiles, id) => {
 
             <DataTable :value="pedidosData" ref="dt">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">PEDIDOS DE CLIENTES</div>
+                    <div class="font-semibold text-xl mb-4">COTIZACIONES</div>
                     <div class="flex justify-between items-center">
 
                         <div class="flex items-center">
@@ -130,7 +130,7 @@ const dialogFiles = (pedfiles, id) => {
                     <div class="p-4 text-center">No hay datos para mostrar.</div>
                 </template>
 
-                <Column field="nom_cli" header="Cliente" sortable>
+                <Column field="nom_cli" header="N° Cotización" sortable>
                 </Column>
                 <Column field="num_oc" header="N° de Pedido" sortable></Column>
                 <Column field="obs_fac" header="Observaciones" sortable></Column>

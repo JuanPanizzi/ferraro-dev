@@ -99,6 +99,13 @@ const router = createRouter({
                     component: () => import('@/views/pages/users/Users.vue')
                     //meta: { requiresAuth: true }
                 },
+                //Cotizaciones
+                {
+                    path: '/cotizaciones',
+                    name: 'cotizaciones',
+                    component: () => import('@/views/pages/cotizaciones/Cotizaciones.vue')
+                    //meta: { requiresAuth: true }
+                },
             ]
         },
         {
