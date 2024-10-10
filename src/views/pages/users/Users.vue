@@ -25,7 +25,6 @@ const openPopup = (event) => {
             isVisible.value = true;
         },
         onHide: () => {
-            // alert('elemento el')
             isVisible.value = false;
         }
     });
@@ -306,10 +305,20 @@ function validarEmail(email) {
                 <Column field="email" header="Email" sortable style="min-width: 16rem"></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <ConfirmPopup></ConfirmPopup>
+                        <ConfirmPopup group="headless">
+                            <template #container="{ message }">
+                                <div class="rounded p-4">
+                                    <span>{{ message.message }}</span>
+                                    <div class="flex items-center gap-2 mt-4">
+                                        <Button label="Save" @click="acceptCallback" size="small"></Button>
+                                        <Button label="Cancel" outlined @click="rejectCallback" severity="secondary"
+                                            size="small" text></Button>
+                                    </div>
+                                </div>
+                            </template>
+                        </ConfirmPopup>
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Button icon="pi pi-trash" @click="eliminarUsuario(slotProps.data)" class="mx-2"
-                            severity="danger"></Button>
+                        <Button icon="pi pi-trash" @click="openPopup" class="mx-2" severity="danger"></Button>
                         <Toast />
 
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
@@ -341,7 +350,8 @@ function validarEmail(email) {
                     <InputText id="direccion" v-model="user.email" fluid
                         :class="{ 'p-invalid': !isValidEmail && user.email }" placeholder="email@email.com"
                         @input="validarEmail" />
-                    <small v-if="!isValidEmail && user.email" class="p-error text-red-400">Por favor, ingresa un correo electrónico
+                    <small v-if="!isValidEmail && user.email" class="p-error text-red-400">Por favor, ingresa un correo
+                        electrónico
                         válido.</small>
 
                 </div>
@@ -354,8 +364,8 @@ function validarEmail(email) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button :loading="loading" label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()"
-                     />
+                <Button :loading="loading" label="Guardar" icon="pi pi-check"
+                    @click="isEditing ? actualizarUsuario() : crearUsuario()" />
                 <Toast />
             </template>
         </Dialog>

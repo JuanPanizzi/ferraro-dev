@@ -47,7 +47,7 @@ const model = ref([
         ]
     },
     {
-        label: 'USERS',
+        label: 'SISTEMA',
         items: [
             // movimientos
             // {
@@ -59,7 +59,7 @@ const model = ref([
             //         { label: 'Ventas', icon: '', to: '/afip-ventas' }
             //     ]
             // },
-            { label: 'Users', icon: 'pi pi-users', to: '/users' }
+            { label: 'Usuarios', icon: 'pi pi-users', to: '/users' }
 
             //{ label: 'Compras', icon: '', to: '/afip-compras', items: [] }
             //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
