@@ -143,7 +143,17 @@ async function editarUsuario() {
         
             return;
         }
-
+        if(!validarEmail(user.value.email)){
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Debe colocar un formato de email válido.',
+                life: 3000
+            });
+            loading.value = false
+        
+            return;
+        }
 
         
         const response = await UserService.updateUser(user.value)
