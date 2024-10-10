@@ -7,15 +7,6 @@ import { useRouter } from 'vue-router';
 
 const pedidosData = ref([]);
 
-const search = async () => {
-    try {
-
-        const response = await PedidoService.getPedidos();
-        pedidosData.value = response.data;
-    } catch (error) {
-        console.error('Error :', error);
-    }
-};
 
 
 const clients = ref([]);
@@ -39,7 +30,23 @@ const add = () => {
 };
 
 const hiddenPrices = ref(false);
+const selectedClient = ref(null);
 
+const search = async () => {
+    try {
+        if (selectedClient.value) {
+
+            const response = await PedidoService.getPedidosByClient(selectedClient.value.NUM_CLI);
+            pedidosData.value = response.data;
+        } else {
+            const response = await PedidoService.getPedidos();
+            pedidosData.value = response.data;
+
+        }
+    } catch (error) {
+        console.error('Error :', error);
+    }
+};
 
 const pdfPedido = (id) => {
     PedidoService.pdfPedido(id, hiddenPrices.value).then((response) => {
@@ -60,8 +67,29 @@ const pdfPedido = (id) => {
                     <div class="font-semibold text-xl mb-4">PEDIDOS DE CLIENTES</div>
                     <div class="flex justify-between items-center">
 
-                        <div class="card flex flex-wrap justify-center gap-4">
-                            <div class="flex items-center">
+                        <div class="flex items-center">
+                            <div style="display: flex;">
+                                <Select :options="clients" optionLabel="NOM_CLI" v-model="selectedClient" filter
+                                    placeholder="Seleccione un cliente" class="w-full" @change="search()"
+                                    :virtualScrollerOptions="{ itemSize: 38 }" showClear
+                                    emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                                    emptySelectionMessage="Seleccione un cliente" style="max-width: 300px;">
+                                    <template #option="slotProps">
+                                        <div class="flex items center">
+                                            <span>{{ slotProps.option.NUM_CLI }}</span>
+                                            <span class="ml-2">{{ slotProps.option.NOM_CLI }}</span>
+                                        </div>
+                                    </template>
+                                    <template #value="slotProps">
+                                        <div class="flex items center">
+                                            <span>{{ slotProps.value?.NOM_CLI }}</span>
+                                            <span v-if="!slotProps.value?.NUM_CLI" class="ml-2"> Filtrar por cliente
+                                            </span>
+                                        </div>
+                                    </template>
+                                </Select>
+                            </div>
+                            <div class="flex items-center mx-3">
                                 <Checkbox v-model="hiddenPrices" inputId="hiddenPrices" name="hiddenPrices"
                                     :binary="true" />
                                 <label for="hiddenPrices" class="ml-2"> Ocultar precios </label>
@@ -88,17 +116,6 @@ const pdfPedido = (id) => {
                         </div>
                     </template>
                 </Column>
-                <!-- <Column field="for_pag" header="Forma de Pago" sortable>
-
-                    <template #body="data">
-                        <div class="flex justify-center items-center">
-                            <span v-if="data.data.for_pag == 'E'">Efectivo</span>
-                            <span v-if="data.data.for_pag == 'T'">Transferencia</span>
-                            <span v-if="data.data.for_pag == 'C'">Cheque</span>
-                        </div>
-                    </template>
-                </Column> -->
-                <!-- buttons: pdf, attachments -->
                 <Column header="Acciones">
                     <template #body="data">
                         <div class="flex justify-start items-center">
