@@ -64,7 +64,8 @@ const priceHistoryDialog = ref(false);
 
 const selectedArticle = ref([]);
 const clientSelected = ref(null)
-// const clientArticle = ref(null)
+const loading = ref(false)
+
 
 const articulo = ref({
     id: null,
@@ -129,8 +130,8 @@ async function crearArticle() {
     }
     let newArticle = articulo.value;
     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
-    console.log('arcitulo que se manda en nuevo arcitulo', newArticle);
     try {
+        loading.value = true;
         const response = await ArticleService.createArticle(newArticle);
 
         if (response.status >= 200) {
@@ -141,7 +142,7 @@ async function crearArticle() {
             articulos.value.push(response.data);
 
             // go to last page
-            dt.value.paginate({ first: Math.ceil(articulos.value.length / 50) * 50, rows: 50 });
+            // dt.value.paginate({ first: Math.ceil(articulos.value.length / 50) * 50, rows: 50 });
         } else {
 
             throw new Error('Error en la respuesta del servidor');
@@ -149,6 +150,9 @@ async function crearArticle() {
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
         console.log('error al crear articulo', error);
+    } finally {
+        loading.value = false;
+
     }
 }
 
@@ -353,7 +357,7 @@ function saveArticle() {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" />
+                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" :loading="loading"/>
             </template>
         </Dialog>
 
