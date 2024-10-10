@@ -15,7 +15,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 const router = useRouter();
 const confirm = useConfirm();
 const isVisible = ref(false);
-const loading = ref(false); 
+const loading = ref(false);
 const openPopup = (event) => {
     confirm.require({
         target: event.currentTarget,
@@ -57,25 +57,7 @@ const userDialogo = ref(false);
 const eliminarClienteDialogo = ref(false);
 const eliminarClientesDialogo = ref(false);
 const isEditing = ref(false)
-const cliente = ref({
-    NUM_CLI: '',
-    NOM_CLI: '',
-    DIR_CLI: '',
-    LOC_CLI: '',
-    CP_CLI: '',
-    PRO_CLI: '',
-    TEL_CLI: '',
-    FAX_CLI: '',
-    EMAIL_CLI: '',
-    DTO_CLI: 0,
-    CUIT_CLI: '',
-    IVA_CLI: 0,
-    OBS_CLI: '',
-    CON_VTA: '',
-    DIA_FF: 0,
-    HOR_CLI: '',
-    PERIB_CLI: 0
-});
+
 const clientesSeleccionados = ref([]);
 const filtros = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -83,25 +65,11 @@ const filtros = ref({
 const enviado = ref(false);
 
 function abrirNuevo() {
-    cliente.value = {
-        NUM_CLI: '',
-        NOM_CLI: '',
-        DIR_CLI: '',
-        LOC_CLI: '',
-        CP_CLI: '',
-        PRO_CLI: '',
-        TEL_CLI: '',
-        FAX_CLI: '',
-        EMAIL_CLI: '',
-        DTO_CLI: 0,
-        CUIT_CLI: '',
-        IVA_CLI: 0,
-        OBS_CLI: '',
-        CON_VTA: '',
-        DIA_FF: 0,
-        HOR_CLI: '',
-        PERIB_CLI: 0
-    };
+    // cliente.value = {
+    //     NUM_CLI: '',
+    //     NOM_CLI: '',
+    //     DIR_CLI: '',
+    // }
     enviado.value = false;
     userDialogo.value = true;
 }
@@ -183,12 +151,12 @@ async function actualizarUsuario() {
 }
 
 async function eliminarUsuario(usuario) {
-    
+
 
     try {
-        
+
         const response = await UserService.deleteUser(usuario.id)
-      
+
         if (response.status >= 200) {
             toast.add({
                 severity: 'success',
@@ -198,17 +166,17 @@ async function eliminarUsuario(usuario) {
             });
 
             users.value = users.value.filter((user) => user.id !== usuario.id);
-    
+
         } else {
             throw new Error()
         }
     } catch (error) {
         toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'No se pudo eliminar al usuario, intente nuevamente.',
-                life: 3000
-            });
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo eliminar al usuario, intente nuevamente.',
+            life: 3000
+        });
     } finally {
         loading.value = true
     }
@@ -294,7 +262,13 @@ function eliminarClientesSeleccionados() {
 function verCuentaCorriente(cliente) {
     router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
 }
+const isValidEmail = ref(true);
 
+function validarEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    isValidEmail.value = regex.test(user.value.email);
+    return regex.test(email);
+}
 </script>
 
 <template>
@@ -322,7 +296,7 @@ function verCuentaCorriente(cliente) {
                         </div>
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo usuario" class="mx-2 p-button-primary"
-                                @click="abrirNuevo" />
+                                @click="openDialog()" />
                         </div>
                     </div>
                 </template>
@@ -334,8 +308,9 @@ function verCuentaCorriente(cliente) {
                     <template #body="slotProps">
                         <ConfirmPopup></ConfirmPopup>
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Button icon="pi pi-trash" @click="eliminarUsuario(slotProps.data)"  class="mx-2"   severity="danger" ></Button>
-                            <Toast />
+                        <Button icon="pi pi-trash" @click="eliminarUsuario(slotProps.data)" class="mx-2"
+                            severity="danger"></Button>
+                        <Toast />
 
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
@@ -363,7 +338,12 @@ function verCuentaCorriente(cliente) {
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
-                    <InputText id="direccion" v-model="user.email" fluid  :mask="'^[\\w-\\.]+@([\\w]+\\.)+[\\w]{2,4}$'" />
+                    <InputText id="direccion" v-model="user.email" fluid
+                        :class="{ 'p-invalid': !isValidEmail && user.email }" placeholder="email@email.com"
+                        @input="validarEmail" />
+                    <small v-if="!isValidEmail && user.email" class="p-error text-red-400">Por favor, ingresa un correo electrónico
+                        válido.</small>
+
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
@@ -374,7 +354,8 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()" :loading="loading" />
+                <Button :loading="loading" label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarUsuario() : crearUsuario()"
+                     />
                 <Toast />
             </template>
         </Dialog>
