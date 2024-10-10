@@ -79,11 +79,21 @@ async function crearUsuario() {
     isEditing.value = false
 
     try {
-        if (!user.value.name && !user.value.password) {
+        if (!user.value.name || !user.value.password || !user.value.email  ) {
             toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: 'Debe completar los campos obligatorios.',
+                life: 3000
+            });
+        
+            return;
+        }
+        if(!validarEmail(user.value.email)){
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Debe colocar un formato de email válido.',
                 life: 3000
             });
         
@@ -284,7 +294,7 @@ function validarEmail(email) {
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
                     <InputText id="direccion" v-model="user.email" fluid
-                        :class="{ 'p-invalid': !isValidEmail && user.email }" placeholder="email@email.com"
+                        :class="{ 'p-invalid': !isValidEmail && user.email || !user.email}" placeholder="email@email.com"
                         @input="validarEmail" />
                     <small v-if="!isValidEmail && user.email" class="p-error text-red-400">Por favor, ingresa un correo
                         electrónico
