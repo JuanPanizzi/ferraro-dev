@@ -1,20 +1,13 @@
 <script setup>
-import { ClienteService } from '@/service/ClienteService';
 import { UserService } from '@/service/UserService';
 import { FilterMatchMode } from '@primevue/core/api';
 import Toast from 'primevue/toast';
-import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import ConfirmPopup from 'primevue/confirmpopup';
 
 
-// Usa el router
-const router = useRouter();
-const confirm = useConfirm();
-const isVisible = ref(false);
 const loading = ref(false);
 const eliminarUserDialog = ref(false);
 
@@ -41,11 +34,11 @@ const toast = useToast();
 const userDialogo = ref(false);
 const isEditing = ref(false)
 
-const clientesSeleccionados = ref([]);
 const filtros = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-const enviado = ref(false);
+
+
 
 
 
@@ -226,9 +219,7 @@ function validarEmail(email) {
     <div>
         <div class="card">
 
-            <!--
-                v-model:selection="clientesSeleccionados" -->
-            <DataTable :value="users" dataKey="id" :paginator="true" :rows="10"
+            <DataTable :value="users" dataKey="id" :paginator="true" :rows="10"  :filters="filtros"
                 :globalFilterFields="['id', 'name', 'email']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
@@ -274,7 +265,6 @@ function validarEmail(email) {
                             severity="danger"></Button>
                         <Toast />
 
-                        <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
                     </template>
                 </Column>
             </DataTable>
@@ -290,7 +280,6 @@ function validarEmail(email) {
                     <label for="nombre" class="block font-bold mb-3">Nombre</label>
                     <InputText id="nombre" v-model.trim="user.name" required="true" autofocus
                         :invalid="!user.name" fluid />
-                    <!-- <small v-if="enviado && !user.name" class="text-red-500">El nombre es obligatorio.</small> -->
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
@@ -322,9 +311,6 @@ function validarEmail(email) {
                 <span>¿Estás seguro de que quieres eliminar a <b>{{ user.name }}</b>?</span>
             </div>
             <template #footer>
-                <!-- <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />
-                <Button label="Sí" icon="pi pi-check" @click="eliminarCliente" /> -->
-
                 <Button @click="ocultarDialogo('delete')" label="Cancelar" outlined></Button>
                 <Button @click="eliminarUsuario(user)" label="Eliminar" severity="danger" outlined :loading="loading" ></Button>
 
