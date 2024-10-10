@@ -86,13 +86,14 @@ async function crearUsuario() {
     isEditing.value = false
 
     try {
-        if (!user.value.name) {
+        if (!user.value.name && !user.value.password) {
             toast.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'El nombre es obligatorio',
+                detail: 'Debe completar los campos obligatorios.',
                 life: 3000
             });
+        
             return;
         }
 
@@ -128,6 +129,20 @@ async function crearUsuario() {
 async function editarUsuario() {
     loading.value = true
     try {
+        if (!user.value.name ) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No puede dejar el nombre vacío.',
+                life: 3000
+            });
+            loading.value = false
+        
+            return;
+        }
+
+
+        
         const response = await UserService.updateUser(user.value)
 
         if (response.status >= 200) {
@@ -142,6 +157,9 @@ async function editarUsuario() {
             const index = buscarIndicePorId(user.value.id);
             users.value[index] = user.value;
             isEditing.value = false
+            loading.value = false
+            userDialogo.value = false
+
 
         } else {
             throw new Error()
@@ -154,11 +172,10 @@ async function editarUsuario() {
             detail: 'No se pudo editar el usuario',
             life: 3000
         });
-
-    } finally {
         userDialogo.value = false
         loading.value = false
-    }
+
+    } 
 }
 
 async function eliminarUsuario(usuario) {
@@ -272,8 +289,8 @@ function validarEmail(email) {
                 <div>
                     <label for="nombre" class="block font-bold mb-3">Nombre</label>
                     <InputText id="nombre" v-model.trim="user.name" required="true" autofocus
-                        :invalid="enviado && !user.name" fluid />
-                    <small v-if="enviado && !user.name" class="text-red-500">El nombre es obligatorio.</small>
+                        :invalid="!user.name" fluid />
+                    <!-- <small v-if="enviado && !user.name" class="text-red-500">El nombre es obligatorio.</small> -->
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Email</label>
@@ -287,7 +304,7 @@ function validarEmail(email) {
                 </div>
                 <div>
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
-                    <InputText id="direccion" v-model="user.password" fluid />
+                    <InputText id="direccion" v-model="user.password" fluid :invalid="!isEditing && !user.password"/>
                 </div>
 
             </div>
