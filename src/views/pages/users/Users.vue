@@ -51,15 +51,7 @@ const filtros = ref({
 });
 const enviado = ref(false);
 
-function abrirNuevo() {
-    // cliente.value = {
-    //     NUM_CLI: '',
-    //     NOM_CLI: '',
-    //     DIR_CLI: '',
-    // }
-    enviado.value = false;
-    userDialogo.value = true;
-}
+
 
 function ocultarDialogo(type) {
 
@@ -77,7 +69,12 @@ function openDialog(type, usuario) {
         user.value = usuario //Cuando se eliminta un usuario el usuario seleccionado queda en user
         eliminarUserDialog.value = true;
 
-    } else {
+    } else if (type == 'edit') {
+        isEditing.value = true;
+        user.value = usuario
+        userDialogo.value = true;
+    } 
+    else {
         user.value = {
             id: null,
             name: '',
@@ -90,74 +87,89 @@ function openDialog(type, usuario) {
 }
 
 async function crearUsuario() {
-    // toast error if cliente NOM_CLI is empty
-    if (!user.value.name) {
+    loading.value = true
+    isEditing.value = false
+
+    try {
+        if (!user.value.name) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El nombre es obligatorio',
+                life: 3000
+            });
+            return;
+        }
+
+        const response = await UserService.createUser(user.value)
+
+        if (response.status >= 200) {
+            toast.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Usuario creado correctamente',
+                life: 3000
+            });
+            users.value.push(response.data);
+            userDialogo.value = false
+            isEditing.value = false
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'El nombre es obligatorio',
+            detail: 'No se pudo crear el usuario',
             life: 3000
         });
-        return;
-    }
-
-    const response = await UserService.createUser(user.value)
-
-    if (response.status >= 200) {
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Cliente creado correctamente',
-            life: 3000
-        });
-        users.value.push(response.data);
-        userDialogo.value = false
-        isEditing.value = false
-    } else {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudo crear el cliente',
-            life: 3000
-        });
-        userDialogo.value = false;
+    } finally {
+        loading.value = false
 
     }
 }
 
 
-async function actualizarUsuario() {
+async function editarUsuario() {
+    loading.value = true
+    try {
+        const response = await UserService.updateUser(user.value)
 
-    const response = await UserService.updateUser(user.value)
-    if (response.status >= 200) {
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Cliente editado correctamente',
-            life: 3000
-        });
-        userDialogo.value = false
+        if (response.status >= 200) {
+            toast.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Usuario editado correctamente',
+                life: 3000
+            });
 
-        // update cliente in clientes array
-        const index = buscarIndicePorId(user.value.id);
-        users.value[index] = user.value;
-        isEditing.value = false
+            userDialogo.value = false
 
-    } else {
+
+            const index = buscarIndicePorId(user.value.id);
+            users.value[index] = user.value;
+            isEditing.value = false
+
+        } else {
+            throw new Error()
+        }
+    } catch (error) {
+
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No se pudo crear el cliente',
+            detail: 'No se pudo editar el usuario',
             life: 3000
         });
-        userDialogo.value = false
 
+    } finally {
+        userDialogo.value = false
+        loading.value = false
     }
 }
 
 async function eliminarUsuario(usuario) {
-
-
+    loading.value = true;
     try {
 
         const response = await UserService.deleteUser(usuario.id)
@@ -183,47 +195,15 @@ async function eliminarUsuario(usuario) {
             life: 3000
         });
     } finally {
-        loading.value = true
+        loading.value = false
     }
-
-
-    loading.value = false
-
 }
-
-function confirmarEliminarCliente(cli) {
-    cliente.value = cli;
-    eliminarClienteDialogo.value = true;
-}
-
-
 
 function buscarIndicePorId(id) {
     return users.value.findIndex((user) => user.id === id);
 }
 
-function crearId() {
-    return (clientes.value.length + 1).toString().padStart(4, '0');
-}
 
-function exportarCSV() {
-    dt.value.exportCSV();
-}
-
-function confirmarEliminarSeleccionados() {
-    eliminarClientesDialogo.value = true;
-}
-
-function eliminarClientesSeleccionados() {
-    clientes.value = clientes.value.filter((val) => !clientesSeleccionados.value.includes(val));
-    eliminarClientesDialogo.value = false;
-    clientesSeleccionados.value = null;
-    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Clientes Eliminados', life: 3000 });
-}
-
-function verCuentaCorriente(cliente) {
-    router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
-}
 const isValidEmail = ref(true);
 
 function validarEmail(email) {
@@ -280,7 +260,7 @@ function validarEmail(email) {
                                 </div>
                             </template>
                         </ConfirmPopup>
-                        <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
+                        <Button icon="pi pi-pencil" class="mx-2" @click="openDialog('edit', slotProps.data)" />
                         <Button icon="pi pi-trash" @click="openDialog('delete', slotProps.data)" class="mx-2"
                             severity="danger"></Button>
                         <Toast />
@@ -328,8 +308,7 @@ function validarEmail(email) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button :loading="loading" label="Guardar" icon="pi pi-check"
-                    @click="isEditing ? actualizarUsuario() : crearUsuario()" />
+                <Button :loading="loading" label="Guardar" icon="pi pi-check"  @click="isEditing ? editarUsuario() : crearUsuario()" />
                 <Toast />
             </template>
         </Dialog>
@@ -344,20 +323,11 @@ function validarEmail(email) {
                 <Button label="Sí" icon="pi pi-check" @click="eliminarCliente" /> -->
 
                 <Button @click="ocultarDialogo('delete')" label="Cancelar" outlined></Button>
-                <Button @click="eliminarUsuario(user)" label="Eliminar" severity="danger" outlined></Button>
+                <Button @click="eliminarUsuario(user)" label="Eliminar" severity="danger" outlined :loading="loading" ></Button>
 
             </template>
         </Dialog>
 
-        <Dialog v-model:visible="eliminarClientesDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
-            <div class="flex items-center gap-4">
-                <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span v-if="cliente">¿Estás seguro de que quieres eliminar los clientes seleccionados?</span>
-            </div>
-            <template #footer>
-                <Button label="No" icon="pi pi-times" text @click="eliminarClientesDialogo = false" />
-                <Button label="Sí" icon="pi pi-check" text @click="eliminarClientesSeleccionados" />
-            </template>
-        </Dialog>
+
     </div>
 </template>
