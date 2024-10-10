@@ -314,7 +314,7 @@ function validarEmail(email) {
                 </div>
                 <div class="mb-16">
                     <label for="direccion" class="block font-bold mb-3">Contraseña</label>
-                    <Password class="block font-bold mb-3" v-model="user.password" toggleMask fluid :invalid="!isEditing && !user.password" />
+                    <Password class="block font-bold mb-3" v-model="user.password" toggleMask fluid :invalid="!isEditing && !user.password"  weakLabel="Contraseña débil" mediumLabel="Contraseña aceptable" strongLabel="Contraseña segura"  />
                    
                     <!-- <InputText id="direccion" v-model="user.password" fluid :invalid="!isEditing && !user.password"/> -->
                 
