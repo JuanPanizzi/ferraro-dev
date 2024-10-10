@@ -14,6 +14,16 @@ export const PedidoService = {
             throw error;
         }
     },
+    async getPedidosByClient(id) {
+        try {
+            console.log(id)
+            const response = await apiClient.get(`api/pedidos?cliente=${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching pedidos:', error);
+            throw error;
+        }
+    },
 
     async getPedido(id) {
         // const response = await fetch(`${API_BASE_URL}/pedidos/${id}`);
