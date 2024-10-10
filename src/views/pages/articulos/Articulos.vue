@@ -222,6 +222,23 @@ function saveArticle() {
     }
 }
 
+async function filterByClient(client) {
+    // articulos.value = articulos.value.filter(art => art.NUM_CLI === client.NOM_CLI)
+    console.log(articulos)
+    try {
+        if (clientSelected.value) {
+
+            const response = await ArticleService.getArticlesByClient(client.NUM_CLI);
+            articulos.value = response;
+        } else {
+            const response = await ArticleService.getArticlesXLarge()
+            articulos.value = response.data;
+
+        }
+    } catch (error) {
+        console.error('Error :', error);
+    }
+};
 
 </script>
 
@@ -245,9 +262,9 @@ function saveArticle() {
                                 </InputIcon>
                                 <InputText v-model="filtros['global'].value" placeholder="Buscador" />
                             </IconField>
-                            <!-- <div style="display: flex;">
-                                <Select :options="articulos" optionLabel="NOM_ART" v-model="selectedArticle" filter
-                                    placeholder="Seleccione un articulo" class="w-full" @change="search()"
+                            <div style="display: flex;">
+                                <Select :options="clients" optionLabel="NOM_CLI" v-model="clientSelected" filter
+                                    placeholder="Seleccione un cliente" class="w-full" @change="filterByClient(clientSelected)"
                                     :virtualScrollerOptions="{ itemSize: 38 }" showClear
                                     emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
                                     emptySelectionMessage="Seleccione un cliente" style="max-width: 300px;">
@@ -265,7 +282,7 @@ function saveArticle() {
                                         </div>
                                     </template>
                                 </Select>
-                            </div> -->
+                            </div>
                         </div>
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary"
