@@ -152,7 +152,7 @@ async function crearArticle() {
         console.log('error al crear articulo', error);
     } finally {
         loading.value = false;
-
+        clientSelected.value = null;
     }
 }
 
