@@ -150,7 +150,7 @@ async function crearArticle() {
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
-        console.log('error al crear articulo', error);
+        
     } finally {
         loading.value = false;
         clientSelected.value = null;
@@ -166,13 +166,11 @@ function modalEdit(article) {
 
 async function editarArticle() {
     let article = articulo.value;
-
-
-
     // set article.NUM_CLI to the selected client
     article.NUM_CLI = clientSelected.value.NUM_CLI;
 
     try {
+        loading.value = true;
         const response = await ArticleService.editarArticle(article);
 
         if (response.status >= 200) {
@@ -184,7 +182,7 @@ async function editarArticle() {
             if (index !== -1) {
                 // Actualizar el artículo en el arreglo
                 articulos.value[index] = { ...articulos.value[index], ...updatedArticle };
-                console.log('artículo actualizado en la lista de artículos');
+               
             }
 
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
@@ -195,6 +193,9 @@ async function editarArticle() {
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
         console.log('error al actualizar artículo', error);
+    } finally {
+        loading.value = false;
+
     }
 }
 
@@ -244,6 +245,27 @@ function saveArticle() {
                                 </InputIcon>
                                 <InputText v-model="filtros['global'].value" placeholder="Buscador" />
                             </IconField>
+                            <!-- <div style="display: flex;">
+                                <Select :options="articulos" optionLabel="NOM_ART" v-model="selectedArticle" filter
+                                    placeholder="Seleccione un articulo" class="w-full" @change="search()"
+                                    :virtualScrollerOptions="{ itemSize: 38 }" showClear
+                                    emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                                    emptySelectionMessage="Seleccione un cliente" style="max-width: 300px;">
+                                    <template #option="slotProps">
+                                        <div class="flex items center">
+                                            <span>{{ slotProps.option.NUM_CLI }}</span>
+                                            <span class="ml-2">{{ slotProps.option.NOM_CLI }}</span>
+                                        </div>
+                                    </template>
+                                    <template #value="slotProps">
+                                        <div class="flex items center">
+                                            <span>{{ slotProps.value?.NOM_CLI }}</span>
+                                            <span v-if="!slotProps.value?.NUM_CLI" class="ml-2"> Filtrar por cliente
+                                            </span>
+                                        </div>
+                                    </template>
+                                </Select>
+                            </div> -->
                         </div>
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary"
