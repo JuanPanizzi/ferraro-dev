@@ -20,10 +20,8 @@ const eliminarUserDialog = ref(false);
 
 
 onMounted(() => {
-    // ClienteService.getClientes().then((data) => (clientes.value = data));
     UserService.getUsers()
         .then((response) => {
-
             users.value = response.data;
         })
         .catch((error) => {
@@ -65,9 +63,9 @@ function abrirNuevo() {
 
 function ocultarDialogo(type) {
 
-    if(type == 'delete') {
+    if (type == 'delete') {
         eliminarUserDialog.value = false;
-    }else{
+    } else {
         userDialogo.value = false;
         // enviado.value = false;
     }
@@ -76,11 +74,17 @@ function ocultarDialogo(type) {
 function openDialog(type, usuario) {
 
     if (type == 'delete') {
-        user.value = usuario
+        user.value = usuario //Cuando se eliminta un usuario el usuario seleccionado queda en user
         eliminarUserDialog.value = true;
 
     } else {
+        user.value = {
+            id: null,
+            name: '',
+            email: '',
+            password: ''
 
+        }
         userDialogo.value = true;
     }
 }
@@ -183,7 +187,6 @@ async function eliminarUsuario(usuario) {
     }
 
 
-    console.log('usuario', usuario)
     loading.value = false
 
 }
@@ -334,7 +337,7 @@ function validarEmail(email) {
         <Dialog v-model:visible="eliminarUserDialog" :style="{ width: '450px' }" header="Confirmar" :modal="true">
             <div class="flex items-center gap-4">
                 <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span >¿Estás seguro de que quieres eliminar a <b>{{ user.name }}</b>?</span>
+                <span>¿Estás seguro de que quieres eliminar a <b>{{ user.name }}</b>?</span>
             </div>
             <template #footer>
                 <!-- <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />
