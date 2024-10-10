@@ -16,19 +16,8 @@ const router = useRouter();
 const confirm = useConfirm();
 const isVisible = ref(false);
 const loading = ref(false);
-const openPopup = (event) => {
-    confirm.require({
-        target: event.currentTarget,
-        message: '¿Esta seguro que desea eliminar este usuario?',
-        header: 'Confirmation',
-        onShow: () => {
-            isVisible.value = true;
-        },
-        onHide: () => {
-            isVisible.value = false;
-        }
-    });
-}
+const eliminarUserDialog = ref(false);
+
 
 onMounted(() => {
     // ClienteService.getClientes().then((data) => (clientes.value = data));
@@ -44,6 +33,7 @@ onMounted(() => {
 
 const users = ref([])
 const user = ref({
+    id: null,
     name: '',
     email: '',
     password: ''
@@ -73,14 +63,26 @@ function abrirNuevo() {
     userDialogo.value = true;
 }
 
-function ocultarDialogo() {
-    userDialogo.value = false;
-    enviado.value = false;
+function ocultarDialogo(type) {
+
+    if(type == 'delete') {
+        eliminarUserDialog.value = false;
+    }else{
+        userDialogo.value = false;
+        // enviado.value = false;
+    }
 }
 
-function openDialog() {
-    userDialogo.value = true;
+function openDialog(type, usuario) {
 
+    if (type == 'delete') {
+        user.value = usuario
+        eliminarUserDialog.value = true;
+
+    } else {
+
+        userDialogo.value = true;
+    }
 }
 
 async function crearUsuario() {
@@ -165,7 +167,7 @@ async function eliminarUsuario(usuario) {
             });
 
             users.value = users.value.filter((user) => user.id !== usuario.id);
-
+            eliminarUserDialog.value = false
         } else {
             throw new Error()
         }
@@ -186,54 +188,12 @@ async function eliminarUsuario(usuario) {
 
 }
 
-
-
-
-
-function guardarCliente() {
-    enviado.value = true;
-
-    if (cliente.value.NOM_CLI?.trim()) {
-        if (cliente.value.NUM_CLI) {
-            const index = buscarIndicePorId(cliente.value.NUM_CLI);
-            if (index >= 0) {
-                clientes.value[index] = cliente.value;
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Actualizado', life: 3000 });
-            } else {
-                cliente.value.NUM_CLI = crearId();
-                clientes.value.push(cliente.value);
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
-            }
-        } else {
-            cliente.value.NUM_CLI = crearId();
-            clientes.value.push(cliente.value);
-            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Creado', life: 3000 });
-        }
-
-        userDialogo.value = false;
-        cliente.value = {};
-    }
-}
-
-async function editarCliente(usuario) {
-
-    isEditing.value = true
-    user.value = { ...usuario };
-    userDialogo.value = true;
-
-}
-
 function confirmarEliminarCliente(cli) {
     cliente.value = cli;
     eliminarClienteDialogo.value = true;
 }
 
-// function eliminarUsuario() {
-//     users.value = users.value.filter((val) => val.NUM_CLI !== cliente.value.NUM_CLI);
-//     eliminarClienteDialogo.value = false;
-//     cliente.value = {};
-//     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente Eliminado', life: 3000 });
-// }
+
 
 function buscarIndicePorId(id) {
     return users.value.findIndex((user) => user.id === id);
@@ -318,7 +278,8 @@ function validarEmail(email) {
                             </template>
                         </ConfirmPopup>
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
-                        <Button icon="pi pi-trash" @click="openPopup" class="mx-2" severity="danger"></Button>
+                        <Button icon="pi pi-trash" @click="openDialog('delete', slotProps.data)" class="mx-2"
+                            severity="danger"></Button>
                         <Toast />
 
                         <!-- <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarEliminarCliente(slotProps.data)" /> -->
@@ -370,14 +331,18 @@ function validarEmail(email) {
             </template>
         </Dialog>
 
-        <Dialog v-model:visible="eliminarClienteDialogo" :style="{ width: '450px' }" header="Confirmar" :modal="true">
+        <Dialog v-model:visible="eliminarUserDialog" :style="{ width: '450px' }" header="Confirmar" :modal="true">
             <div class="flex items-center gap-4">
                 <i class="pi pi-exclamation-triangle !text-3xl" />
-                <span v-if="cliente">¿Estás seguro de que quieres eliminar <b>{{ cliente.NOM_CLI }}</b>?</span>
+                <span >¿Estás seguro de que quieres eliminar a <b>{{ user.name }}</b>?</span>
             </div>
             <template #footer>
-                <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />
-                <Button label="Sí" icon="pi pi-check" @click="eliminarCliente" />
+                <!-- <Button label="No" icon="pi pi-times" text @click="eliminarClienteDialogo = false" />
+                <Button label="Sí" icon="pi pi-check" @click="eliminarCliente" /> -->
+
+                <Button @click="ocultarDialogo('delete')" label="Cancelar" outlined></Button>
+                <Button @click="eliminarUsuario(user)" label="Eliminar" severity="danger" outlined></Button>
+
             </template>
         </Dialog>
 
