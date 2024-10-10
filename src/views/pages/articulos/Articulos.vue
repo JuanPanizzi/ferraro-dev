@@ -64,6 +64,7 @@ const priceHistoryDialog = ref(false);
 
 const selectedArticle = ref([]);
 const clientSelected = ref(null)
+// const clientArticle = ref(null)
 
 const articulo = ref({
     id: null,
@@ -153,9 +154,9 @@ async function crearArticle() {
 
 // modalEdit
 function modalEdit(article) {
-    console.log('article on modal edit', article)
     articulo.value = { ...article };
     articuloDialogo.value = true;
+    clientSelected.value = article.client
 }
 
 async function editarArticle() {
