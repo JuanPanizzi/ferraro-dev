@@ -122,7 +122,7 @@ const dialogFiles = (pedfiles, id) => {
                         </div>
 
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo pedido" class="mx-2 p-button-primary" @click="add" />
+                            <Button icon="pi pi-plus" label="Nueva cotización" class="mx-2 p-button-primary" @click="add" />
                         </div>
                     </div>
                 </template>
@@ -132,25 +132,16 @@ const dialogFiles = (pedfiles, id) => {
 
                 <Column field="nom_cli" header="N° Cotización" sortable>
                 </Column>
-                <Column field="num_oc" header="N° de Pedido" sortable></Column>
-                <Column field="obs_fac" header="Observaciones" sortable></Column>
-                <Column header="Total" sortable v-if="!hiddenPrices">
+                <Column field="num_oc" header="Cliente" sortable></Column>
+                <Column field="obs_fac" header="Referencia" sortable></Column>
+                <Column header="Fecha" sortable v-if="!hiddenPrices">
                     <template #body="data">
                         <div class="flex justify-start items-center">
                             {{ data.data.tip_mon == 'P' ? '$' : 'u$d' }} {{ data.data.total }}
                         </div>
                     </template>
                 </Column>
-                <Column header="Acciones">
-                    <template #body="data">
-                        <div class="flex justify-start items-center">
-                            <Button icon="pi pi-file-pdf" severity="danger" class="mr-2"
-                                @click="pdfPedido(data.data.id)" />
-                            <Button icon="pi pi-paperclip" severity="help" :disabled="data.data.files.length == 0"
-                                @click="dialogFiles(data.data.files, data.data.id)" class="mr-2" />
-                        </div>
-                    </template>
-                </Column>
+                
 
 
 
