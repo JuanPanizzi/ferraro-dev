@@ -106,6 +106,13 @@ const router = createRouter({
                     component: () => import('@/views/pages/cotizaciones/Cotizaciones.vue')
                     //meta: { requiresAuth: true }
                 },
+                //Materiales
+                {
+                    path: '/materiales',
+                    name: 'materiales',
+                    component: () => import('@/views/pages/materiales/Materiales.vue')
+                    //meta: { requiresAuth: true }
+                }
             ]
         },
         {

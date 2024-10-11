@@ -61,7 +61,9 @@ const model = ref([
             //         { label: 'Ventas', icon: '', to: '/afip-ventas' }
             //     ]
             // },
-            { label: 'Usuarios', icon: 'pi pi-users', to: '/users' }
+            { label: 'Usuarios', icon: 'pi pi-users', to: '/users' },
+            { label: 'Materiales', icon: 'pi pi-slack', to: '/materiales' }
+
 
             //{ label: 'Compras', icon: '', to: '/afip-compras', items: [] }
             //{ label: 'IVA Compras', icon: '', to: '/iva-compras' },
