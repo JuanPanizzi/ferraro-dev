@@ -45,7 +45,7 @@ const filtros = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const enviado = ref(false);
-
+const loading = ref(false)
 function abrirNuevo() {
     cliente.value = {
         NUM_CLI: '',
@@ -112,32 +112,42 @@ async function crearCliente() {
     }
 }
 async function actualizarCliente() {
+    loading.value = true
 
-    const response = await ClienteService.actualizarCliente(cliente.value)
-    if (response.status >= 200 && response.status <= 299) {
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Cliente editado correctamente',
-            life: 3000
-        });
-        clienteDialogo.value = false
+    try {
 
-        // update cliente in clientes array
-        const index = buscarIndicePorId(cliente.value.NUM_CLI);
-        clientes.value[index] = cliente.value;
-        isEditing.value = false
+        const response = await ClienteService.actualizarCliente(cliente.value)
+        if (response.status >= 200 && response.status <= 299) {
+            toast.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Cliente editado correctamente',
+                life: 3000,
+            });
 
-    } else {
+            // update cliente in clientes array
+            const index = buscarIndicePorId(cliente.value.NUM_CLI);
+            clientes.value[index] = cliente.value;
+            isEditing.value = false
+
+            clienteDialogo.value = false
+
+        }
+    } catch (error) {
+
+
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No se pudo crear el cliente',
+            detail: 'No se pudo editar el cliente, intente nuevamente',
             life: 3000
         });
-        clienteDialogo.value = false
+        // clienteDialogo.value = false
 
+    } finally {
+        loading.value = false;
     }
+
 }
 
 
@@ -215,6 +225,8 @@ function eliminarClientesSeleccionados() {
 function verCuentaCorriente(cliente) {
     router.push({ name: 'ClienteCuentaCorriente', params: { id: cliente.NUM_CLI } });
 }
+
+
 </script>
 
 <template>
@@ -271,7 +283,7 @@ function verCuentaCorriente(cliente) {
                 <Column field="TEL_CLI" header="Teléfono" sortable style="min-width: 12rem"></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        
+
                         <Button icon="pi pi-list" severity="info" @click="verCuentaCorriente(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mx-2" @click="editarCliente(slotProps.data)" />
                         <Toast />
@@ -321,7 +333,8 @@ function verCuentaCorriente(cliente) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarCliente() : crearCliente()" />
+                <Button label="Guardar" icon="pi pi-check" @click="isEditing ? actualizarCliente() : crearCliente()"
+                    :loading="loading" />
                 <Toast />
             </template>
         </Dialog>
