@@ -76,7 +76,7 @@ function ocultarDialogo() {
 }
 
 async function crearCliente() {
-
+    enviado.value = true;
     // toast error if cliente NOM_CLI is empty
     if (!cliente.value.NOM_CLI) {
         toast.add({
@@ -87,29 +87,38 @@ async function crearCliente() {
         });
         return;
     }
+    loading.value = true;
+    try {
 
     const response = await ClienteService.crearCliente(cliente.value)
-
-    if (response.status >= 200) {
-        toast.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Cliente creado correctamente',
-            life: 3000
-        });
-        clientes.value.push(response.data);
-        clienteDialogo.value = false
-        isEditing.value = false
-    } else {
+            if (response.status >= 200) {
+                toast.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Cliente creado correctamente',
+                    life: 3000
+                });
+                clientes.value.push(response.data);
+                isEditing.value = false;
+                enviado.value = false;
+            } else {
+                throw new Error();
+            }
+        
+    } catch (error) {
+        
         toast.add({
             severity: 'error',
             summary: 'Error',
             detail: 'No se pudo crear el cliente',
             life: 3000
         });
+    }   finally {
+        loading.value = false;
         clienteDialogo.value = false;
-
+        enviado.value = false;
     }
+
 }
 async function actualizarCliente() {
     loading.value = true
