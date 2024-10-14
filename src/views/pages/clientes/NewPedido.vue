@@ -294,11 +294,12 @@ const generate = () => {
 
     // add selectedFiles to pedido.FILES
     pedido.value.FILES = files.value;
-
     // add usd_div and usd_bill to pedido
     pedido.value.usd_div = divisaFormatted.value;
     pedido.value.usd_bill = billeteFormatted.value;
-
+    console.log('pedido files')
+    console.log(pedido.value)
+    
     PedidoService.createPedido(pedido.value).then((response) => {
         console.log(response);
 

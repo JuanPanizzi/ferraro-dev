@@ -2,6 +2,7 @@
 import { ArticleService } from '@/service/ArticleService';
 import { ClienteService } from '@/service/ClienteService';
 import { FilterMatchMode } from '@primevue/core/api';
+import FileUpload from 'primevue/fileupload';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -119,6 +120,8 @@ function ocultarDialogo() {
     articuloDialogo.value = false;
     enviado.value = false;
     clientSelected.value = null;
+    files.value = null;
+    console.log('files on ocular dialog', files.value)
 }
 
 
@@ -129,7 +132,9 @@ async function crearArticle() {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
+    articulo.value.FILES = files.value
     let newArticle = articulo.value;
+    console.log('new article', console.log(newArticle))
     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
     try {
         loading.value = true;
@@ -150,7 +155,7 @@ async function crearArticle() {
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
-        
+
     } finally {
         loading.value = false;
         clientSelected.value = null;
@@ -182,7 +187,7 @@ async function editarArticle() {
             if (index !== -1) {
                 // Actualizar el artículo en el arreglo
                 articulos.value[index] = { ...articulos.value[index], ...updatedArticle };
-               
+
             }
 
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
@@ -239,6 +244,24 @@ async function filterByClient(client) {
         console.error('Error :', error);
     }
 };
+const files = ref([]);
+
+// Método para manejar la selección de archivos
+const onFileSelect = (event) => {
+    const selectedFiles = Array.from(event.files); // Convierte FileList a un array
+    selectedFiles.forEach((file) => {
+        // Guardamos el archivo completo y sus propiedades necesarias
+        // pedido.value.FILES.push({
+        files.value.push({
+
+            file: file,  // El archivo completo
+            name: file.name,
+            size: file.size,
+            type: file.type
+        });
+    });
+    console.log('files', files.value)
+};
 
 </script>
 
@@ -264,10 +287,11 @@ async function filterByClient(client) {
                             </IconField>
                             <div style="display: flex;">
                                 <Select :options="clients" optionLabel="NOM_CLI" v-model="clientSelected" filter
-                                    placeholder="Seleccione un cliente" class="w-full" @change="filterByClient(clientSelected)"
-                                    :virtualScrollerOptions="{ itemSize: 38 }" showClear
-                                    emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
-                                    emptySelectionMessage="Seleccione un cliente" style="max-width: 300px;">
+                                    placeholder="Seleccione un cliente" class="w-full"
+                                    @change="filterByClient(clientSelected)" :virtualScrollerOptions="{ itemSize: 38 }"
+                                    showClear emptyFilterMessage="No se encontraron clientes"
+                                    emptyMessage="No hay clientes" emptySelectionMessage="Seleccione un cliente"
+                                    style="max-width: 300px;">
                                     <template #option="slotProps">
                                         <div class="flex items center">
                                             <span>{{ slotProps.option.NUM_CLI }}</span>
@@ -283,6 +307,7 @@ async function filterByClient(client) {
                                     </template>
                                 </Select>
                             </div>
+
                         </div>
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary"
@@ -352,7 +377,24 @@ async function filterByClient(client) {
                     </Select>
 
 
+                    <div class="">
+                        <FileUpload ref="fileUpload" mode="basic" customUpload auto chooseLabel="Adjuntar Planos"
+                            @upload="onUpload" @select="onFileSelect" :multiple="true" :maxFileSize="1000000"
+                            accept="image/*,application/pdf" class="p-button-outlined" />
+                    </div>
                 </div>
+                      <div class=" ">
+                        <p class="font-bold">Planos seleccionados:</p>
+                        <ul class="flex flex-wrap justify-evenlborder border-gray-400 rounded-lg rounded-lg">
+                        <li v-for="(file, index) in files" :key="index"
+                            class="p-4  border border-gray-400 rounded-lg m-2">
+                             <h2 class="text-emerald-400 "><strong>Archivo: {{ index + 1 }}</strong></h2> 
+                            {{ file.name }} <br /> 
+                            {{ file.type }} <br />
+                        </li>
+                    </ul>
+                      </div>
+              
 
                 <hr />
                 <!-- Ubicación del Plano
@@ -397,7 +439,7 @@ async function filterByClient(client) {
 
             <template #footer>
                 <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" :loading="loading"/>
+                <Button label="Guardar" icon="pi pi-check" @click="saveArticle()" :loading="loading" />
             </template>
         </Dialog>
 
