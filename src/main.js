@@ -21,6 +21,13 @@ const storedSurfaceColor = localStorage.getItem('surfaceColor');
 app.use(pinia);
 app.use(router);
 
+// Chequear si el dark mode está activado en localStorage
+const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// Si el dark mode está activado, aplicar la clase correspondiente
+if (isDarkMode) {
+    document.documentElement.classList.add('app-dark');
+}
 
 const MyPreset = definePreset(Aura, {
     semantic: {
