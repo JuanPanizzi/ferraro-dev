@@ -47,11 +47,9 @@ const isEditing = ref(false)
 function abrirNuevo(editing, index) {
 
     if (editing) {
-        console.log(pedido.value.NUM_OC)
         itemEditIndex.value = index;
 
     }
-    console.log('index in pedidos', index);
     isEditing.value = editing
 
     if (!editing) {
@@ -75,7 +73,6 @@ function abrirNuevo(editing, index) {
         articuloDialogo.value = true;
 
 
-        console.log('index in pedidos', index);
         articulo.value = pedido.value.items[index];
     }
 }
@@ -84,7 +81,6 @@ function ocultarDialogo() {
 }
 
 const editArticle = (data) => {
-    console.log('data', data);
     articulo.value = data.ART;
     itemEditIndex.value = data.index;
     isEditing.value = true;
@@ -106,7 +102,6 @@ async function crearArticle() {
 
         if (response.status >= 200) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
-            console.log('articulo creado');
 
             // add new article to pedido items
             let newItem = {
@@ -149,7 +144,6 @@ async function crearArticle() {
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
-        console.log('error al crear articulo', error);
 
     } finally {
         articuloDialogo.value = false;
@@ -168,7 +162,6 @@ async function editarArticle() {
         if (response.status >= 200) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo actualizado exitosamente.', life: 3000 });
 
-            console.log('articulo actualizado RES:', response.data);
             articuloDialogo.value = false;
 
         } else {
@@ -176,7 +169,6 @@ async function editarArticle() {
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
-        console.log('error al actualizar articulo', error);
     }
 
 }
@@ -219,7 +211,6 @@ onMounted(async () => {
 
 const changeMoneda = (e) => {
 
-    console.log(e.value);
 
     if (e.value.value === 'P') {
         pedido.value.COT_DOLAR = 1;
@@ -297,11 +288,8 @@ const generate = () => {
     // add usd_div and usd_bill to pedido
     pedido.value.usd_div = divisaFormatted.value;
     pedido.value.usd_bill = billeteFormatted.value;
-    console.log('pedido files')
-    console.log(pedido.value)
     
     PedidoService.createPedido(pedido.value).then((response) => {
-        console.log(response);
 
         if (response) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido creado exitosamente.', life: 3000 });
