@@ -31,8 +31,8 @@ export const ArticleService = {
 
     async getArticlesByClient(clienteId) {
         try {
-            // const response = await apiClient.get(`api/articulos?cliente=${clienteId}`);
-            const response = await apiClient.get(`api/articulos/cliente/${clienteId}`);
+            const response = await apiClient.get(`api/articulos?cliente=${clienteId}`);
+            // const response = await apiClient.get(`api/articulos/cliente/${clienteId}`);
 
             return response.data;
         } catch (error) {

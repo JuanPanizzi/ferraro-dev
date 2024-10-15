@@ -260,7 +260,6 @@ const onFileSelect = (event) => {
             type: file.type
         });
     });
-    console.log('files', files.value)
 };
 
 </script>
