@@ -22,7 +22,7 @@ const pedido = ref({
     // FILES: []
 });
 const clientSelected = ref(null)
-
+const loading = ref(false)
 const itemEditIndex = ref(null);
 
 const articulo = ref({
@@ -152,7 +152,7 @@ async function crearArticle() {
 }
 async function editarArticle() {
 
-
+    loading.value = true
     let article = articulo.value;
 
 
@@ -169,6 +169,8 @@ async function editarArticle() {
         }
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo. Intente nuevamente.', life: 3000 });
+    } finally {
+        loading.value = false
     }
 
 }
@@ -656,7 +658,7 @@ const onFileSelect = (event) => {
 
         <template #footer>
             <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-            <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()" />
+            <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()" :loading="loading" />
         </template>
     </Dialog>
 </template>
