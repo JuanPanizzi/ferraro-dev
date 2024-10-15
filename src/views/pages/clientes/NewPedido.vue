@@ -448,6 +448,7 @@ const onFileSelect = (event) => {
                                     <span class="ml-2">{{ slotProps.option.NOM_ART }}</span>
                                 </div>
                             </template>
+                            
                             <template #value="slotProps">
                                 <div class="flex items center">
                                     <span>{{ slotProps.value?.COD_ART }}</span>
