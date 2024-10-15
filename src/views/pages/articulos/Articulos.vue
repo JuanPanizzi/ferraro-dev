@@ -126,8 +126,6 @@ function ocultarDialogo() {
 
 
 // async function crearArticle() {
-
-
 //     if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART) {
 //         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
 //         return;
@@ -167,19 +165,20 @@ async function crearArticle() {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
+
     let newArticle = articulo.value;
     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
-    // Crea un nuevo objeto FormData
+
     const formData = new FormData();
     
-    // Añade los datos del artículo
+    // Acá se agregan los datos del artículo
     for (const key in newArticle) {
         formData.append(key, newArticle[key]);
     }
 
-    // Añade los archivos
+    // Acá agregamos los archivos seleccionados al formData
     files.value.forEach(file => {
-        formData.append('files', file.file); // Asegúrate de que 'files' sea el nombre correcto esperado por tu backend
+        formData.append('files', file.file); // Asegurarse de que 'files' sea el nombre correcto esperado por el backend
     });
     try {
         formData.forEach((value, key) => {
@@ -190,12 +189,10 @@ async function crearArticle() {
     }
 });
 
-
-
         loading.value = true;
         const response = await ArticleService.createArticle(formData, {
             headers: {
-                'Content-Type': 'multipart/form-data' // Es importante especificar el tipo de contenido
+                'Content-Type': 'multipart/form-data' 
             }
         });
 
@@ -206,12 +203,12 @@ async function crearArticle() {
             articuloDialogo.value = false;
             articulos.value.push(response.data);
             
-            // Aquí puedes agregar la lógica para paginación si es necesario
+            
         } else {
             throw new Error('Error en la respuesta del servidor');
         }
     } catch (error) {
-        console.error(error); // Log del error para depuración
+        console.error(error); 
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
     } finally {
         loading.value = false;
