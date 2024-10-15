@@ -11,66 +11,70 @@ const router = createRouter({
                 {
                     path: '/',
                     name: 'dashboard',
-                    component: () => import('@/views/Dashboard.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/Dashboard.vue'),   
+                    meta: { requiresAuth: true }
                 },
                 {
                     path: '/empty',
                     name: 'empty',
-                    component: () => import('@/views/pages/Empty.vue')
+                    component: () => import('@/views/pages/Empty.vue'),
+                    meta: { requiresAuth: true }
+
                 },
                 {
                     path: '/clientes',
                     name: 'clientes',
-                    component: () => import('@/views/pages/clientes/Clientes.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/clientes/Clientes.vue'),
+                    meta: { requiresAuth: true }
                 },
                 {
                     path: '/articulos',
                     name: 'articulos',
-                    component: () => import('@/views/pages/articulos/Articulos.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/articulos/Articulos.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // pedidos
                 {
                     path: '/pedidos',
                     name: 'pedidos',
-                    component: () => import('@/views/pages/clientes/Pedidos.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/clientes/Pedidos.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // new pedido
                 {
                     path: '/pedidos/new',
                     name: 'NewPedido',
-                    component: () => import('@/views/pages/clientes/NewPedido.vue')
+                    component: () => import('@/views/pages/clientes/NewPedido.vue'),
+                    meta: { requiresAuth: true }
+
                 },
                 // remitos
                 {
                     path: '/remitos',
                     name: 'remitos',
-                    component: () => import('@/views/pages/remitos/Remitos.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/remitos/Remitos.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // new remito
                 {
                     path: '/remitos/new',
                     name: 'NewRemito',
-                    component: () => import('@/views/pages/remitos/New.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/remitos/New.vue'),
+                    meta: { requiresAuth: true }
                 },
 
                 {
                     path: '/clientes/cuenta-corriente/:id',
                     name: 'ClienteCuentaCorriente',
-                    component: () => import('@/views/pages/clientes/CC.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/clientes/CC.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // ivacompras
                 {
                     path: '/iva-compras',
                     name: 'ivacompras',
-                    component: () => import('@/views/pages/afip/IvaCompras.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/afip/IvaCompras.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // ivaventas
                 {
@@ -82,8 +86,8 @@ const router = createRouter({
                 {
                     path: '/documentation',
                     name: 'documentation',
-                    component: () => import('@/views/pages/Documentation.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/Documentation.vue'),
+                    meta: { requiresAuth: true }
                 },
                 // profile
                 {
@@ -96,22 +100,22 @@ const router = createRouter({
                 {
                     path: '/users',
                     name: 'users',
-                    component: () => import('@/views/pages/users/Users.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/users/Users.vue'),
+                    meta: { requiresAuth: true }
                 },
                 //Cotizaciones
                 {
                     path: '/cotizaciones',
                     name: 'cotizaciones',
-                    component: () => import('@/views/pages/cotizaciones/Cotizaciones.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/cotizaciones/Cotizaciones.vue'),
+                    meta: { requiresAuth: true }
                 },
                 //Materiales
                 {
                     path: '/materiales',
                     name: 'materiales',
-                    component: () => import('@/views/pages/materiales/Materiales.vue')
-                    //meta: { requiresAuth: true }
+                    component: () => import('@/views/pages/materiales/Materiales.vue'),
+                    meta: { requiresAuth: true }
                 }
             ]
         },
