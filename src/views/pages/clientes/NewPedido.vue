@@ -305,7 +305,7 @@ const changeCliente = async (e) => {
 
     try {
         loadingArticles.value = true;
-        const articles = await ArticleService.getArticlesByClient(e.value.NUM_CLI);
+        const articles = await ArticleService.getArticlesByClientPedido(e.value.NUM_CLI);
         clientArticles.value = Array.isArray(articles) ? articles : [];
         clientSelected.value = e.value
         loadingArticles.value = false;

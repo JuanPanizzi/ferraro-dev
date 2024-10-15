@@ -39,7 +39,16 @@ export const ArticleService = {
             throw new Error('Error al obtener artículos por cliente');
         }
     },
+    async getArticlesByClientPedido(clienteId) {
+        try {
+            // const response = await apiClient.get(`api/articulos?cliente=${clienteId}`);
+            const response = await apiClient.get(`api/articulos/cliente/${clienteId}`);
 
+            return response.data;
+        } catch (error) {
+            throw new Error('Error al obtener artículos por cliente');
+        }
+    },
     async createArticle(newArticle) {
         try {
             const response = await apiClient.post(`api/articulos`, newArticle);
