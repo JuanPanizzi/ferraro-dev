@@ -125,42 +125,100 @@ function ocultarDialogo() {
 }
 
 
+// async function crearArticle() {
+
+
+//     if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART) {
+//         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
+//         return;
+//     }
+//     articulo.value.FILES = files.value
+//     let newArticle = articulo.value;
+//     console.log('new article', console.log(newArticle))
+//     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
+//     try {
+//         loading.value = true;
+//         const response = await ArticleService.createArticle(newArticle);
+
+//         if (response.status >= 200) {
+//             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
+//             console.log('articulo creado');
+
+//             articuloDialogo.value = false;
+//             articulos.value.push(response.data);
+
+//             // go to last page
+//             // dt.value.paginate({ first: Math.ceil(articulos.value.length / 50) * 50, rows: 50 });
+//         } else {
+
+//             throw new Error('Error en la respuesta del servidor');
+//         }
+//     } catch (error) {
+//         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
+
+//     } finally {
+//         loading.value = false;
+//         clientSelected.value = null;
+//     }
+// }
+
 async function crearArticle() {
-
-
     if (!articulo.value.COD_ART || !clientSelected.value || !articulo.value.NOM_ART) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos obligatorios.', life: 3000 });
         return;
     }
-    articulo.value.FILES = files.value
     let newArticle = articulo.value;
-    console.log('new article', console.log(newArticle))
     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
-    try {
-        loading.value = true;
-        const response = await ArticleService.createArticle(newArticle);
+    // Crea un nuevo objeto FormData
+    const formData = new FormData();
+    
+    // Añade los datos del artículo
+    for (const key in newArticle) {
+        formData.append(key, newArticle[key]);
+    }
 
-        if (response.status >= 200) {
+    // Añade los archivos
+    files.value.forEach(file => {
+        formData.append('files', file.file); // Asegúrate de que 'files' sea el nombre correcto esperado por tu backend
+    });
+    try {
+        formData.forEach((value, key) => {
+    if (value instanceof File) {
+        console.log(`${key}: ${value.name}, ${value.size} bytes, ${value.type}`);
+    } else {
+        console.log(`${key}: ${value}`);
+    }
+});
+
+
+
+        loading.value = true;
+        const response = await ArticleService.createArticle(formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data' // Es importante especificar el tipo de contenido
+            }
+        });
+
+        if (response.status >= 200 && response.status < 300) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo creado exitosamente.', life: 3000 });
             console.log('articulo creado');
 
             articuloDialogo.value = false;
             articulos.value.push(response.data);
-
-            // go to last page
-            // dt.value.paginate({ first: Math.ceil(articulos.value.length / 50) * 50, rows: 50 });
+            
+            // Aquí puedes agregar la lógica para paginación si es necesario
         } else {
-
             throw new Error('Error en la respuesta del servidor');
         }
     } catch (error) {
+        console.error(error); // Log del error para depuración
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
-
     } finally {
         loading.value = false;
         clientSelected.value = null;
     }
 }
+
 
 // modalEdit
 function modalEdit(article) {
