@@ -16,7 +16,7 @@ const goProfile = () => {
 </script>
 
 <template>
-    <div class="layout-topbar">
+    <div class="layout-topbar flex justify-between items-center px-4 py-2 md:px-6 lg:px-8">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
                 <i class="pi pi-bars"></i>
@@ -40,7 +40,7 @@ const goProfile = () => {
                     </g>
                 </svg> -->
 
-                <span>FERRARO</span>
+                <span class="text-xs sm:text-sm lg:text-lg">FERRARO</span>
             </router-link>
         </div>
 

@@ -32,8 +32,8 @@ onMounted(fetchCotizaciones);
 </script>
 
 <template>
-  <div class="dolar-cotizaciones">
-    <span class="cotizacion">
+  <div class="dolar-cotizaciones max-[388px]:text-center max-[388px]:py-2 max-[388px]:min-w-[67px] ">
+    <span class="cotizacion max-[388px]:text-[0.5rem]  text-xs sm:text-sm md:text-md ">
       <strong>U$D Bill. </strong> $ {{ billeteFormatted }} <br />
       <strong>U$D Div. </strong> $ {{ divisaFormatted }}
     </span>
