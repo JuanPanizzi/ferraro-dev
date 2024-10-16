@@ -89,10 +89,10 @@ const dialogFiles = (pedfiles, id) => {
 
             <DataTable :value="pedidosData" ref="dt">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">COTIZACIONES</div>
-                    <div class="flex justify-between items-center">
+                    <div class="font-semibold text-xl mb-4 text-center sm:text-left">COTIZACIONES</div>
+                    <div class="flex flex-wrap justify-center sm:justify-between  items-center">
 
-                        <div class="flex items-center">
+                        <div class="flex flex-wrap justify-center space-y-2 items-center">
                             <div style="display: flex;">
                                 <Select :options="clients" optionLabel="NOM_CLI" v-model="selectedClient" filter
                                     placeholder="Seleccione un cliente" class="w-full" @change="search()"
@@ -122,7 +122,7 @@ const dialogFiles = (pedfiles, id) => {
                         </div>
 
                         <div>
-                            <Button icon="pi pi-plus" label="Nueva cotización" class="mx-2 p-button-primary" @click="add" />
+                            <Button icon="pi pi-plus" label="Nueva cotización" class="mx-2 p-button-primary  mt-3 sm:mt-0" @click="add" />
                         </div>
                     </div>
                 </template>
