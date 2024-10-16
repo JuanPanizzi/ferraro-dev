@@ -108,8 +108,8 @@ function crearId() {
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} remitos"
             >
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">REMITOS</div>
-                    <div class="flex justify-between items-center">
+                    <div class="font-semibold text-xl mb-4 text-center sm:text-left">REMITOS</div>
+                    <div class="flex flex-wrap justify-center sm:justify-between items-center">
                         <div>
                             <IconField>
                                 <InputIcon>
@@ -119,7 +119,7 @@ function crearId() {
                             </IconField>
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo Remito" class="mx-2 p-button-primary" @click="abrirNuevo" />
+                            <Button icon="pi pi-plus" label="Nuevo Remito" class="mx-2 p-button-primary mt-2 sm:mt-0" @click="abrirNuevo" />
                         </div>
                     </div>
                 </template>
