@@ -105,39 +105,23 @@ async function crearArticle() {
 
             // add new article to pedido items
             let newItem = {
-                id: response.data.id,
+                ART: {
+                    id: response.data.id,
+                    COD_ART: newArticle.COD_ART,
+                    NOM_ART: newArticle.NOM_ART,
+                    MAT_ART: newArticle.MAT_ART,
+                    NROPLANO_ART: newArticle.NROPLANO_ART,
+                    REV_PLANO: newArticle.REV_PLANO,
+                    PLANO_ART: newArticle.PLANO_ART,
+                    DES_IT: newArticle.NOM_ART,
+                    ART_LABEL: newArticle.COD_ART + ' - ' + newArticle.NOM_ART
+                },
                 NUM_LIN: pedido.value.items.length + 1,
-                COD_ART: newArticle.COD_ART,
-                NOM_ART: newArticle.NOM_ART,
-                MAT_ART: newArticle.MAT_ART,
-                NROPLANO_ART: newArticle.NROPLANO_ART,
-                REV_PLANO: newArticle.REV_PLANO,
-                PLANO_ART: newArticle.PLANO_ART,
-                DES_IT: newArticle.NOM_ART,
                 CAN_IT: 1,
                 PRE_IT: newArticle.PV_ART,
-                ART_LABEL: newArticle.COD_ART + ' - ' + newArticle.NOM_ART
             };
-
             clientArticles.value.push(newItem);
-
-            // add new item to pedido items
-            pedido.value.items.push({
-                OC: '',
-                OC_ITEM: '',
-                NUM_LIN: pedido.value.items.length + 1,
-                COD_IT: newItem,
-                DES_IT: newItem.DES_IT,
-                CAN_IT: 1,
-                PRE_IT: newItem.PRE_IT,
-                MAT_ART: newItem.MAT_ART,
-                NROPLANO_ART: newItem.NROPLANO_ART,
-                REV_PLANO: newItem.REV_PLANO,
-                PLANO_ART: newItem.PLANO_ART
-            });
-
-
-
+            pedido.value.items.push(newItem);
         } else {
 
             throw new Error('Error en la respuesta del servidor');
@@ -290,7 +274,7 @@ const generate = () => {
     // add usd_div and usd_bill to pedido
     pedido.value.usd_div = divisaFormatted.value;
     pedido.value.usd_bill = billeteFormatted.value;
-    
+
     PedidoService.createPedido(pedido.value).then((response) => {
 
         if (response) {
@@ -448,7 +432,7 @@ const onFileSelect = (event) => {
                                     <span class="ml-2">{{ slotProps.option.NOM_ART }}</span>
                                 </div>
                             </template>
-                            
+
                             <template #value="slotProps">
                                 <div class="flex items center">
                                     <span>{{ slotProps.value?.COD_ART }}</span>
@@ -528,7 +512,7 @@ const onFileSelect = (event) => {
                 </template>
             </Column>
             <template #footer>
-                <Button disabled icon="pi pi-box" class="p-button-sm p-button-text" label="Crear nuevo articulo"
+                <Button icon="pi pi-box" class="p-button-sm p-button-text" label="Crear nuevo articulo"
                     @click="abrirNuevo(false)" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
@@ -659,7 +643,8 @@ const onFileSelect = (event) => {
 
         <template #footer>
             <Button label="Cancelar" icon="pi pi-times" text @click="ocultarDialogo" />
-            <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()" :loading="loading" />
+            <Button label="Guardar" icon="pi pi-check" @click="isEditing ? editarArticle() : crearArticle()"
+                :loading="loading" />
         </template>
     </Dialog>
 </template>
