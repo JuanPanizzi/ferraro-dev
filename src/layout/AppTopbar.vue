@@ -16,8 +16,8 @@ const goProfile = () => {
 </script>
 
 <template>
-    <div class="layout-topbar flex justify-between items-center px-4 py-2 md:px-6 lg:px-8">
-        <div class="layout-topbar-logo-container">
+    <div class="layout-topbar flex justify-between  items-center px-4 py-2 md:px-6 lg:px-8">
+        <div class="layout-topbar-logo-container ">
             <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
                 <i class="pi pi-bars"></i>
             </button>
@@ -44,8 +44,8 @@ const goProfile = () => {
             </router-link>
         </div>
 
-        <div class="layout-topbar-actions">
-            <div class="layout-config-menu">
+        <div class="layout-topbar-actions ">
+            <div class="layout-config-menu  flex items-center">
                 <div class="relative">
                     <DolarCotizaciones />
                 </div>
@@ -63,7 +63,7 @@ const goProfile = () => {
                 </div>
             </div>
 
-            <button class="layout-topbar-menu-button layout-topbar-action"
+            <button class="layout-topbar-menu-button layout-topbar-action my-auto"
                 v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }">
                 <i class="pi pi-ellipsis-v"></i>
             </button>
