@@ -256,8 +256,8 @@ function verCuentaCorriente(cliente) {
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes" sortField="NUM_CLI"
                 :sortOrder="-1">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">CLIENTES</div>
-                    <div class="flex justify-between items-center">
+                    <div class="font-semibold text-xl mb-4 text-center sm:text-left">CLIENTES</div>
+                    <div class="flex flex-wrap justify-center sm:justify-between items-center">
                         <div class="">
                             <IconField>
                                 <InputIcon>
@@ -267,7 +267,7 @@ function verCuentaCorriente(cliente) {
                             </IconField>
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary"
+                            <Button icon="pi pi-plus" label="Nuevo cliente" class="mx-2 p-button-primary mt-2 sm:mt-0"
                                 @click="abrirNuevo" />
                         </div>
                     </div>
