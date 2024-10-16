@@ -215,7 +215,7 @@ const exportExcel = () => {
 
             <DataTable :value="ventasData" ref="dt">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">VENTAS</div>
+                    <div class="font-semibold text-xl mb-4 text-center sm:text-left">VENTAS</div>
                     <div class="flex flex-wrap justify-center sm:justify-between items-center ">
                         <div class=" flex justify-center flex-wrap p-2 ">
                           <div>
@@ -226,7 +226,7 @@ const exportExcel = () => {
                               <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2"
                               placeholder="Mes" />
                             </div>
-                            <div>
+                            <div class="max-[402px]:mt-3">
 
                                 AÑO :
                                 <!-- Year Selector -->
@@ -234,10 +234,10 @@ const exportExcel = () => {
                                 placeholder="Año" />
                             </div>
                             <!-- Search Button -->
-                            <Button @click="search" class="mx-2" :disabled="!selectedMonth || !selectedYear"
+                            <Button @click="search" class="mx-2 max-[452px]:mt-2" :disabled="!selectedMonth || !selectedYear"
                                 icon="pi pi-search" />
                             <Button icon="pi pi-file-export" label="IVA Ventas" @click="dialogIvaVentas"
-                                :disabled="ventasData.length === 0" class="mx-2 p-button-info" />
+                                :disabled="ventasData.length === 0" class="mx-2 p-button-info max-[577px]:mt-2" />
                             <!--- download PDF
                             <Button icon="pi pi-file-pdf" label="PDF" @click="exportPDF" :disabled="ventasData.length === 0" class="mx-2 p-button-danger" />-->
                         </div>
