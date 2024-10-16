@@ -19,7 +19,7 @@ export const ArticleService = {
         }
     },
 
-    async getArticlesPaginated(page = 1, perPage = 50) {
+    async getArticlesPaginated(page = 1, perPage = 100) {
         // Nuevo método para paginación
         try {
             const response = await apiClient.get(`api/articulos?page=${page}&per_page=${perPage}`);

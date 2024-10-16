@@ -16,10 +16,14 @@ const clients = ref([]);
 // onMounted(async () => {
 //     clients.value = await CustomerService.getCustomersMinimal();
 // });
+const totalRecords = ref(0);
 
 onMounted(() => {
     ClienteService.getClientes().then((data) => (clients.value = data));
-    ArticleService.getArticlesXLarge().then((data) => (articulos.value = data.data));
+    ArticleService.getArticlesXLarge().then((data) => {
+        articulos.value = data.data;
+        totalRecords.value = data.total;
+    });
 });
 
 const changeCliente = async (e) => {
@@ -170,7 +174,7 @@ async function crearArticle() {
     newArticle.NUM_CLI = clientSelected.value.NUM_CLI;
 
     const formData = new FormData();
-    
+
     // Acá se agregan los datos del artículo
     for (const key in newArticle) {
         formData.append(key, newArticle[key]);
@@ -182,17 +186,17 @@ async function crearArticle() {
     });
     try {
         formData.forEach((value, key) => {
-    if (value instanceof File) {
-        console.log(`${key}: ${value.name}, ${value.size} bytes, ${value.type}`);
-    } else {
-        console.log(`${key}: ${value}`);
-    }
-});
+            if (value instanceof File) {
+                console.log(`${key}: ${value.name}, ${value.size} bytes, ${value.type}`);
+            } else {
+                console.log(`${key}: ${value}`);
+            }
+        });
 
         loading.value = true;
         const response = await ArticleService.createArticle(formData, {
             headers: {
-                'Content-Type': 'multipart/form-data' 
+                'Content-Type': 'multipart/form-data'
             }
         });
 
@@ -202,13 +206,13 @@ async function crearArticle() {
 
             articuloDialogo.value = false;
             articulos.value.push(response.data);
-            
-            
+
+
         } else {
             throw new Error('Error en la respuesta del servidor');
         }
     } catch (error) {
-        console.error(error); 
+        console.error(error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el artículo. Intente nuevamente.', life: 3000 });
     } finally {
         loading.value = false;
@@ -317,17 +321,26 @@ const onFileSelect = (event) => {
     });
 };
 
+const onPageChange = async (event) => {
+    loading.value = true;
+
+    const response = await ArticleService.getArticlesPaginated(event.page + 1, event.rows);
+    articulos.value = response.data;
+    totalRecords.value = response.total;
+    loading.value = false;
+};
+
 </script>
 
 <template>
     <div>
         <div class="card">
 
-            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="50" :filters="filtros"
-                :totalRecords="totalRecords" @page="onPageChange"
+            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="100" :lazy="true"
+                :loading="loading" :filters="filtros" :totalRecords="totalRecords" @page="onPageChange"
                 :globalFilterFields="['COD_ART', 'NOM_ART', 'MAT_ART', 'NROPLANO_ART', 'CLIENT_LABEL']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                :rowsPerPageOptions="[50]" sortField="id" :sortOrder="-1"
+                sortField="id" :sortOrder="-1"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
                 <template #header>
                     <div class="font-semibold text-xl mb-4 text-center sm:text-left">ARTICULOS</div>
@@ -437,18 +450,18 @@ const onFileSelect = (event) => {
                             accept="image/*,application/pdf" class="p-button-outlined" />
                     </div>
                 </div>
-                      <div class=" ">
-                        <p class="font-bold">Planos seleccionados:</p>
-                        <ul class="flex flex-wrap justify-evenlborder border-gray-400 rounded-lg rounded-lg">
+                <div class=" ">
+                    <p class="font-bold">Planos seleccionados:</p>
+                    <ul class="flex flex-wrap justify-evenlborder border-gray-400 rounded-lg rounded-lg">
                         <li v-for="(file, index) in files" :key="index"
                             class="p-4  border border-gray-400 rounded-lg m-2">
-                             <h2 class="text-emerald-400 "><strong>Archivo: {{ index + 1 }}</strong></h2> 
-                            {{ file.name }} <br /> 
+                            <h2 class="text-emerald-400 "><strong>Archivo: {{ index + 1 }}</strong></h2>
+                            {{ file.name }} <br />
                             {{ file.type }} <br />
                         </li>
                     </ul>
-                      </div>
-              
+                </div>
+
 
                 <hr />
                 <!-- Ubicación del Plano

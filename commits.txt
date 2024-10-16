@@ -1,79 +1,158 @@
-5a8de6c 07/10/2024 06:23 | a presentar (HEAD -> dev, origin/dev) [ales0sa]
-1170881 05/10/2024 02:32 | fast commit [ales0sa]
-3f9cb43 05/10/2024 00:35 | go go power rangers [ales0sa]
-970736a 04/10/2024 19:00 | advances [Juan]
-bcb6657 04/10/2024 11:40 | Crear articulo y que se anide a cliente [Juan]
-b50ad2d 04/10/2024 11:17 | filtro materiales añadido [Juan]
-b0efbfc 04/10/2024 10:54 | auth toast added [Juan]
-a5d7cc3 04/10/2024 00:41 | de to un poco [ales0sa]
-b5aba83 03/10/2024 16:46 | validacion de precio y cantidad [Juan]
-003d40c 03/10/2024 16:38 | advances [Juan]
-f5f28dc 03/10/2024 15:07 | new pedido modal advances [Juan]
-d5dbdc2 03/10/2024 15:03 | advances on form new pedido [Juan]
-c18f16e 03/10/2024 14:53 | end config [Juan]
-3d24da6 03/10/2024 14:48 | advacnes [Juan]
-c4035fd 03/10/2024 14:46 | Loading on button [Juan]
-991322b 03/10/2024 14:42 | loader added [Juan]
-6d01106 03/10/2024 13:03 | Form validation updated [Juan]
-a6cdfd1 03/10/2024 10:28 | Advances [Juan]
-41367f8 03/10/2024 09:33 | ADVANCES [Juan]
-e404a1b 03/10/2024 09:01 | Advances [Juan]
-428d80f 03/10/2024 08:29 | advances [Juan]
-b8657f1 03/10/2024 00:06 | Create client updated [Juan]
-bd37c4a 02/10/2024 16:09 | advacnes [Juan]
-0ad04b2 02/10/2024 15:46 | fix [ales0sa]
-9c7eee7 02/10/2024 15:24 | changes [Juan]
-f36b7e3 02/10/2024 15:04 | validacion de campos obligatoria [Juan]
-0fde852 02/10/2024 14:41 | Put and post article [Juan]
-e161fc9 02/10/2024 11:58 | inputs obligatorios [Juan]
-8a9f187 02/10/2024 11:15 | test [Juan]
-f32f2ba 02/10/2024 10:26 | Cerrar modal cuando se cliquea en guardar [Juan]
-c3b5235 02/10/2024 10:10 | Editar / crear cliente [Juan]
-a1606ad 01/10/2024 17:54 | advances on modal new articulo [Juan]
-ef62c73 01/10/2024 17:48 | advances [Juan]
-0a2f69e 01/10/2024 17:43 | advances [Juan]
-d5e6ec1 01/10/2024 17:10 | changes [Juan]
-b09c55f 01/10/2024 15:24 | advances [Juan]
-c9b8f73 01/10/2024 12:58 | advances [Juan]
-ac782d1 01/10/2024 11:31 | Advances [Juan]
-6424906 01/10/2024 09:57 | fixes [ales0sa]
-07d06df 01/10/2024 09:53 | Merge remote-tracking branch 'refs/remotes/origin/dev' into dev [ales0sa]
-79ca8b1 01/10/2024 09:52 | fixes [ales0sa]
-0451139 01/10/2024 08:37 | Merge branch 'dev' of https://github.com/ales0sa/fm_test into dev [Juan]
-bd5c12e 01/10/2024 08:37 | checking [ales0sa]
-0265dac 01/10/2024 08:36 | post de archivos a endpoint de pedidos [Juan]
-4f8bb2b 01/10/2024 08:35 | advances [Juan]
-5174d10 30/09/2024 17:02 | multiple files updated [Juan]
-f7a1181 30/09/2024 16:53 | multiple files [Juan]
-06400e8 30/09/2024 16:35 | inputs and buttons disabled [Juan]
-a91d9ca 30/09/2024 16:32 | inputs and button disables [Juan]
-bd8645e 30/09/2024 16:28 | Inputs disables [Juan]
-9eac13d 30/09/2024 16:12 | inputs disable [Juan]
-a5cda63 30/09/2024 14:46 | updates [Juan]
-55d76cd 30/09/2024 14:31 | Color primario y surface guardandose en localstrge [Juan]
-679f76b 30/09/2024 14:30 | Color de fondo y primario guardandose en localstge [Juan]
-ceb0133 30/09/2024 14:06 | color on storage done [Juan]
-2e9ea66 30/09/2024 13:42 | appcon [Juan]
-652d7c2 30/09/2024 08:26 | Advances [Juan]
-817148c 26/09/2024 16:58 | advances on modal [Juan]
-b49bdd0 26/09/2024 16:04 | Advances on dialog [Juan]
-839a9a6 26/09/2024 13:11 | advances on new component [Juan]
-b72264f 25/09/2024 16:54 | Botón nuevo pedido agregado [Juan]
-6c3c740 25/09/2024 15:12 | icono home borrado [Juan]
-0d7e2d9 25/09/2024 11:51 | select client button added [Juan]
-521e9ac 25/09/2024 08:43 | icons added [Juan]
-34521a9 25/09/2024 06:35 | Merge pull request #1 from ales0sa/pinia [Alejandro]
-d3daf10 25/09/2024 06:32 | fast commit (origin/pinia, pinia) [ales0sa]
-e5ecd92 06/09/2024 22:41 | nuevso pedidoS [ales0sa]
-d100651 05/09/2024 18:53 | go [ales0sa]
-1a7035b 03/09/2024 21:37 | advances? [ales0sa]
-73e2e42 30/08/2024 09:54 | go [Alejandro]
-56aa9ff 30/08/2024 05:24 | ariticulos [Alejandro]
-6c928e7 29/08/2024 06:48 | tests [Alejandro]
-aacd41c 28/08/2024 03:52 | mff [Alejandro]
-993564c 28/08/2024 03:26 | before pini [Alejandro]
-b5875df 17/08/2024 23:52 | GO [ales0sa]
-b3c0c13 17/08/2024 15:27 | fast commit [Alejandro]
-607176d 17/08/2024 14:09 | fast commit [Alejandro]
-3b78f27 17/08/2024 01:01 | go [Alejandro]
-b8d98fc 14/08/2024 04:01 | first commit [Alejandro]
+2504e2a 16/10/2024 14:00 | sin precios, numero de plano + rev en pdf + orden en pedidos (HEAD -> dev, origin/dev) 
+55d3632 15/10/2024 23:59 | responsive ventas 
+aea5d07 15/10/2024 23:54 | responsive ventas 
+9af9bf8 15/10/2024 23:53 | responsive ventas 
+f277c7a 15/10/2024 23:35 | navbar responsive 
+5ed06c5 15/10/2024 23:32 | materiales responsive 
+fdf85ae 15/10/2024 23:30 | users responsive 
+0d3af99 15/10/2024 23:26 | cotizaciones responsive 
+bbb7ab7 15/10/2024 23:23 | remitos responsive 
+a05361a 15/10/2024 23:21 | pedidos responsive 
+f353623 15/10/2024 23:15 | clientes responsive 
+307f795 15/10/2024 23:13 | articulos responsive 
+b3e937f 15/10/2024 23:04 | navbar responsive 
+5c99a18 15/10/2024 21:12 | fix nuevo articulo 
+daeb86a 15/10/2024 20:55 | adv 
+525d8cb 15/10/2024 17:33 | loading added 
+b1a4304 15/10/2024 17:23 | landing vue component eliminado 
+a18732b 15/10/2024 15:45 | auth en rutas agregado 
+1a6efe3 15/10/2024 15:35 | getArticlesByClientPedido done 
+9f5927b 14/10/2024 23:49 | Updates 
+37dc932 14/10/2024 23:46 | advances 
+a3e5646 14/10/2024 23:27 | adv 
+6ae571c 14/10/2024 20:29 | loading agregado en boton "guardar" de crear clien 
+7eb046e 14/10/2024 20:02 | loading en boton "guardar" de editar clientes 
+dfdd97a 14/10/2024 19:46 | dark mode 
+e1facd4 14/10/2024 19:45 | Color 
+7d53096 14/10/2024 18:52 | logs deleted 
+91e81ef 14/10/2024 18:50 | file upload 
+2a9a287 10/10/2024 23:07 | materials 
+06bcb24 10/10/2024 22:25 | advacnes 
+03de5e2 10/10/2024 22:00 | cotizaciones 
+22f4297 10/10/2024 20:56 | advances on cotizaciones 
+84f12d6 10/10/2024 20:39 | adv 
+ce58f90 10/10/2024 19:39 | getArticlesByClient endpoint modificado 
+2eaa9e7 10/10/2024 19:38 | advancnes 
+8ce5bce 10/10/2024 17:57 | ADV 
+cd4f424 10/10/2024 17:09 | fixes s 
+a9e79b7 10/10/2024 17:05 | fix 
+46271c5 10/10/2024 17:01 | more fixes 
+0a7e5ac 10/10/2024 16:57 | fixes 
+6302fd6 10/10/2024 16:48 | a 
+2c62d53 10/10/2024 16:35 | password component added 
+c4b9c28 10/10/2024 16:18 | advances 
+0dc3257 10/10/2024 16:12 | adv 
+b51b2ba 10/10/2024 16:04 | filtro agregado 
+6a9b388 10/10/2024 15:35 | adv 
+8867ba5 10/10/2024 15:20 | advances on users 
+fd95968 10/10/2024 00:02 | advances on user 
+504798c 09/10/2024 23:34 | Merge branch 'dev' of https://github.com/ales0sa/fm_test into dev 
+fff4503 09/10/2024 23:34 | advances 
+9ff45d8 09/10/2024 23:28 | files 
+e392ae7 09/10/2024 23:28 | advances on deleting user 
+8725368 09/10/2024 22:39 | Merge branch 'dev' of https://github.com/ales0sa/fm_test into dev 
+911320a 09/10/2024 22:39 | advances 
+4b463f1 09/10/2024 22:24 | fix 
+6f6a710 09/10/2024 22:19 | email validate done 
+5a43c65 09/10/2024 20:42 | advances on user 
+3b7b829 09/10/2024 20:41 | advances on user 
+bb01620 09/10/2024 19:12 | users advances 
+72e9c04 09/10/2024 18:30 | advacnes on deleting clients 
+e22a8b7 09/10/2024 17:34 | Advances con users 
+d8929a3 09/10/2024 16:39 | advances 
+1c91903 09/10/2024 16:04 | advances on datatable 
+91aefce 09/10/2024 02:55 | pedidos 
+dd3d153 08/10/2024 17:06 | advances on user 
+81de229 08/10/2024 16:53 | advances 
+355bf68 08/10/2024 16:18 | clientes order 
+d73b423 08/10/2024 13:13 | test 
+7b8e5cd 07/10/2024 15:39 | Merge pull request #4 from ales0sa/clientes 
+f6bf112 07/10/2024 15:38 | arts (origin/clientes, clientes) 
+f4666f1 07/10/2024 15:34 | max-width difinido en input seleccionar articulos 
+cc47021 07/10/2024 15:10 | reflejar cambios al editar articulo en nuevo pedid 
+9ae117d 07/10/2024 12:17 | Merge pull request #3 from ales0sa/auth 
+9c90796 07/10/2024 12:17 | Merge branch 'dev' into auth (origin/auth) 
+d893748 07/10/2024 12:13 | changes 
+9b021f4 07/10/2024 12:08 | advances 
+d3f5113 07/10/2024 11:55 | seguridad (auth) 
+97c0237 07/10/2024 10:37 | advacnes 
+49c15c0 07/10/2024 10:17 | advances 
+5a8de6c 07/10/2024 06:23 | a presentar 
+1170881 05/10/2024 02:32 | fast commit 
+3f9cb43 05/10/2024 00:35 | go go power rangers 
+970736a 04/10/2024 19:00 | advances 
+bcb6657 04/10/2024 11:40 | Crear articulo y que se anide a cliente 
+b50ad2d 04/10/2024 11:17 | filtro materiales añadido 
+b0efbfc 04/10/2024 10:54 | auth toast added 
+a5d7cc3 04/10/2024 00:41 | de to un poco 
+b5aba83 03/10/2024 16:46 | validacion de precio y cantidad 
+003d40c 03/10/2024 16:38 | advances 
+f5f28dc 03/10/2024 15:07 | new pedido modal advances 
+d5dbdc2 03/10/2024 15:03 | advances on form new pedido 
+c18f16e 03/10/2024 14:53 | end config 
+3d24da6 03/10/2024 14:48 | advacnes 
+c4035fd 03/10/2024 14:46 | Loading on button 
+991322b 03/10/2024 14:42 | loader added 
+6d01106 03/10/2024 13:03 | Form validation updated 
+a6cdfd1 03/10/2024 10:28 | Advances 
+41367f8 03/10/2024 09:33 | ADVANCES 
+e404a1b 03/10/2024 09:01 | Advances 
+428d80f 03/10/2024 08:29 | advances 
+b8657f1 03/10/2024 00:06 | Create client updated 
+bd37c4a 02/10/2024 16:09 | advacnes 
+0ad04b2 02/10/2024 15:46 | fix 
+9c7eee7 02/10/2024 15:24 | changes 
+f36b7e3 02/10/2024 15:04 | validacion de campos obligatoria 
+0fde852 02/10/2024 14:41 | Put and post article 
+e161fc9 02/10/2024 11:58 | inputs obligatorios 
+8a9f187 02/10/2024 11:15 | test 
+f32f2ba 02/10/2024 10:26 | Cerrar modal cuando se cliquea en guardar 
+c3b5235 02/10/2024 10:10 | Editar / crear cliente 
+a1606ad 01/10/2024 17:54 | advances on modal new articulo 
+ef62c73 01/10/2024 17:48 | advances 
+0a2f69e 01/10/2024 17:43 | advances 
+d5e6ec1 01/10/2024 17:10 | changes 
+b09c55f 01/10/2024 15:24 | advances 
+c9b8f73 01/10/2024 12:58 | advances 
+ac782d1 01/10/2024 11:31 | Advances 
+6424906 01/10/2024 09:57 | fixes 
+07d06df 01/10/2024 09:53 | Merge remote-tracking branch 'refs/remotes/origin/dev' into dev 
+79ca8b1 01/10/2024 09:52 | fixes 
+0451139 01/10/2024 08:37 | Merge branch 'dev' of https://github.com/ales0sa/fm_test into dev 
+bd5c12e 01/10/2024 08:37 | checking 
+0265dac 01/10/2024 08:36 | post de archivos a endpoint de pedidos 
+4f8bb2b 01/10/2024 08:35 | advances 
+5174d10 30/09/2024 17:02 | multiple files updated 
+f7a1181 30/09/2024 16:53 | multiple files 
+06400e8 30/09/2024 16:35 | inputs and buttons disabled 
+a91d9ca 30/09/2024 16:32 | inputs and button disables 
+bd8645e 30/09/2024 16:28 | Inputs disables 
+9eac13d 30/09/2024 16:12 | inputs disable 
+a5cda63 30/09/2024 14:46 | updates 
+55d76cd 30/09/2024 14:31 | Color primario y surface guardandose en localstrge 
+679f76b 30/09/2024 14:30 | Color de fondo y primario guardandose en localstge 
+ceb0133 30/09/2024 14:06 | color on storage done 
+2e9ea66 30/09/2024 13:42 | appcon 
+652d7c2 30/09/2024 08:26 | Advances 
+817148c 26/09/2024 16:58 | advances on modal 
+b49bdd0 26/09/2024 16:04 | Advances on dialog 
+839a9a6 26/09/2024 13:11 | advances on new component 
+b72264f 25/09/2024 16:54 | Botón nuevo pedido agregado 
+6c3c740 25/09/2024 15:12 | icono home borrado 
+0d7e2d9 25/09/2024 11:51 | select client button added 
+521e9ac 25/09/2024 08:43 | icons added 
+34521a9 25/09/2024 06:35 | Merge pull request #1 from ales0sa/pinia 
+d3daf10 25/09/2024 06:32 | fast commit (origin/pinia, pinia) 
+e5ecd92 06/09/2024 22:41 | nuevso pedidoS 
+d100651 05/09/2024 18:53 | go 
+1a7035b 03/09/2024 21:37 | advances? 
+73e2e42 30/08/2024 09:54 | go 
+56aa9ff 30/08/2024 05:24 | ariticulos 
+6c928e7 29/08/2024 06:48 | tests 
+aacd41c 28/08/2024 03:52 | mff 
+993564c 28/08/2024 03:26 | before pini 
+b5875df 17/08/2024 23:52 | GO 
+b3c0c13 17/08/2024 15:27 | fast commit 
+607176d 17/08/2024 14:09 | fast commit 
+3b78f27 17/08/2024 01:01 | go 
+b8d98fc 14/08/2024 04:01 | first commit 
