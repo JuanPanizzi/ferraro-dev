@@ -330,8 +330,8 @@ const onFileSelect = (event) => {
                 :rowsPerPageOptions="[50]" sortField="id" :sortOrder="-1"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} articulos">
                 <template #header>
-                    <div class="font-semibold text-xl mb-4">ARTICULOS</div>
-                    <div class="flex justify-between items-center">
+                    <div class="font-semibold text-xl mb-4 text-center sm:text-left">ARTICULOS</div>
+                    <div class="flex justify-center sm:justify-between items-center flex-wrap">
                         <div class="">
                             <IconField>
                                 <InputIcon>
@@ -364,7 +364,7 @@ const onFileSelect = (event) => {
 
                         </div>
                         <div>
-                            <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary"
+                            <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary mt-2 sm:mt-0"
                                 @click="abrirNuevo" />
                         </div>
                     </div>
