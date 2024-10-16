@@ -186,10 +186,10 @@ const exportExcel = () => {
 
 <template>
     <div>
-        <div class="mt-4">
+        <div class="mt-4 ">
             <Dialog v-model:visible="visibleDialogIvaVentas" modal header="IVA Ventas" :style="{ width: '75rem' }">
                 <!-- 4 buttons, download excel, download txt, send mail -->
-                <div class="flex justify-center gap-4">
+                <div class="flex justify-center gap-4 ">
                     <div>
                         <Button icon="pi pi-file-excel" label="Excel" class="p-button-success" @click="exportExcel" />
                     </div>
@@ -216,18 +216,23 @@ const exportExcel = () => {
             <DataTable :value="ventasData" ref="dt">
                 <template #header>
                     <div class="font-semibold text-xl mb-4">VENTAS</div>
-                    <div class="flex justify-between items-center">
-                        <div class="">
-                            MES :
+                    <div class="flex flex-wrap justify-center sm:justify-between items-center ">
+                        <div class=" flex justify-center flex-wrap p-2 ">
+                          <div>
 
-                            <!-- Month Selector -->
-                            <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2"
-                                placeholder="Mes" />
+                              MES :
+                              
+                              <!-- Month Selector -->
+                              <Select v-model="selectedMonth" :options="months" :optionLabel="'name'" class="mx-2"
+                              placeholder="Mes" />
+                            </div>
+                            <div>
 
-                            AÑO :
-                            <!-- Year Selector -->
-                            <Select v-model="selectedYear" :options="years" :optionLabel="'label'" class="mx-2"
+                                AÑO :
+                                <!-- Year Selector -->
+                                <Select v-model="selectedYear" :options="years" :optionLabel="'label'" class="mx-2"
                                 placeholder="Año" />
+                            </div>
                             <!-- Search Button -->
                             <Button @click="search" class="mx-2" :disabled="!selectedMonth || !selectedYear"
                                 icon="pi pi-search" />
