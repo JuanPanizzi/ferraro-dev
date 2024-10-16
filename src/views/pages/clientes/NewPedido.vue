@@ -275,15 +275,31 @@ const generate = () => {
     pedido.value.usd_div = divisaFormatted.value;
     pedido.value.usd_bill = billeteFormatted.value;
 
+    pedido.hiddenPrices = hiddenPrices.value;
+
     PedidoService.createPedido(pedido.value).then((response) => {
 
         if (response) {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido creado exitosamente.', life: 3000 });
-            router.push('/pedidos');
+            console.log('response:', response);
+            // open response.data.file
+            //window.open(response.data.file, '_blank');
+            pdfPedido(response.id);
+            //router.push('/pedidos');
         }
     });
 
 };
+
+const pdfPedido = (id) => {
+    PedidoService.pdfPedido(id, hiddenPrices.value).then((response) => {
+        //console.log('response:', response.data.file);
+        window.open(response.data.file, '_blank');
+
+    });
+};
+
+const hiddenPrices = ref(false);
 
 const clientArticles = ref([]);
 const loadingArticles = ref(false);
@@ -483,14 +499,14 @@ const onFileSelect = (event) => {
                         :invalid="slotProps.data.CAN_IT <= 0" />
                 </template>
             </Column>
-            <Column field="PRE_IT" header="Precio">
+            <Column field="PRE_IT" header="Precio" v-if="!hiddenPrices">
                 <template #body="slotProps">
                     <InputNumber v-model="slotProps.data.PRE_IT" mode="currency" currency="ARS" locale="es-AR" fluid
                         :disabled="!pedido.NUM_CLI" :invalid="slotProps.data.PRE_IT <= 0" />
                 </template>
             </Column>
 
-            <Column field="SUBTOTAL" header="Subtotal">
+            <Column field="SUBTOTAL" header="Subtotal" v-if="!hiddenPrices">
                 <template #body="slotProps">
                     {{ (slotProps.data.CAN_IT * slotProps.data.PRE_IT).toLocaleString('es-AR', {
                         style: 'currency',
@@ -513,7 +529,7 @@ const onFileSelect = (event) => {
             </Column>
             <template #footer>
                 <Button icon="pi pi-box" class="p-button-sm p-button-text" label="Crear nuevo articulo"
-                    @click="abrirNuevo(false)" />
+                    :disabled="!pedido.NUM_CLI" @click="abrirNuevo(false)" />
                 <Button :disabled="!pedido.NUM_CLI" icon="pi pi-plus" class="p-button-sm p-button-text" @click="addItem"
                     label="Agregar otra linea" />
 
@@ -521,7 +537,9 @@ const onFileSelect = (event) => {
 
         </DataTable>
         <div class="my-2">
-
+            <!-- pedido sin precios checkbox -->
+            <Checkbox v-model="hiddenPrices" inputId="hiddenPrices" name="hiddenPrices" :binary="true" />
+            <label for="hiddenPrices" class="ml-2"> Pedido sin precios </label>
         </div>
 
         <Textarea v-model="pedido.OBS_FAC" id="OBS_FAC" rows="3" placeholder="Observaciones" class="w-full"
@@ -555,6 +573,9 @@ const onFileSelect = (event) => {
 </pre> -->
 
         <div class="flex justify-end gap-2 mt-4">
+
+
+
             <Button type="button" label="Cancelar" severity="secondary" @click="cancelPedido"></Button>
             <Button label="Guardar" icon="pi pi-save" class="p-button-primary" @click="generate"
                 :disabled="!pedido.NUM_CLI" />
