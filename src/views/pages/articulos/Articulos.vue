@@ -286,23 +286,6 @@ function saveArticle() {
     }
 }
 
-async function filterByClient(client) {
-    // articulos.value = articulos.value.filter(art => art.NUM_CLI === client.NOM_CLI)
-    console.log(articulos)
-    try {
-        if (clientSelected.value) {
-
-            const response = await ArticleService.getArticlesByClient(client.NUM_CLI);
-            articulos.value = response;
-        } else {
-            const response = await ArticleService.getArticlesXLarge()
-            articulos.value = response.data;
-
-        }
-    } catch (error) {
-        console.error('Error :', error);
-    }
-};
 const files = ref([]);
 
 // Método para manejar la selección de archivos
@@ -330,14 +313,26 @@ const onPageChange = async (event) => {
     loading.value = false;
 };
 
+const searchArticles = async () => {
+    loading.value = true;
+    // add num_cli to filtros
+    if (clientSelected.value) {
+        filtros.value.NUM_CLI = { value: clientSelected.value.NUM_CLI, matchMode: FilterMatchMode.EQUALS };
+    }
+    const response = await ArticleService.searchArticles(filtros.value);
+    console.log('response', response)
+    articulos.value = response.data;
+    totalRecords.value = response.total;
+    loading.value = false;
+};
 </script>
 
 <template>
     <div>
         <div class="card">
 
-            <DataTable ref="dt" :value="articulos" dataKey="COD_ART" :paginator="true" :rows="100" :lazy="true"
-                :loading="loading" :filters="filtros" :totalRecords="totalRecords" @page="onPageChange"
+            <DataTable :value="articulos" :paginator="true" :rows="100" :lazy="true" :loading="loading"
+                :filters="filtros" :totalRecords="totalRecords" @page="onPageChange"
                 :globalFilterFields="['COD_ART', 'NOM_ART', 'MAT_ART', 'NROPLANO_ART', 'CLIENT_LABEL']"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 sortField="id" :sortOrder="-1"
@@ -345,36 +340,36 @@ const onPageChange = async (event) => {
                 <template #header>
                     <div class="font-semibold text-xl mb-4 text-center sm:text-left">ARTICULOS</div>
                     <div class="flex justify-center sm:justify-between items-center flex-wrap">
-                        <div class="">
+
+                        <div style="display: inline-flex;">
                             <IconField>
                                 <InputIcon>
                                     <i class="pi pi-search" />
                                 </InputIcon>
                                 <InputText v-model="filtros['global'].value" placeholder="Buscador" />
                             </IconField>
-                            <div style="display: flex;">
-                                <Select :options="clients" optionLabel="NOM_CLI" v-model="clientSelected" filter
-                                    placeholder="Seleccione un cliente" class="w-full"
-                                    @change="filterByClient(clientSelected)" :virtualScrollerOptions="{ itemSize: 38 }"
-                                    showClear emptyFilterMessage="No se encontraron clientes"
-                                    emptyMessage="No hay clientes" emptySelectionMessage="Seleccione un cliente"
-                                    style="max-width: 300px;">
-                                    <template #option="slotProps">
-                                        <div class="flex items center">
-                                            <span>{{ slotProps.option.NUM_CLI }}</span>
-                                            <span class="ml-2">{{ slotProps.option.NOM_CLI }}</span>
-                                        </div>
-                                    </template>
-                                    <template #value="slotProps">
-                                        <div class="flex items center">
-                                            <span>{{ slotProps.value?.NOM_CLI }}</span>
-                                            <span v-if="!slotProps.value?.NUM_CLI" class="ml-2"> Filtrar por cliente
-                                            </span>
-                                        </div>
-                                    </template>
-                                </Select>
-                            </div>
-
+                            <Select :options="clients" optionLabel="NOM_CLI" v-model="clientSelected" filter
+                                placeholder="Seleccione un cliente" class="w-full"
+                                :virtualScrollerOptions="{ itemSize: 38 }" showClear
+                                emptyFilterMessage="No se encontraron clientes" emptyMessage="No hay clientes"
+                                emptySelectionMessage="Seleccione un cliente"
+                                style="max-width: 140px; margin-left: 4px;">
+                                <template #option="slotProps">
+                                    <div class="flex items center">
+                                        <span>{{ slotProps.option.NUM_CLI }}</span>
+                                        <span class="ml-2">{{ slotProps.option.NOM_CLI }}</span>
+                                    </div>
+                                </template>
+                                <template #value="slotProps">
+                                    <div class="flex items center">
+                                        <span>{{ slotProps.value?.NOM_CLI }}</span>
+                                        <span v-if="!slotProps.value?.NUM_CLI" class="ml-2"> Cliente
+                                        </span>
+                                    </div>
+                                </template>
+                            </Select>
+                            <Button icon="pi pi-search" class="mx-2" label="Buscar" style="width: 120px;"
+                                @click="searchArticles()" :disabled="!clientSelected && !filtros['global'].value" />
                         </div>
                         <div>
                             <Button icon="pi pi-plus" label="Nuevo articulo" class="mx-2 p-button-primary mt-2 sm:mt-0"

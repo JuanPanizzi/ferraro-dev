@@ -9,7 +9,16 @@ export const ArticleService = {
             throw new Error("Error al buscar artículo");
         }
     },
-
+    async searchArticles(filters) {
+        try {
+            console.log(filters);
+            let json = JSON.stringify(filters);
+            const response = await apiClient.get(`api/articulos_search?search=${json}`);
+            return await response.data;
+        } catch (error) {
+            throw new Error("Error al buscar artículo");
+        }
+    },
     async getArticlesXLarge() {
         try {
             const response = await apiClient.get('api/articulos');
